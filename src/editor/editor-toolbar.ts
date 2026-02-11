@@ -10,10 +10,12 @@ const ICONS = {
   download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
   upload: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>',
   copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+  image: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>',
 };
 
 export class EditorToolbar {
   private toolbarEl: HTMLElement;
+  private urlBarEl: HTMLElement;
   private selectBtn!: HTMLButtonElement;
   private addBtn!: HTMLButtonElement;
   private undoBtn!: HTMLButtonElement;
@@ -28,9 +30,12 @@ export class EditorToolbar {
     private editor: CIHotspotEditor,
   ) {
     this.toolbarEl = createElement('div', 'ci-editor-toolbar');
+    this.urlBarEl = createElement('div', 'ci-editor-url-bar');
     this.build();
-    // Insert toolbar before the body
-    this.parentEl.insertBefore(this.toolbarEl, this.parentEl.firstChild);
+    // Insert toolbar and URL bar before the body
+    const firstChild = this.parentEl.firstChild;
+    this.parentEl.insertBefore(this.toolbarEl, firstChild);
+    this.parentEl.insertBefore(this.urlBarEl, firstChild);
   }
 
   private build(): void {
@@ -68,6 +73,24 @@ export class EditorToolbar {
     ioGroup.appendChild(this.importBtn);
     ioGroup.appendChild(this.copyBtn);
     this.toolbarEl.appendChild(ioGroup);
+
+    // Image URL bar (separate row)
+    const urlIcon = createElement('span', 'ci-editor-btn-icon');
+    urlIcon.innerHTML = ICONS.image;
+    const urlInput = createElement('input', 'ci-editor-toolbar-url') as HTMLInputElement;
+    urlInput.type = 'url';
+    urlInput.placeholder = 'Image URL...';
+    urlInput.value = this.editor.getSrc();
+    const loadBtn = this.createBtn('', 'Load', () => this.loadImageUrl(urlInput));
+    urlInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        this.loadImageUrl(urlInput);
+      }
+    });
+    this.urlBarEl.appendChild(urlIcon);
+    this.urlBarEl.appendChild(urlInput);
+    this.urlBarEl.appendChild(loadBtn);
 
     this.updateState();
   }
@@ -171,7 +194,15 @@ export class EditorToolbar {
     textarea.focus();
   }
 
+  private loadImageUrl(input: HTMLInputElement): void {
+    const src = input.value.trim();
+    if (!src) return;
+    this.editor.setSrc(src);
+    this.editor.showToast('Image updated');
+  }
+
   destroy(): void {
     this.toolbarEl.remove();
+    this.urlBarEl.remove();
   }
 }

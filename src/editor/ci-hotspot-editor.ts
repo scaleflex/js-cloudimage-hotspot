@@ -287,6 +287,15 @@ export class CIHotspotEditor {
     return this.viewer;
   }
 
+  getSrc(): string {
+    return this.config.src;
+  }
+
+  setSrc(src: string): void {
+    this.config.src = src;
+    this.rebuildViewer();
+  }
+
   getSelection(): SelectionManager {
     return this.selection;
   }

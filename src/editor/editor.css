@@ -80,6 +80,46 @@
   margin: 0 4px;
 }
 
+.ci-editor-url-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--ci-editor-toolbar-bg);
+  border: var(--ci-editor-panel-border);
+  border-top: none;
+}
+
+.ci-editor-toolbar-url {
+  flex: 1;
+  min-width: 200px;
+  padding: 6px 10px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  font-family: var(--ci-editor-font);
+  font-size: 13px;
+  color: var(--ci-editor-panel-color);
+  background: #ffffff;
+  transition: border-color 150ms;
+}
+
+.ci-editor-toolbar-url:focus {
+  outline: none;
+  border-color: var(--ci-editor-accent);
+  box-shadow: 0 0 0 2px rgba(0, 88, 163, 0.15);
+}
+
+.ci-editor-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  color: #666;
+}
+
+.ci-editor-btn-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
 .ci-editor-btn {
   display: inline-flex;
   align-items: center;
