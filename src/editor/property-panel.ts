@@ -43,7 +43,7 @@ export class PropertyPanel {
     title.textContent = 'Hotspots';
     this.panelEl.appendChild(title);
 
-    const hotspots = this.editor.getHotspotsRef();
+    const hotspots = this.editor.getHotspots();
 
     if (hotspots.length === 0) {
       const empty = createElement('div', 'ci-editor-panel-empty');

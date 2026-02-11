@@ -30,14 +30,22 @@ export const CIHotspotViewer = forwardRef<CIHotspotViewerRef, CIHotspotViewerPro
 
       const observer = new MutationObserver(() => {
         const targets = containerRef.current?.querySelectorAll<HTMLElement>('[data-react-portal]');
-        if (targets) {
-          const newMap = new Map<string, HTMLElement>();
-          targets.forEach((el) => {
-            const id = el.dataset.reactPortal;
-            if (id) newMap.set(id, el);
-          });
-          setPortalTargets(newMap);
-        }
+        if (!targets) return;
+
+        const newMap = new Map<string, HTMLElement>();
+        targets.forEach((el) => {
+          const id = el.dataset.reactPortal;
+          if (id) newMap.set(id, el);
+        });
+
+        // Only update state if the portal targets actually changed
+        setPortalTargets((prev) => {
+          if (prev.size !== newMap.size) return newMap;
+          for (const [id, el] of newMap) {
+            if (prev.get(id) !== el) return newMap;
+          }
+          return prev;
+        });
       });
 
       observer.observe(containerRef.current, { childList: true, subtree: true });

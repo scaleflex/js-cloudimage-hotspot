@@ -261,10 +261,6 @@ export class CIHotspotEditor {
     return this.hotspots.find((h) => h.id === id);
   }
 
-  getHotspotsRef(): HotspotItem[] {
-    return this.hotspots;
-  }
-
   setHotspots(hotspots: HotspotItem[]): void {
     if (this.destroyed) return;
     this.hotspots = structuredClone(hotspots);

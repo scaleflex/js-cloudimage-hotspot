@@ -1,4 +1,5 @@
 import { createElement } from '../utils/dom';
+import { createFocusTrap } from '../a11y/focus';
 import type { CIHotspotEditor } from './ci-hotspot-editor';
 
 const ICONS = {
@@ -100,6 +101,7 @@ export class EditorToolbar {
     btn.innerHTML = icon;
     btn.appendChild(document.createTextNode(` ${label}`));
     btn.title = label;
+    btn.setAttribute('aria-label', label);
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       onClick();
@@ -115,6 +117,8 @@ export class EditorToolbar {
     const mode = this.editor.getMode();
     this.selectBtn.classList.toggle('ci-editor-btn--active', mode === 'select');
     this.addBtn.classList.toggle('ci-editor-btn--active', mode === 'add');
+    this.selectBtn.setAttribute('aria-pressed', String(mode === 'select'));
+    this.addBtn.setAttribute('aria-pressed', String(mode === 'add'));
 
     const undo = this.editor.getUndoManager();
     this.undoBtn.disabled = !undo.canUndo();
@@ -173,11 +177,18 @@ export class EditorToolbar {
     overlay.appendChild(modal);
     document.body.appendChild(overlay);
 
-    const close = () => overlay.remove();
+    const trap = createFocusTrap(modal, this.importBtn);
+    const close = () => {
+      trap.destroy();
+      overlay.remove();
+    };
 
     cancelBtn.addEventListener('click', close);
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) close();
+    });
+    overlay.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
     });
 
     importBtn.addEventListener('click', () => {
@@ -192,6 +203,7 @@ export class EditorToolbar {
     });
 
     textarea.focus();
+    trap.activate();
   }
 
   private loadImageUrl(input: HTMLInputElement): void {

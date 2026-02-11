@@ -46,7 +46,7 @@ function sanitizeSVG(svg: string): string {
 const SVG_BLOCKED_ELEMENTS = new Set([
   'script', 'foreignobject', 'iframe', 'object', 'embed',
   'animate', 'animatetransform', 'animatemotion', 'set',
-  'style', 'a', 'use',
+  'style', 'a', 'use', 'image',
 ]);
 
 function cleanSVGNode(node: Element): void {
