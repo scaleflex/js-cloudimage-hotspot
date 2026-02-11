@@ -41,11 +41,6 @@ export function removeClass(el: HTMLElement, ...classNames: string[]): void {
   el.classList.remove(...classNames);
 }
 
-/** Toggle CSS class on element */
-export function toggleClass(el: HTMLElement, className: string, force?: boolean): void {
-  el.classList.toggle(className, force);
-}
-
 /** Idempotent CSS style injection — only injects once per page */
 export function injectStyles(css: string): void {
   if (!isBrowser()) return;

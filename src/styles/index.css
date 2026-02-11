@@ -320,7 +320,7 @@
 }
 
 .ci-hotspot-popover-cta:focus-visible {
-  outline: 3px solid #4A90D9;
+  outline: 3px solid var(--ci-hotspot-focus-ring, #4A90D9);
   outline-offset: 2px;
 }
 
@@ -368,7 +368,7 @@
 }
 
 .ci-hotspot-zoom-controls button:focus-visible {
-  outline: 3px solid #4A90D9;
+  outline: 3px solid var(--ci-hotspot-focus-ring, #4A90D9);
   outline-offset: -3px;
 }
 

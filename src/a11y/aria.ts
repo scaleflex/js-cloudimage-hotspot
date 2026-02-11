@@ -3,35 +3,6 @@ import { isBrowser, createElement } from '../utils/dom';
 let liveRegion: HTMLElement | null = null;
 let liveRegionRefCount = 0;
 
-/** Set ARIA attributes on a marker */
-export function setMarkerAria(
-  marker: HTMLElement,
-  options: { label: string; expanded: boolean; describedby?: string },
-): void {
-  marker.setAttribute('aria-label', options.label);
-  marker.setAttribute('aria-expanded', String(options.expanded));
-  if (options.describedby) {
-    marker.setAttribute('aria-describedby', options.describedby);
-  }
-}
-
-/** Update popover ARIA state */
-export function updatePopoverAria(
-  popover: HTMLElement,
-  visible: boolean,
-): void {
-  popover.setAttribute('aria-hidden', String(!visible));
-}
-
-/** Set container ARIA attributes */
-export function setContainerAria(
-  container: HTMLElement,
-  alt: string,
-): void {
-  container.setAttribute('role', 'group');
-  container.setAttribute('aria-label', alt || 'Image with hotspots');
-}
-
 /** Announce a message to screen readers via a live region */
 export function announceToScreenReader(message: string): void {
   if (!isBrowser()) return;

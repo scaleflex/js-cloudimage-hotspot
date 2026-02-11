@@ -59,7 +59,3 @@ export function createFocusTrap(
   return { activate, deactivate, destroy };
 }
 
-/** Move focus to a specific marker */
-export function moveFocusToMarker(marker: HTMLElement): void {
-  marker.focus();
-}

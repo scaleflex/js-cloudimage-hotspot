@@ -265,17 +265,15 @@ describe('Scenes API', () => {
     instance.destroy();
   });
 
-  it('fade transition applies transitioning state and updates currentScene', () => {
+  it('fade transition applies transitioning state and updates currentScene eagerly', () => {
     vi.useFakeTimers();
     const instance = new CIHotspot(root, makeScenesConfig({ sceneTransition: 'fade' }));
     instance.goToScene('scene-b');
     // Transitioning class should be applied immediately
     const container = root.querySelector('.ci-hotspot-container');
     expect(container?.classList.contains('ci-hotspot-scene-transitioning')).toBe(true);
-    // currentScene reflects target immediately (fix #10)
+    // currentScene updates eagerly to the target scene
     expect(instance.getCurrentScene()).toBe('scene-b');
-    // Cleanup
-    vi.advanceTimersByTime(500);
     instance.destroy();
     vi.useRealTimers();
   });
@@ -297,23 +295,21 @@ describe('Scenes API', () => {
     instance.goToScene('scene-b');
     // While transitioning to scene-b, try to navigate to scene-c
     instance.goToScene('scene-c');
-    // Should still be scene-b (the second call was ignored, not overridden to scene-c)
+    // currentScene is scene-b (set eagerly), scene-c call was ignored
     expect(instance.getCurrentScene()).toBe('scene-b');
     // The container should still have the transitioning class from the first call
     const container = root.querySelector('.ci-hotspot-container');
     expect(container?.classList.contains('ci-hotspot-scene-transitioning')).toBe(true);
-    vi.advanceTimersByTime(500);
     instance.destroy();
     vi.useRealTimers();
   });
 
-  it('getCurrentScene returns new scene during transition', () => {
+  it('getCurrentScene returns target scene immediately during transition', () => {
     vi.useFakeTimers();
     const instance = new CIHotspot(root, makeScenesConfig({ sceneTransition: 'fade' }));
     instance.goToScene('scene-b');
-    // currentSceneId is set before transition starts
+    // currentScene updates eagerly — returns target scene during transition
     expect(instance.getCurrentScene()).toBe('scene-b');
-    vi.advanceTimersByTime(500);
     instance.destroy();
     vi.useRealTimers();
   });

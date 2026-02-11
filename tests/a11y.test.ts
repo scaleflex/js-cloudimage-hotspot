@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import CIHotspot from '../src/index';
 import type { CIHotspotConfig } from '../src/core/types';
 import { getFocusableElements, createFocusTrap } from '../src/a11y/focus';
-import { setMarkerAria, updatePopoverAria, setContainerAria, announceToScreenReader } from '../src/a11y/aria';
+import { announceToScreenReader } from '../src/a11y/aria';
 
 function makeConfig(overrides?: Partial<CIHotspotConfig>): CIHotspotConfig {
   return {
@@ -183,29 +183,6 @@ describe('Accessibility — Focus Management', () => {
 });
 
 describe('Accessibility — ARIA utilities', () => {
-  it('setMarkerAria sets attributes correctly', () => {
-    const marker = document.createElement('button');
-    setMarkerAria(marker, { label: 'Test', expanded: true, describedby: 'pop-1' });
-    expect(marker.getAttribute('aria-label')).toBe('Test');
-    expect(marker.getAttribute('aria-expanded')).toBe('true');
-    expect(marker.getAttribute('aria-describedby')).toBe('pop-1');
-  });
-
-  it('updatePopoverAria toggles aria-hidden', () => {
-    const popover = document.createElement('div');
-    updatePopoverAria(popover, true);
-    expect(popover.getAttribute('aria-hidden')).toBe('false');
-    updatePopoverAria(popover, false);
-    expect(popover.getAttribute('aria-hidden')).toBe('true');
-  });
-
-  it('setContainerAria sets role and label', () => {
-    const container = document.createElement('div');
-    setContainerAria(container, 'Product image');
-    expect(container.getAttribute('role')).toBe('group');
-    expect(container.getAttribute('aria-label')).toBe('Product image');
-  });
-
   it('announceToScreenReader creates live region', () => {
     announceToScreenReader('Test announcement');
     const region = document.querySelector('[aria-live="polite"]');

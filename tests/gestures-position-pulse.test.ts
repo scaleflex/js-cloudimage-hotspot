@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { GestureRecognizer } from '../src/zoom/gestures';
 import { computePosition } from '../src/popover/position';
-import { enablePulse, disablePulse, setPulseState, setPulseStateAll } from '../src/markers/pulse';
 
 // ---------------------------------------------------------------------------
 // Helpers for touch event simulation in jsdom
@@ -377,69 +376,3 @@ describe('computePosition', () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// 3. Pulse functions
-// ---------------------------------------------------------------------------
-
-describe('Pulse functions', () => {
-  let marker: HTMLElement;
-
-  beforeEach(() => {
-    marker = document.createElement('div');
-  });
-
-  it('enablePulse adds the pulse class', () => {
-    enablePulse(marker);
-    expect(marker.classList.contains('ci-hotspot-marker--pulse')).toBe(true);
-  });
-
-  it('disablePulse removes the pulse class', () => {
-    marker.classList.add('ci-hotspot-marker--pulse');
-    disablePulse(marker);
-    expect(marker.classList.contains('ci-hotspot-marker--pulse')).toBe(false);
-  });
-
-  it('setPulseState toggles based on boolean — true enables', () => {
-    setPulseState(marker, true);
-    expect(marker.classList.contains('ci-hotspot-marker--pulse')).toBe(true);
-  });
-
-  it('setPulseState toggles based on boolean — false disables', () => {
-    marker.classList.add('ci-hotspot-marker--pulse');
-    setPulseState(marker, false);
-    expect(marker.classList.contains('ci-hotspot-marker--pulse')).toBe(false);
-  });
-
-  it('setPulseStateAll applies to all markers in container', () => {
-    const container = document.createElement('div');
-    const m1 = document.createElement('div');
-    const m2 = document.createElement('div');
-    const m3 = document.createElement('div');
-    m1.classList.add('ci-hotspot-marker');
-    m2.classList.add('ci-hotspot-marker');
-    m3.classList.add('ci-hotspot-marker');
-    container.appendChild(m1);
-    container.appendChild(m2);
-    container.appendChild(m3);
-
-    setPulseStateAll(container, true);
-    expect(m1.classList.contains('ci-hotspot-marker--pulse')).toBe(true);
-    expect(m2.classList.contains('ci-hotspot-marker--pulse')).toBe(true);
-    expect(m3.classList.contains('ci-hotspot-marker--pulse')).toBe(true);
-
-    setPulseStateAll(container, false);
-    expect(m1.classList.contains('ci-hotspot-marker--pulse')).toBe(false);
-    expect(m2.classList.contains('ci-hotspot-marker--pulse')).toBe(false);
-    expect(m3.classList.contains('ci-hotspot-marker--pulse')).toBe(false);
-  });
-
-  it('setPulseStateAll ignores elements without the marker class', () => {
-    const container = document.createElement('div');
-    const notMarker = document.createElement('div');
-    notMarker.classList.add('some-other-class');
-    container.appendChild(notMarker);
-
-    setPulseStateAll(container, true);
-    expect(notMarker.classList.contains('ci-hotspot-marker--pulse')).toBe(false);
-  });
-});

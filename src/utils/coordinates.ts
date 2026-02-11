@@ -36,7 +36,3 @@ export function normalizeToPercent(
   };
 }
 
-/** Convert percentage to pixel value */
-export function percentToPixel(percent: number, dimension: number): number {
-  return (percent / 100) * dimension;
-}

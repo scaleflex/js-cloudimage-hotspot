@@ -137,3 +137,43 @@ Added tests for disabled double-click (stays at zoom 1) and re-enabled double-cl
 
 ### ~~40. Missing: `ZoomPan.destroy()` removes document listeners~~ FIXED
 Verifies that after destroy, document mousemove events don't affect a newly created ZoomPan instance.
+
+---
+
+# Round 2
+
+---
+
+## Medium
+
+### 41. ~~`update()` releases live region without re-acquiring~~ FIXED
+`update()` calls `destroyInternal()` which calls `releaseLiveRegion()`, decrementing the ref count. But the rebuild path never calls `acquireLiveRegion()` — that only happens in the constructor. After `update()`, the ref count is off by one and screen reader announcements silently stop.
+**Fix:** Added `acquireLiveRegion()` call after `destroyInternal()` in `update()`.
+
+### 42. ~~Hotspot mutation during scene transition corrupts `sceneHotspotOverrides`~~ FIXED
+`goToScene()` sets `this.currentSceneId = sceneId` before the transition callback fires. During the transition, `this.config.hotspots` still contains the OLD scene's hotspots. If `addHotspot()`/`removeHotspot()`/`updateHotspot()` is called during the transition, `syncCurrentSceneHotspots()` saves the old scene's hotspots as overrides for the NEW scene ID.
+**Fix:** (a) `syncCurrentSceneHotspots()` now runs before `currentSceneId` is updated in `goToScene()`, and (b) skips sync entirely when `isTransitioning` is true.
+
+---
+
+## Low
+
+### 43. ~~Two focus ring selectors still hardcoded (missed in fix #31)~~ FIXED
+`index.css` `.ci-hotspot-popover-cta:focus-visible` and `.ci-hotspot-zoom-controls button:focus-visible` still use hardcoded `#4A90D9` instead of `var(--ci-hotspot-focus-ring, #4A90D9)`.
+**Fix:** Replaced with `var(--ci-hotspot-focus-ring, #4A90D9)`.
+
+### 44. ~~Entire `pulse.ts` module is dead code~~ FIXED
+Exports `enablePulse`, `disablePulse`, `setPulseState`, `setPulseStateAll` but none are imported anywhere. Pulse is handled directly by `addClass` in `createMarker()`.
+**Fix:** Deleted `src/markers/pulse.ts` and removed unused `setPulseState` import from `ci-hotspot.ts`.
+
+### 45. ~~Six dead utility exports across three files~~ FIXED
+`aria.ts`: `setMarkerAria`, `updatePopoverAria`, `setContainerAria`. `focus.ts`: `moveFocusToMarker`. `dom.ts`: `toggleClass`. `coordinates.ts`: `percentToPixel`.
+**Fix:** Removed all six dead exports and their corresponding test cases.
+
+### 46. ~~`debounce` and `throttle` in `events.ts` are dead code~~ FIXED
+Both utility functions are exported but never imported anywhere.
+**Fix:** Removed both functions and their test cases.
+
+### 47. ~~`EventEmitter.once()` is dead code~~ FIXED
+The `once` method is defined but never called anywhere.
+**Fix:** Removed the method and its test case.

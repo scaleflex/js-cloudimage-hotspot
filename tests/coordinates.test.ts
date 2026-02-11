@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseCoordinate, normalizeToPercent, percentToPixel } from '../src/utils/coordinates';
+import { parseCoordinate, normalizeToPercent } from '../src/utils/coordinates';
 
 describe('parseCoordinate', () => {
   it('parses percentage strings', () => {
@@ -45,11 +45,3 @@ describe('normalizeToPercent', () => {
   });
 });
 
-describe('percentToPixel', () => {
-  it('converts percent to pixel value', () => {
-    expect(percentToPixel(50, 1000)).toBe(500);
-    expect(percentToPixel(100, 800)).toBe(800);
-    expect(percentToPixel(0, 500)).toBe(0);
-    expect(percentToPixel(33.33, 900)).toBeCloseTo(299.97);
-  });
-});

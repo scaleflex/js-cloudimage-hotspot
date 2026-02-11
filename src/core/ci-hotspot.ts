@@ -663,7 +663,7 @@ export class CIHotspot implements CIHotspotInstance {
 
   /** Sync current hotspots back to scene override map so navigating away and back preserves changes */
   private syncCurrentSceneHotspots(): void {
-    if (!this.currentSceneId) return;
+    if (!this.currentSceneId || this.isTransitioning) return;
     this.sceneHotspotOverrides.set(this.currentSceneId, [...this.config.hotspots]);
   }
 
@@ -907,6 +907,8 @@ export class CIHotspot implements CIHotspotInstance {
       this.zoomPan.resetZoom();
     }
 
+    // Sync old scene's hotspots before updating currentSceneId
+    this.syncCurrentSceneHotspots();
     this.currentSceneId = sceneId;
 
     this.performSceneTransition(scene, transition, () => {
@@ -1002,6 +1004,7 @@ export class CIHotspot implements CIHotspotInstance {
     if (this.destroyed) return;
     // Destroy current state and rebuild
     this.destroyInternal();
+    acquireLiveRegion();
     this.config = mergeConfig({ ...this.config, ...config });
     validateConfig(this.config);
 

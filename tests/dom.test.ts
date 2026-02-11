@@ -5,7 +5,6 @@ import {
   createElement,
   addClass,
   removeClass,
-  toggleClass,
   injectStyles,
 } from '../src/utils/dom';
 
@@ -55,7 +54,7 @@ describe('createElement', () => {
   });
 });
 
-describe('addClass / removeClass / toggleClass', () => {
+describe('addClass / removeClass', () => {
   it('adds and removes classes', () => {
     const el = document.createElement('div');
     addClass(el, 'a', 'b');
@@ -65,24 +64,6 @@ describe('addClass / removeClass / toggleClass', () => {
     removeClass(el, 'a');
     expect(el.classList.contains('a')).toBe(false);
     expect(el.classList.contains('b')).toBe(true);
-  });
-
-  it('toggles class', () => {
-    const el = document.createElement('div');
-    toggleClass(el, 'active');
-    expect(el.classList.contains('active')).toBe(true);
-    toggleClass(el, 'active');
-    expect(el.classList.contains('active')).toBe(false);
-  });
-
-  it('toggles class with force parameter', () => {
-    const el = document.createElement('div');
-    toggleClass(el, 'active', true);
-    expect(el.classList.contains('active')).toBe(true);
-    toggleClass(el, 'active', true);
-    expect(el.classList.contains('active')).toBe(true);
-    toggleClass(el, 'active', false);
-    expect(el.classList.contains('active')).toBe(false);
   });
 });
 
