@@ -107,6 +107,8 @@ export interface CIHotspotConfig {
   pulse?: boolean;
   /** Show zoom controls UI (default: true when zoom is enabled) */
   zoomControls?: boolean;
+  /** Show scroll-to-zoom hint when user scrolls without modifier key (default: true when zoom is enabled) */
+  scrollHint?: boolean;
   /** Popover placement preference (default: 'top') */
   placement?: Placement;
   /** Enable lazy loading of the image (default: true) */

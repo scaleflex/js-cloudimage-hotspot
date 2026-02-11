@@ -8,6 +8,7 @@ import { setPulseState } from '../markers/pulse';
 import { Popover } from '../popover/Popover';
 import { ZoomPan } from '../zoom/ZoomPan';
 import { createZoomControls } from '../zoom/controls';
+import { ScrollHint } from '../zoom/ScrollHint';
 import { buildCloudimageUrl, createResizeHandler } from '../utils/cloudimage';
 import { KeyboardHandler } from '../a11y/keyboard';
 import { createFocusTrap } from '../a11y/focus';
@@ -24,6 +25,7 @@ export class CIHotspot implements CIHotspotInstance {
   private markers = new Map<string, HTMLButtonElement>();
   private popovers = new Map<string, Popover>();
   private normalizedHotspots = new Map<string, NormalizedHotspot>();
+  private scrollHint: ScrollHint | null = null;
   private zoomPan: ZoomPan | null = null;
   private zoomControls: { element: HTMLElement; update: () => void; destroy: () => void } | null = null;
   private cloudimageHandler: { observer: ResizeObserver; destroy: () => void } | null = null;
@@ -332,6 +334,10 @@ export class CIHotspot implements CIHotspotInstance {
   }
 
   private initZoom(): void {
+    if (this.config.scrollHint !== false) {
+      this.scrollHint = new ScrollHint(this.containerEl);
+    }
+
     this.zoomPan = new ZoomPan(this.viewportEl, this.containerEl, {
       zoomMin: this.config.zoomMin || 1,
       zoomMax: this.config.zoomMax || 4,
@@ -345,6 +351,7 @@ export class CIHotspot implements CIHotspotInstance {
           }
         }
       },
+      onScrollWithoutZoom: () => this.scrollHint?.show(),
     });
 
     if (this.config.zoomControls !== false) {
@@ -520,6 +527,8 @@ export class CIHotspot implements CIHotspotInstance {
     this.zoomPan = null;
     this.zoomControls?.destroy();
     this.zoomControls = null;
+    this.scrollHint?.destroy();
+    this.scrollHint = null;
 
     // Destroy cloudimage handler
     this.cloudimageHandler?.destroy();

@@ -1,10 +1,25 @@
 import { addClass, removeClass } from '../utils/dom';
 import { GestureRecognizer } from './gestures';
 
+/** Safari's proprietary GestureEvent (not in standard TypeScript lib) */
+interface SafariGestureEvent extends UIEvent {
+  readonly scale: number;
+  readonly rotation: number;
+}
+
+declare global {
+  interface WindowEventMap {
+    gesturestart: SafariGestureEvent;
+    gesturechange: SafariGestureEvent;
+    gestureend: SafariGestureEvent;
+  }
+}
+
 export interface ZoomPanOptions {
   zoomMin: number;
   zoomMax: number;
   onZoom?: (level: number) => void;
+  onScrollWithoutZoom?: () => void;
 }
 
 export class ZoomPan {
@@ -21,6 +36,8 @@ export class ZoomPan {
   private lastPanX = 0;
   private lastPanY = 0;
   private gestures: GestureRecognizer | null = null;
+  private isGesturing = false;
+  private gestureStartZoom = 1;
   private cleanups: (() => void)[] = [];
 
   constructor(viewport: HTMLElement, container: HTMLElement, options: ZoomPanOptions) {
@@ -32,18 +49,40 @@ export class ZoomPan {
   }
 
   private bindEvents(): void {
-    // Mouse wheel zoom
+    // Mouse wheel zoom — only on pinch (ctrlKey) or Ctrl+scroll
     const onWheel = (e: WheelEvent) => {
       if (!this.enabled) return;
+
+      // Safari fires ctrlKey wheel events during a gesture — skip if already handled
+      if (this.isGesturing) {
+        e.preventDefault();
+        return;
+      }
+
+      if (!e.ctrlKey) {
+        // Regular scroll — let it pass through to the page
+        this.options.onScrollWithoutZoom?.();
+        return;
+      }
+
       e.preventDefault();
+
       const rect = this.container.getBoundingClientRect();
       const originX = e.clientX - rect.left;
       const originY = e.clientY - rect.top;
-      const delta = e.deltaY > 0 ? -0.2 : 0.2;
+
+      // Normalize deltaY: Firefox line-mode (deltaMode=1) uses ~20px per line
+      let deltaY = e.deltaY;
+      if (e.deltaMode === 1) deltaY *= 20;
+
+      const delta = -deltaY * 0.01;
       this.setZoom(this.zoom + delta, originX, originY);
     };
     this.container.addEventListener('wheel', onWheel, { passive: false });
     this.cleanups.push(() => this.container.removeEventListener('wheel', onWheel));
+
+    // Safari GestureEvent support (proprietary pinch-to-zoom)
+    this.bindSafariGestures();
 
     // Double-click toggle
     const onDblClick = (e: MouseEvent) => {
@@ -126,6 +165,41 @@ export class ZoomPan {
         },
       },
       () => this.zoom,
+    );
+  }
+
+  private bindSafariGestures(): void {
+    // Feature-detect Safari's proprietary GestureEvent
+    if (typeof window === 'undefined' || !('GestureEvent' in window)) return;
+
+    const onGestureStart = (e: Event) => {
+      e.preventDefault();
+      this.isGesturing = true;
+      this.gestureStartZoom = this.zoom;
+    };
+
+    const onGestureChange = (e: Event) => {
+      e.preventDefault();
+      if (!this.enabled) return;
+      const ge = e as unknown as SafariGestureEvent;
+      const rect = this.container.getBoundingClientRect();
+      const originX = rect.width / 2;
+      const originY = rect.height / 2;
+      this.setZoom(this.gestureStartZoom * ge.scale, originX, originY);
+    };
+
+    const onGestureEnd = (e: Event) => {
+      e.preventDefault();
+      this.isGesturing = false;
+    };
+
+    this.container.addEventListener('gesturestart', onGestureStart as EventListener);
+    this.container.addEventListener('gesturechange', onGestureChange as EventListener);
+    this.container.addEventListener('gestureend', onGestureEnd as EventListener);
+    this.cleanups.push(
+      () => this.container.removeEventListener('gesturestart', onGestureStart as EventListener),
+      () => this.container.removeEventListener('gesturechange', onGestureChange as EventListener),
+      () => this.container.removeEventListener('gestureend', onGestureEnd as EventListener),
     );
   }
 
