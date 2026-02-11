@@ -179,7 +179,7 @@
 }
 
 .ci-editor-btn:focus-visible {
-  outline: 3px solid #4A90D9;
+  outline: 3px solid var(--ci-editor-focus-ring, #4A90D9);
   outline-offset: 2px;
 }
 
@@ -387,7 +387,7 @@
   border-radius: 20px;
   font-size: 13px;
   font-family: var(--ci-editor-font);
-  z-index: 10000;
+  z-index: 10001;
   opacity: 0;
   pointer-events: none;
   transition: opacity 200ms, transform 200ms;

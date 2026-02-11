@@ -1,4 +1,4 @@
-import type { CIHotspotConfig, CIHotspotInstance, HotspotItem, NormalizedHotspot, Scene, SceneTransition } from './types';
+import type { CIHotspotConfig, CIHotspotInstance, HotspotItem, NormalizedHotspot, Scene, SceneTransition, TriggerMode } from './types';
 import { mergeConfig, parseDataAttributes, validateConfig } from './config';
 import { getElement, createElement, addClass, removeClass, injectStyles } from '../utils/dom';
 import { normalizeToPercent } from '../utils/coordinates';
@@ -11,7 +11,7 @@ import { ScrollHint } from '../zoom/scroll-hint';
 import { buildCloudimageUrl, createResizeHandler } from '../utils/cloudimage';
 import { KeyboardHandler } from '../a11y/keyboard';
 import { createFocusTrap } from '../a11y/focus';
-import { announceToScreenReader } from '../a11y/aria';
+import { announceToScreenReader, acquireLiveRegion, releaseLiveRegion } from '../a11y/aria';
 import cssText from '../styles/index.css?inline';
 
 export class CIHotspot implements CIHotspotInstance {
@@ -51,6 +51,7 @@ export class CIHotspot implements CIHotspotInstance {
       this.initScenes();
     }
 
+    acquireLiveRegion();
     injectStyles(cssText);
     this.buildDOM();
     this.applyTheme();
@@ -355,7 +356,7 @@ export class CIHotspot implements CIHotspotInstance {
     hotspot: HotspotItem,
     marker: HTMLButtonElement,
     popover: Popover,
-    triggerMode: string,
+    triggerMode: TriggerMode,
   ): void {
     if (triggerMode === 'hover') {
       this.bindHoverTrigger(hotspot, marker, popover);
@@ -423,7 +424,7 @@ export class CIHotspot implements CIHotspotInstance {
     hotspot: HotspotItem,
     marker: HTMLButtonElement,
     popover: Popover,
-    triggerMode: string,
+    triggerMode: TriggerMode,
   ): void {
     const focusCleanup = addListener(marker, 'focus', () => {
       if (triggerMode === 'hover') {
@@ -703,7 +704,7 @@ export class CIHotspot implements CIHotspotInstance {
     if (typeof getComputedStyle === 'undefined') return 400;
     const val = getComputedStyle(this.containerEl).getPropertyValue('--ci-hotspot-scene-transition-duration').trim();
     const num = parseFloat(val);
-    if (!num) return 400;
+    if (isNaN(num)) return 400;
     // If the value ends with 's' but not 'ms', it's in seconds
     if (val.endsWith('s') && !val.endsWith('ms')) return num * 1000;
     return num;
@@ -1090,5 +1091,8 @@ export class CIHotspot implements CIHotspotInstance {
     // Destroy resize observer
     this.resizeObserver?.disconnect();
     this.resizeObserver = null;
+
+    // Release shared live region
+    releaseLiveRegion();
   }
 }

@@ -36,6 +36,7 @@ export class CIHotspotEditor {
   readonly events = new EventEmitter();
   private cleanups: (() => void)[] = [];
   private toastEl: HTMLElement | null = null;
+  private toastTimer: ReturnType<typeof setTimeout> | null = null;
   private destroyed = false;
 
   constructor(element: HTMLElement | string, config: EditorConfig) {
@@ -397,7 +398,11 @@ export class CIHotspotEditor {
     }
     this.toastEl.textContent = message;
     this.toastEl.classList.add('ci-editor-toast--visible');
-    setTimeout(() => this.toastEl?.classList.remove('ci-editor-toast--visible'), duration);
+    if (this.toastTimer) clearTimeout(this.toastTimer);
+    this.toastTimer = setTimeout(() => {
+      this.toastEl?.classList.remove('ci-editor-toast--visible');
+      this.toastTimer = null;
+    }, duration);
   }
 
   // === Lifecycle ===
@@ -412,6 +417,10 @@ export class CIHotspotEditor {
     this.toolbar.destroy();
     this.viewer?.destroy();
     this.events.removeAll();
+    if (this.toastTimer) {
+      clearTimeout(this.toastTimer);
+      this.toastTimer = null;
+    }
     this.toastEl = null;
     this.rootEl.innerHTML = '';
   }

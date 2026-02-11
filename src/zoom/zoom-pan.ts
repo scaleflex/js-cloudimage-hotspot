@@ -189,8 +189,10 @@ export class ZoomPan {
       if (!this.enabled) return;
       const ge = e as unknown as SafariGestureEvent;
       const rect = this.container.getBoundingClientRect();
-      const originX = rect.width / 2;
-      const originY = rect.height / 2;
+      // Safari GestureEvent may carry cursor coordinates; fall back to center
+      const ev = e as unknown as { clientX?: number; clientY?: number };
+      const originX = ev.clientX != null ? ev.clientX - rect.left : rect.width / 2;
+      const originY = ev.clientY != null ? ev.clientY - rect.top : rect.height / 2;
       this.setZoom(this.gestureStartZoom * ge.scale, originX, originY);
     };
 

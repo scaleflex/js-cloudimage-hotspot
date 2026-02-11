@@ -77,38 +77,38 @@ Moved `clearHotspots()` from transition start to inside the timer callback (just
 
 ## Low
 
-### 22. Floating-point equality in zoom controls (`zoom === 1`)
-**File:** `src/zoom/controls.ts:63`
+### ~~22. Floating-point equality in zoom controls (`zoom === 1`)~~ FIXED
+Changed to `Math.abs(zoom - 1) < 0.001` epsilon comparison.
 
-### 23. Safari gesture always zooms toward container center
-**File:** `src/zoom/zoom-pan.ts:185-188`
+### ~~23. Safari gesture always zooms toward container center~~ FIXED
+Now reads `clientX`/`clientY` from the GestureEvent (Safari provides them), falling back to center if unavailable.
 
-### 24. `parseFloat` returns silent NaN for invalid data attributes
-**File:** `src/core/config.ts:74`
+### ~~24. `parseFloat` returns silent NaN for invalid data attributes~~ FIXED
+Added `isNaN()` check with `console.warn` for invalid number values.
 
-### 25. `navigator.platform` is deprecated
-**File:** `src/zoom/scroll-hint.ts:1-2`
+### ~~25. `navigator.platform` is deprecated~~ FIXED
+Replaced with `navigator.userAgent` check.
 
-### 26. `buildCloudimageUrl` doesn't encode `src` path
-**File:** `src/utils/cloudimage.ts:37`
+### ~~26. `buildCloudimageUrl` doesn't encode `src` path~~ FIXED
+Applied `encodeURI()` to the `src` path to encode spaces and special characters while preserving URL structure.
 
-### 27. Zero-duration CSS transition overridden by fallback
-**File:** `src/core/ci-hotspot.ts:665-673`
+### ~~27. Zero-duration CSS transition overridden by fallback~~ FIXED
+Changed `!num` to `isNaN(num)` so `0` duration is respected instead of falling back to 400ms.
 
-### 28. Toast timer not cleared on editor destroy
-**File:** `src/editor/ci-hotspot-editor.ts:388-397`
+### ~~28. Toast timer not cleared on editor destroy~~ FIXED
+Tracked `toastTimer` and clear it in `destroy()`.
 
-### 29. Live region singleton never cleaned up
-**File:** `src/a11y/aria.ts:35-54`
+### ~~29. Live region singleton never cleaned up~~ FIXED
+Added `acquireLiveRegion()`/`releaseLiveRegion()` ref-counting. Live region is removed when the last instance is destroyed.
 
-### 30. `triggerMode` typed as `string` instead of `TriggerMode`
-**File:** `src/core/ci-hotspot.ts:343`
+### ~~30. `triggerMode` typed as `string` instead of `TriggerMode`~~ FIXED
+Changed parameter type to `TriggerMode`.
 
-### 31. Focus ring color hardcoded, not from theme variable
-**Files:** `src/editor/editor.css:182`, `src/styles/index.css:140`
+### ~~31. Focus ring color hardcoded, not from theme variable~~ FIXED
+Uses `var(--ci-hotspot-focus-ring, #4A90D9)` and `var(--ci-editor-focus-ring, #4A90D9)` respectively.
 
-### 32. Toast and modal both use `z-index: 10000`
-**File:** `src/editor/editor.css:390, 411`
+### ~~32. Toast and modal both use `z-index: 10000`~~ FIXED
+Toast uses `z-index: 10001`, modal overlay stays at `10000`.
 
 ---
 

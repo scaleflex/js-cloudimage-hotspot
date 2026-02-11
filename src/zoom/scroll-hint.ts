@@ -1,5 +1,5 @@
 const isMac =
-  typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/.test(navigator.platform);
+  typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 const HINT_TEXT = isMac
   ? '\u2318 Scroll or pinch to zoom'

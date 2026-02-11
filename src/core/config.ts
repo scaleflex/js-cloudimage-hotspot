@@ -70,8 +70,14 @@ function coerceValue(value: string, type: string): unknown {
   switch (type) {
     case 'boolean':
       return value === 'true';
-    case 'number':
-      return parseFloat(value);
+    case 'number': {
+      const num = parseFloat(value);
+      if (isNaN(num)) {
+        console.warn(`CIHotspot: invalid number value "${value}"`);
+        return undefined;
+      }
+      return num;
+    }
     case 'json':
       try {
         return JSON.parse(value);

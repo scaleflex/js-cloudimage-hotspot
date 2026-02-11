@@ -1,6 +1,7 @@
 import { isBrowser, createElement } from '../utils/dom';
 
 let liveRegion: HTMLElement | null = null;
+let liveRegionRefCount = 0;
 
 /** Set ARIA attributes on a marker */
 export function setMarkerAria(
@@ -51,4 +52,18 @@ export function announceToScreenReader(message: string): void {
   requestAnimationFrame(() => {
     if (liveRegion) liveRegion.textContent = message;
   });
+}
+
+/** Register an instance that uses the live region */
+export function acquireLiveRegion(): void {
+  liveRegionRefCount++;
+}
+
+/** Release an instance; removes the live region when the last one is released */
+export function releaseLiveRegion(): void {
+  liveRegionRefCount = Math.max(0, liveRegionRefCount - 1);
+  if (liveRegionRefCount === 0 && liveRegion) {
+    liveRegion.remove();
+    liveRegion = null;
+  }
 }

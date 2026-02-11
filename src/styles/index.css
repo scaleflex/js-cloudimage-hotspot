@@ -137,7 +137,7 @@
 }
 
 .ci-hotspot-marker:focus-visible {
-  outline: 3px solid #4A90D9;
+  outline: 3px solid var(--ci-hotspot-focus-ring, #4A90D9);
   outline-offset: 2px;
 }
 

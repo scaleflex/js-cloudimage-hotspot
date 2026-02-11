@@ -60,7 +60,7 @@ export function createZoomControls(
     const zoom = zoomPan.getZoom();
     btnIn.disabled = zoom >= options.zoomMax;
     btnOut.disabled = zoom <= options.zoomMin;
-    btnReset.disabled = zoom === 1;
+    btnReset.disabled = Math.abs(zoom - 1) < 0.001;
   }
 
   container.appendChild(controls);

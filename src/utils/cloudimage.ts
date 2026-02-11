@@ -34,7 +34,8 @@ export function buildCloudimageUrl(
 
   const width = getOptimalWidth(containerWidth, dpr, zoomLevel, limitFactor);
 
-  let url = `https://${config.token}.${domain}/${apiVersion}/${src}?width=${width}`;
+  const encodedSrc = encodeURI(src);
+  let url = `https://${config.token}.${domain}/${apiVersion}/${encodedSrc}?width=${width}`;
   if (config.params) {
     url += `&${config.params}`;
   }
