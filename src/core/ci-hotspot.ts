@@ -764,12 +764,12 @@ export class CIHotspot implements CIHotspotInstance {
     if (this.destroyed) return;
     const popover = this.popovers.get(id);
     const marker = this.markers.get(id);
-    if (popover && marker) {
-      this.closeAll();
-      popover.show();
-      setMarkerActive(marker, true);
-      this.focusTraps.get(id)?.activate();
-    }
+    if (!popover || !marker) return;
+    if (popover.isVisible()) return;
+    this.closeAll();
+    popover.show();
+    setMarkerActive(marker, true);
+    this.focusTraps.get(id)?.activate();
   }
 
   close(id: string): void {

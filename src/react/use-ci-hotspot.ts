@@ -27,6 +27,7 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
       placement: optionsRef.current.placement,
       zoomControls: optionsRef.current.zoomControls,
       lazyLoad: optionsRef.current.lazyLoad,
+      scrollHint: optionsRef.current.scrollHint,
       cloudimage: optionsRef.current.cloudimage,
       onOpen: optionsRef.current.onOpen,
       onClose: optionsRef.current.onClose,
@@ -58,9 +59,10 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
     };
   }, []);
 
-  // Stabilize array references for dependency comparison
+  // Stabilize object/array references for dependency comparison
   const scenesKey = JSON.stringify(options.scenes);
   const hotspotsKey = JSON.stringify(options.hotspots);
+  const cloudimageKey = JSON.stringify(options.cloudimage);
 
   // Update on options change (skip initial mount — instance was just created)
   useEffect(() => {
@@ -83,6 +85,7 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
       placement: options.placement,
       zoomControls: options.zoomControls,
       lazyLoad: options.lazyLoad,
+      scrollHint: options.scrollHint,
       cloudimage: options.cloudimage,
       onOpen: options.onOpen,
       onClose: options.onClose,
@@ -107,6 +110,8 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
     options.placement,
     options.zoomControls,
     options.lazyLoad,
+    options.scrollHint,
+    cloudimageKey,
     scenesKey,
     options.initialScene,
     options.sceneTransition,

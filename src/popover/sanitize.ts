@@ -8,7 +8,7 @@ const ALLOWED_ATTRS = new Set([
 ]);
 
 const SAFE_HREF_PATTERN = /^(?:https?:|mailto:)/i;
-const SAFE_SRC_PATTERN = /^(?:https?:|data:image\/(?!svg\+xml))/i;
+const SAFE_SRC_PATTERN = /^(?:https?:|data:image\/(?!svg[+%]))/i;
 
 /**
  * Sanitize HTML string to prevent XSS.

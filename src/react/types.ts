@@ -14,6 +14,7 @@ export interface CIHotspotViewerProps {
   placement?: CIHotspotConfig['placement'];
   zoomControls?: boolean;
   lazyLoad?: boolean;
+  scrollHint?: boolean;
   cloudimage?: CIHotspotConfig['cloudimage'];
   renderPopover?: (hotspot: HotspotItem) => ReactNode;
   onOpen?: (hotspot: HotspotItem) => void;
