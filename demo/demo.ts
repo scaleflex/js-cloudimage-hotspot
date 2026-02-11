@@ -1,70 +1,94 @@
 import CIHotspot from '../src/index';
 import { initConfigurator } from './configurator';
 
-const DEMO_IMAGE = 'https://scaleflex.cloudimg.io/v7/demo/stephen-walker-unsplash.jpg';
-const DEMO_IMAGE_2 = 'https://scaleflex.cloudimg.io/v7/demo/redcharlie.jpg';
+const DEMO_IMAGE = 'https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/yehleen-gaffney-unsplash.jpg?vh=cfb8d7';
+const DEMO_IMAGE_2 = 'https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/alexandra-gorn-unsplash.jpg';
 
 // Hero viewer
 new CIHotspot('#hero-viewer', {
   src: DEMO_IMAGE,
-  alt: 'Modern living room',
+  alt: 'Sun-drenched bohemian living nook with sage sofa and indoor plants',
   trigger: 'hover',
   zoom: true,
   hotspots: [
     {
+      id: 'wall-art',
+      x: '18%',
+      y: '26%',
+      label: 'Canvas Print',
+      data: {
+        title: 'Typographic Canvas',
+        description: 'Hand-lettered print on natural birch plywood, 60 × 80 cm.',
+      },
+    },
+    {
       id: 'sofa',
-      x: '35%',
-      y: '65%',
-      label: 'Modern Sofa',
-      data: { title: 'Modern Sofa', price: '$1,299', description: 'Comfortable 3-seat sofa in natural linen.' },
+      x: '28%',
+      y: '54%',
+      label: 'Loveseat Sofa',
+      data: {
+        title: 'Loveseat Sofa',
+        description: 'Sage green linen blend with bolster armrests and a burnt-orange velvet accent cushion.',
+      },
     },
     {
-      id: 'lamp',
-      x: '78%',
-      y: '20%',
-      label: 'Arc Floor Lamp',
-      data: { title: 'Arc Floor Lamp', price: '$349', description: 'Brushed brass finish.' },
+      id: 'side-table',
+      x: '48%',
+      y: '64%',
+      label: 'Tripod Side Table',
+      data: {
+        title: 'Tripod Side Table',
+        description: 'Round white top with solid beechwood legs, styled with a rattan serving tray.',
+      },
     },
     {
-      id: 'table',
-      x: '55%',
-      y: '75%',
-      label: 'Coffee Table',
-      data: { title: 'Marble Coffee Table', price: '$599' },
-    },
-    {
-      id: 'art',
-      x: '22%',
-      y: '30%',
-      label: 'Wall Art',
-      data: { title: 'Abstract Canvas', price: '$189' },
+      id: 'fiddle-leaf',
+      x: '62%',
+      y: '52%',
+      label: 'Fiddle-Leaf Fig',
+      data: {
+        title: 'Fiddle-Leaf Fig',
+        description: 'Mature indoor tree in a woven seagrass basket, approximately 140 cm tall.',
+      },
     },
   ],
 });
 
 // Trigger mode demos
 const triggerHotspots = [
-  { id: 't1', x: '40%', y: '50%', label: 'Item', data: { title: 'Product', price: '$99' } },
-  { id: 't2', x: '70%', y: '35%', label: 'Detail', data: { title: 'Detail', price: '$49' } },
+  {
+    id: 't1',
+    x: '50%',
+    y: '82%',
+    label: 'Emerald Dresser',
+    data: { title: 'Emerald Dresser', description: 'Hand-painted vintage four-drawer chest in deep emerald green with original round knobs.' },
+  },
+  {
+    id: 't2',
+    x: '40%',
+    y: '24%',
+    label: 'Botanical Gallery',
+    data: { title: 'Botanical Gallery', description: 'Pair of framed watercolor leaf prints on a white-painted exposed-brick wall.' },
+  },
 ];
 
 new CIHotspot('#trigger-hover', {
   src: DEMO_IMAGE_2,
-  alt: 'Hover trigger demo',
+  alt: 'Emerald dresser against white brick wall with botanical prints',
   trigger: 'hover',
   hotspots: triggerHotspots,
 });
 
 new CIHotspot('#trigger-click', {
   src: DEMO_IMAGE_2,
-  alt: 'Click trigger demo',
+  alt: 'Emerald dresser against white brick wall with botanical prints',
   trigger: 'click',
   hotspots: triggerHotspots,
 });
 
 new CIHotspot('#trigger-load', {
   src: DEMO_IMAGE_2,
-  alt: 'Load trigger demo',
+  alt: 'Emerald dresser against white brick wall with botanical prints',
   trigger: 'load',
   hotspots: triggerHotspots,
 });
@@ -72,21 +96,33 @@ new CIHotspot('#trigger-load', {
 // Theme demos
 new CIHotspot('#theme-light', {
   src: DEMO_IMAGE_2,
-  alt: 'Light theme demo',
+  alt: 'Emerald dresser vignette — light theme',
   theme: 'light',
   trigger: 'hover',
   hotspots: [
-    { id: 'tl1', x: '50%', y: '50%', label: 'Light Theme Spot', data: { title: 'Light Theme', description: 'Default styling' } },
+    {
+      id: 'tl1',
+      x: '55%',
+      y: '46%',
+      label: 'Pampas Vase',
+      data: { title: 'Pampas Vase', description: 'Terracotta pitcher filled with dried pampas grass plumes in warm golden tones.' },
+    },
   ],
 });
 
 new CIHotspot('#theme-dark', {
   src: DEMO_IMAGE_2,
-  alt: 'Dark theme demo',
+  alt: 'Emerald dresser vignette — dark theme',
   theme: 'dark',
   trigger: 'hover',
   hotspots: [
-    { id: 'td1', x: '50%', y: '50%', label: 'Dark Theme Spot', data: { title: 'Dark Theme', description: 'Dark styling' } },
+    {
+      id: 'td1',
+      x: '55%',
+      y: '46%',
+      label: 'Pampas Vase',
+      data: { title: 'Pampas Vase', description: 'Terracotta pitcher filled with dried pampas grass plumes in warm golden tones.' },
+    },
   ],
 });
 

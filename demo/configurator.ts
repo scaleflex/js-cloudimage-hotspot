@@ -1,13 +1,25 @@
 import CIHotspot from '../src/index';
 import type { CIHotspotConfig } from '../src/core/types';
 
-const DEMO_IMAGE = 'https://scaleflex.cloudimg.io/v7/demo/stephen-walker-unsplash.jpg';
+const DEMO_IMAGE = 'https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/spacejoy-2-unsplash.jpg';
 
 let instance: ReturnType<typeof CIHotspot.prototype.destroy extends () => void ? InstanceType<typeof CIHotspot> : never> | null = null;
 
 const defaultHotspots = [
-  { id: 'cfg-1', x: '35%', y: '55%', label: 'Item 1', data: { title: 'Product A', price: '$199', description: 'A great product.' } },
-  { id: 'cfg-2', x: '70%', y: '35%', label: 'Item 2', data: { title: 'Product B', price: '$299' } },
+  {
+    id: 'cfg-1',
+    x: '52%',
+    y: '55%',
+    label: 'Channel-Tufted Bed',
+    data: { title: 'Channel-Tufted Bed', description: 'Upholstered king frame in cream linen with vertical channel stitching and plush layered bedding.' },
+  },
+  {
+    id: 'cfg-2',
+    x: '42%',
+    y: '16%',
+    label: 'Brass Chandelier',
+    data: { title: 'Brass Chandelier', description: 'Six-arm sputnik fixture in brushed brass with exposed-bulb warm LEDs.' },
+  },
 ];
 
 export function initConfigurator(): void {
@@ -25,7 +37,7 @@ export function initConfigurator(): void {
   function getConfig(): CIHotspotConfig {
     return {
       src: DEMO_IMAGE,
-      alt: 'Configurator demo',
+      alt: 'Luxury high-rise bedroom with channel-tufted bed and city skyline view',
       zoom: cfgZoom.checked,
       pulse: cfgPulse.checked,
       trigger: cfgTrigger.value as CIHotspotConfig['trigger'],

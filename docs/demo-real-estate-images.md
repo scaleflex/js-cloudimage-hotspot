@@ -64,3 +64,10 @@ For each image, place hotspots on actual visible features with real-estate-style
 - [ ] Share URLs so hotspots can be positioned on actual image content
 - [ ] Update demo code with new images and hotspot data
 - [ ] Verify demo looks good across all sections
+
+### Images to use
+
+1. (1335x2000) https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/alexandra-gorn-unsplash.jpg?vh=51e975
+2. (2000x1508) https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/yehleen-gaffney-unsplash.jpg?vh=cfb8d7
+3. (2000x2000) https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/spacejoy-2-unsplash.jpg?vh=ca59a5
+4. (2000x2000) https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/spacejoy-unsplash.jpg?vh=a339b1
