@@ -506,9 +506,11 @@ export class CIHotspot implements CIHotspotInstance {
       if (triggerMode === 'load' && !popover.isVisible()) {
         popover.show();
         const marker = this.markers.get(id);
-        if (marker) setMarkerActive(marker, true);
-        this.ensureFocusTrap(id, popover.element, marker!);
-        this.focusTraps.get(id)?.activate();
+        if (marker) {
+          setMarkerActive(marker, true);
+          this.ensureFocusTrap(id, popover.element, marker);
+          this.focusTraps.get(id)?.activate();
+        }
         break;
       }
     }
