@@ -263,7 +263,9 @@ export class CIHotspot implements CIHotspotInstance {
 
   private bindNavigateTrigger(hotspot: HotspotItem, marker: HTMLButtonElement, popover?: Popover): void {
     addClass(marker, 'ci-hotspot-marker--navigate');
-    marker.setAttribute('aria-label', hotspot.label);
+    const sceneLabel = hotspot.label || hotspot.navigateTo!;
+    marker.setAttribute('aria-label', `Navigate to ${sceneLabel}`);
+    marker.setAttribute('aria-roledescription', 'navigation hotspot');
 
     // Hover: show/hide popover (only if popover exists)
     if (popover) {

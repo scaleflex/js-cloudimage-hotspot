@@ -77,6 +77,7 @@ export class PropertyPanel {
 
   private renderForm(hotspot: HotspotItem): void {
     this.panelEl.innerHTML = '';
+    this.fieldCounter = 0;
 
     const title = createElement('div', 'ci-editor-panel-title');
     title.textContent = `Edit: ${hotspot.label || hotspot.id}`;
@@ -190,15 +191,22 @@ export class PropertyPanel {
 
   // === Field Builders ===
 
+  private fieldCounter = 0;
+
+  private nextFieldId(label: string): string {
+    return `ci-editor-field-${label.toLowerCase().replace(/\s+/g, '-')}-${++this.fieldCounter}`;
+  }
+
   private createTextField(
     label: string,
     value: string,
     onChange: (val: string) => void,
   ): HTMLElement {
+    const id = this.nextFieldId(label);
     const field = createElement('div', 'ci-editor-field');
-    const labelEl = createElement('label');
+    const labelEl = createElement('label', '', { for: id });
     labelEl.textContent = label;
-    const input = createElement('input');
+    const input = createElement('input', '', { id });
     input.type = 'text';
     input.value = value;
     input.addEventListener('change', () => onChange(input.value));
@@ -212,10 +220,11 @@ export class PropertyPanel {
     value: string,
     onChange: (val: string) => void,
   ): HTMLElement {
+    const id = this.nextFieldId(label);
     const field = createElement('div', 'ci-editor-field');
-    const labelEl = createElement('label');
+    const labelEl = createElement('label', '', { for: id });
     labelEl.textContent = label;
-    const textarea = createElement('textarea');
+    const textarea = createElement('textarea', '', { id });
     textarea.value = value;
     textarea.addEventListener('change', () => onChange(textarea.value));
     field.appendChild(labelEl);
@@ -229,10 +238,11 @@ export class PropertyPanel {
     options: string[],
     onChange: (val: string) => void,
   ): HTMLElement {
+    const id = this.nextFieldId(label);
     const field = createElement('div', 'ci-editor-field');
-    const labelEl = createElement('label');
+    const labelEl = createElement('label', '', { for: id });
     labelEl.textContent = label;
-    const select = createElement('select');
+    const select = createElement('select', '', { id });
     for (const opt of options) {
       const option = createElement('option');
       option.value = opt;
