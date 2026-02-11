@@ -8,11 +8,11 @@ Built `js-cloudimage-hotspot` from scratch — a zero-dependency TypeScript libr
 
 | Metric | Value |
 |--------|-------|
-| Tests | 187 across 15 test files, all passing |
+| Tests | 187+ across 17 test files, all passing |
 | ESM bundle | 10.41 KB gzipped |
 | CJS bundle | 9.38 KB gzipped |
 | UMD bundle | 9.48 KB gzipped |
-| Total files | ~50: 28 source, 13 test, 7 demo, 6 config/meta |
+| Total files | ~65: 37 source, 17 test, 9 demo, 7 config/meta |
 | Runtime dependencies | Zero |
 
 ## Issues Encountered & Resolved
@@ -362,6 +362,134 @@ After the initial 10-phase implementation, several refinements and fixes were ap
 
 #### Results
 - Dark theme popover titles render with correct color
+
+---
+
+### Update 5: Visual Editor Mode (v1.2)
+
+**Commit:** `acee4f1`
+
+**Goal:** Add a visual hotspot editor as a separate opt-in module. Enables click-to-place, drag-to-reposition, inline property editing, undo/redo, and JSON export/import.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/editor/ci-hotspot-editor.ts` | Created | Core `CIHotspotEditor` class: manages editor lifecycle, hotspot CRUD, viewer integration, keyboard shortcuts (A/V/Del/Esc/Ctrl+Z/Ctrl+Shift+Z), toast notifications, snapshot-based undo/redo |
+| `src/editor/editor-toolbar.ts` | Created | Toolbar UI: Add/Select mode toggle buttons, Undo/Redo buttons with disabled-state tracking |
+| `src/editor/property-panel.ts` | Created | Sidebar panel: hotspot list view, inline form for editing selected hotspot properties (ID, label, coordinates, trigger, placement, data fields, className, hidden/keepOpen) |
+| `src/editor/selection-manager.ts` | Created | Tracks selected hotspot, emits selection change events, applies visual marker highlighting |
+| `src/editor/drag-manager.ts` | Created | Handles mouse drag to reposition hotspot markers on the viewer canvas, emits update events with new coordinates |
+| `src/editor/undo-manager.ts` | Created | Manages undo/redo stack via hotspot + selection snapshots, configurable max history (default 50), emits `history:change` events |
+| `src/editor/types.ts` | Created | `EditorConfig`, `EditorSnapshot`, `EditorMode`, `EditorEvent` type definitions |
+| `src/editor/editor.css` | Created | Complete editor layout: sidebar + canvas body, toolbar buttons, property panel forms, status bar, toast notifications |
+| `src/editor/index.ts` | Created | Entry point: exports `CIHotspotEditor` class and editor types |
+| `config/vite.editor.config.ts` | Created | Library build: entry `src/editor/index.ts` → ESM + CJS + UMD to `dist/editor/`, library name `CIHotspotEditor` |
+| `demo/editor.html` | Created | Dedicated editor demo page with header, keyboard shortcuts guide, and live JSON output display |
+| `demo/editor-demo.ts` | Created | Initializes editor with sample real estate hotspots, wires `onChange` to JSON output panel |
+| `demo/index.html` | Modified | Added Visual Editor link to navigation bar |
+| `package.json` | Modified | Added `./editor` export map entry, added `build:editor` script, updated `build` to include editor |
+| `tests/editor.test.ts` | Created | Editor functionality tests: add, remove, update, select, deselect, undo/redo, mode switching, export/import |
+
+#### Results
+- Visual editor fully functional: click image to place markers, drag to reposition, edit properties in sidebar
+- Keyboard shortcuts: `A` (add mode), `V` (select mode), `Delete` (remove), `Escape` (deselect/exit add mode), `Ctrl+Z` / `Ctrl+Shift+Z` (undo/redo)
+- Editor ships as separate entry point (`js-cloudimage-hotspot/editor`) — core bundle unaffected
+- All editor tests passing
+
+---
+
+### Update 6: Kebab-Case File Rename
+
+**Commit:** `64fdcd6`
+
+**Goal:** Rename all PascalCase/camelCase source files to kebab-case for consistent naming convention across the project.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/core/CIHotspot.ts` | Renamed | → `ci-hotspot.ts` |
+| `src/markers/Marker.ts` | Renamed | → `marker.ts` |
+| `src/popover/Popover.ts` | Renamed | → `popover.ts` |
+| `src/zoom/ZoomPan.ts` | Renamed | → `zoom-pan.ts` |
+| `src/zoom/ScrollHint.ts` | Renamed | → `scroll-hint.ts` |
+| `src/react/CIHotspotViewer.tsx` | Renamed | → `ci-hotspot-viewer.tsx` |
+| `src/react/useCIHotspot.ts` | Renamed | → `use-ci-hotspot.ts` |
+| `src/editor/CIHotspotEditor.ts` | Renamed | → `ci-hotspot-editor.ts` |
+| `src/editor/EditorToolbar.ts` | Renamed | → `editor-toolbar.ts` |
+| `src/editor/PropertyPanel.ts` | Renamed | → `property-panel.ts` |
+| `src/editor/SelectionManager.ts` | Renamed | → `selection-manager.ts` |
+| `src/editor/DragManager.ts` | Renamed | → `drag-manager.ts` |
+| `src/editor/UndoManager.ts` | Renamed | → `undo-manager.ts` |
+| `demo/react-demo/App.tsx` | Renamed | → `app.tsx` |
+| All importing files | Modified | Updated all import paths across source, tests, and demo files |
+
+#### Results
+- 24 files renamed, all imports updated
+- No PascalCase source files remain
+- Build, typecheck, and tests all pass
+
+---
+
+### Update 7: Real Estate Demo Images
+
+**Commit:** `9288716`
+
+**Goal:** Replace placeholder demo images with high-quality real estate photography served via Scaleflex CDN, with descriptive hotspot labels.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `demo/demo.ts` | Modified | Updated all demo instances to use `spacejoy-unsplash.jpg` from Scaleflex CDN with descriptive hotspots (furniture names, positions) |
+| `demo/editor-demo.ts` | Modified | Updated editor demo to use real estate image with leather armchair, arc floor lamp, walnut coffee table hotspots |
+| `demo/react-demo/app.tsx` | Modified | Updated React demo to use real estate photography |
+
+#### Results
+- All demos use `https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/spacejoy-unsplash.jpg`
+- Hotspot labels are descriptive and match the image content
+
+---
+
+### Update 8: Cloudimage CDN Support in Visual Editor
+
+**Commit:** `65be147`
+
+**Goal:** Pass Cloudimage CDN configuration through to the editor's internal viewer, and rename user-facing text to "Cloudimage Hotspot".
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/editor/types.ts` | Modified | Added `cloudimage?: CloudimageConfig` to `EditorConfig` interface |
+| `src/editor/ci-hotspot-editor.ts` | Modified | Passes `config.cloudimage` to the internal `CIHotspot` viewer on rebuild |
+| `demo/editor.html` | Modified | Updated title/branding to "Cloudimage Hotspot Visual Editor" |
+
+#### Results
+- Editor can use Cloudimage CDN for responsive image delivery
+- Branding consistent across demo pages
+
+---
+
+### Update 9: Image URL Input in Visual Editor
+
+**Commit:** `eca3671`
+
+**Goal:** Allow switching images at runtime in the visual editor via a URL input field in the toolbar.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/editor/ci-hotspot-editor.ts` | Modified | Added `getSrc()` and `setSrc(url)` methods for programmatic image switching |
+| `src/editor/editor-toolbar.ts` | Modified | Added URL input bar with text field and "Load" button below toolbar buttons |
+| `src/editor/editor.css` | Modified | Added `.ci-editor-url-bar` styles for the URL input area |
+
+#### Results
+- Users can type a new image URL and click "Load" to switch images
+- Existing hotspots are preserved when changing images
+- Works with both direct URLs and Cloudimage CDN URLs
 
 ---
 

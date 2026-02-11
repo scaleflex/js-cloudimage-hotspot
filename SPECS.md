@@ -995,6 +995,10 @@ All animations and transitions respect the `prefers-reduced-motion: reduce` medi
 | **React ESM** | `dist/react/index.js` | React wrapper (ESM) |
 | **React CJS** | `dist/react/index.cjs` | React wrapper (CJS) |
 | **React Types** | `dist/react/index.d.ts` | React wrapper type definitions |
+| **Editor ESM** | `dist/editor/js-cloudimage-hotspot-editor.esm.js` | Visual editor (ESM) |
+| **Editor CJS** | `dist/editor/js-cloudimage-hotspot-editor.cjs.js` | Visual editor (CJS) |
+| **Editor UMD** | `dist/editor/js-cloudimage-hotspot-editor.min.js` | Visual editor for CDN `<script>` tag, exposes `window.CIHotspotEditor` |
+| **Editor Types** | `dist/editor/index.d.ts` | Visual editor type definitions |
 
 ### 10.3 `package.json` Configuration
 
@@ -1018,6 +1022,11 @@ All animations and transitions respect the `prefers-reduced-motion: reduce` medi
       "types": "./dist/react/index.d.ts",
       "import": "./dist/react/index.js",
       "require": "./dist/react/index.cjs"
+    },
+    "./editor": {
+      "types": "./dist/editor/index.d.ts",
+      "import": "./dist/editor/js-cloudimage-hotspot-editor.esm.js",
+      "require": "./dist/editor/js-cloudimage-hotspot-editor.cjs.js"
     }
   },
   "files": [
@@ -1041,9 +1050,10 @@ All animations and transitions respect the `prefers-reduced-motion: reduce` medi
 |---|---|
 | `dev` | Start Vite dev server with demo page |
 | `dev:react` | Start Vite dev server with React demo |
-| `build` | Build all formats (main bundle + React wrapper) |
+| `build` | Build all formats (main bundle + React wrapper + editor) |
 | `build:bundle` | Build main bundle only (ESM + CJS + UMD) |
 | `build:react` | Build React wrapper only |
+| `build:editor` | Build visual editor only (ESM + CJS + UMD) |
 | `build:demo` | Build GitHub Pages demo site |
 | `deploy:demo` | Deploy demo to `gh-pages` branch |
 | `test` | Run tests with Vitest |
@@ -1086,43 +1096,58 @@ js-cloudimage-hotspot/
 ├── src/
 │   ├── index.ts                    # Main entry — CIHotspot class + autoInit
 │   ├── core/
-│   │   ├── CIHotspot.ts            # Core class implementation
+│   │   ├── ci-hotspot.ts           # Core class implementation
 │   │   ├── config.ts               # Config parsing, defaults, data-attr mapping
 │   │   └── types.ts                # TypeScript interfaces and types
 │   ├── markers/
-│   │   ├── Marker.ts               # Marker element creation and positioning
+│   │   ├── marker.ts               # Marker element creation and positioning
 │   │   └── pulse.ts                # Pulse animation logic
 │   ├── popover/
-│   │   ├── Popover.ts              # Popover creation and lifecycle
+│   │   ├── popover.ts              # Popover creation and lifecycle
 │   │   ├── position.ts             # Built-in flip/shift positioning engine
 │   │   ├── template.ts             # Built-in popover templates
 │   │   └── sanitize.ts             # HTML sanitization
 │   ├── zoom/
-│   │   ├── ZoomPan.ts              # Zoom and pan controller
+│   │   ├── zoom-pan.ts             # Zoom and pan controller
 │   │   ├── controls.ts             # Zoom controls UI
-│   │   └── gestures.ts             # Touch gesture handling (pinch, drag)
+│   │   ├── gestures.ts             # Touch gesture handling (pinch, drag)
+│   │   └── scroll-hint.ts          # Scroll-to-zoom hint toast UI
 │   ├── a11y/
 │   │   ├── keyboard.ts             # Keyboard navigation handler
 │   │   ├── focus.ts                # Focus management and focus trap
 │   │   └── aria.ts                 # ARIA attribute management
 │   ├── utils/
 │   │   ├── dom.ts                  # DOM utilities
-│   │   ├── cloudimage.ts          # Cloudimage URL builder and responsive sizing
+│   │   ├── cloudimage.ts           # Cloudimage URL builder and responsive sizing
 │   │   ├── coordinates.ts          # Coordinate parsing and normalization
 │   │   └── events.ts               # Event emitter / listener helpers
 │   ├── styles/
 │   │   └── index.css               # All styles (injected at runtime or importable)
+│   ├── editor/
+│   │   ├── index.ts                # Editor entry point
+│   │   ├── ci-hotspot-editor.ts    # Core editor class — lifecycle, CRUD, keyboard shortcuts
+│   │   ├── editor-toolbar.ts       # Toolbar UI — mode buttons, undo/redo, image URL input
+│   │   ├── property-panel.ts       # Sidebar — hotspot list, inline property editing form
+│   │   ├── selection-manager.ts    # Selected hotspot tracking and marker highlighting
+│   │   ├── drag-manager.ts         # Mouse drag to reposition hotspot markers
+│   │   ├── undo-manager.ts         # Snapshot-based undo/redo with configurable history
+│   │   ├── types.ts                # EditorConfig, EditorSnapshot, EditorMode, EditorEvent
+│   │   └── editor.css              # Editor layout and component styles
 │   └── react/
 │       ├── index.ts                # React entry point
-│       ├── CIHotspotViewer.tsx      # React component
-│       ├── useCIHotspot.ts          # React hook
+│       ├── ci-hotspot-viewer.tsx    # React component
+│       ├── use-ci-hotspot.ts        # React hook
 │       └── types.ts                # React-specific types
 ├── demo/
 │   ├── index.html                  # Vanilla JS demo page
-│   ├── assets/                     # Demo images and assets
+│   ├── demo.css                    # Demo-specific layout styles
+│   ├── demo.ts                     # Demo initialization
+│   ├── configurator.ts             # Interactive playground with code generation
+│   ├── editor.html                 # Visual editor demo page
+│   ├── editor-demo.ts              # Editor demo initialization
 │   └── react-demo/
 │       ├── index.html              # React demo entry
-│       ├── App.tsx                  # React demo application
+│       ├── app.tsx                  # React demo application
 │       └── main.tsx                # React demo mount
 ├── tests/
 │   ├── core.test.ts                # Core functionality tests
@@ -1132,17 +1157,28 @@ js-cloudimage-hotspot/
 │   ├── sanitize.test.ts            # XSS sanitization tests
 │   ├── coordinates.test.ts         # Coordinate system tests
 │   ├── data-attr.test.ts           # HTML data-attribute init tests
-│   └── react.test.tsx              # React wrapper tests
+│   ├── react.test.tsx              # React wrapper tests
+│   ├── editor.test.ts              # Visual editor tests
+│   ├── integration.test.ts         # End-to-end integration tests
+│   ├── edge-cases.test.ts          # Edge case tests (SSR, boundaries, rapid ops)
+│   ├── cloudimage.test.ts          # Cloudimage URL builder tests
+│   ├── dom.test.ts                 # DOM utility tests
+│   ├── events.test.ts              # Event emitter tests
+│   ├── markers.test.ts             # Marker creation and positioning tests
+│   ├── types.test.ts               # Type-level validation tests
+│   └── setup.ts                    # Test setup (jsdom, global mocks)
 ├── config/
 │   ├── vite.config.ts              # Main bundle build config
 │   ├── vite.react.config.ts        # React wrapper build config
+│   ├── vite.editor.config.ts       # Visual editor build config
 │   └── vite.demo.config.ts         # Demo build config
 ├── package.json
 ├── tsconfig.json
-├── .eslintrc.js
+├── .eslintrc.cjs
 ├── .gitignore
 ├── LICENSE
 ├── README.md
+├── IMPLEMENTATION.md               # Implementation record
 └── SPECS.md                        # This file
 ```
 
@@ -1161,6 +1197,7 @@ The demo site is hosted at `https://scaleflex.github.io/js-cloudimage-hotspot/` 
 | **Trigger Modes** | 3-column responsive grid comparing hover, click, and load triggers with live examples |
 | **Themes** | Light and dark theme demonstrations side-by-side |
 | **Interactive Configurator** | Full-width configurator with preview panel above and options panel below (trigger, zoom, theme, pulse, placement toggles). Real-time generated code with copy button |
+| **Visual Editor** | Link to dedicated editor page (`editor.html`) with click-to-place, drag-to-reposition, inline property editing, undo/redo, and live JSON export |
 | **Footer** | Modern footer with links to documentation, GitHub, and npm |
 
 The demo uses a **sticky navigation bar** with backdrop-filter blur effect and scroll-aware active link highlighting. The layout is fully responsive, collapsing to single-column on screens below 768px.
@@ -1336,18 +1373,134 @@ Hotspot visibility can be controlled per breakpoint:
 
 The library listens to `ResizeObserver` on the container (not `window.resize`) for container-query-like behavior.
 
-### 13.6 Editor Mode (v1.2+)
+### 13.6 Editor Mode (v1.2) — Implemented
 
-A visual hotspot editor that enables:
+A visual hotspot editor shipped as a separate opt-in entry point (`js-cloudimage-hotspot/editor`) to avoid increasing the core bundle size.
 
-- Click on the image to place a new hotspot marker
-- Drag existing markers to reposition them
-- Edit hotspot properties via an inline form
-- Delete hotspots
-- Export the current configuration as JSON
-- Import/load a configuration from JSON
+**Import:**
 
-The editor is a separate opt-in module to avoid increasing the core bundle size.
+```ts
+import { CIHotspotEditor } from 'js-cloudimage-hotspot/editor';
+```
+
+**`EditorConfig` interface:**
+
+```ts
+interface EditorConfig {
+  /** Image source URL */
+  src: string;
+  /** Alt text for the image */
+  alt?: string;
+  /** Initial hotspots to load into the editor */
+  hotspots?: HotspotItem[];
+  /** Default trigger mode for new hotspots (default: 'click') */
+  defaultTrigger?: TriggerMode;
+  /** Default placement for new hotspots (default: 'top') */
+  defaultPlacement?: Placement;
+  /** Called whenever hotspots change */
+  onChange?: (hotspots: HotspotItem[]) => void;
+  /** Cloudimage CDN configuration (passed through to the internal viewer) */
+  cloudimage?: CloudimageConfig;
+  /** Maximum undo history size (default: 50) */
+  maxHistory?: number;
+}
+```
+
+**Instance methods:**
+
+```ts
+interface CIHotspotEditor {
+  /** Add a hotspot (auto-generates ID if not provided) */
+  addHotspot(partial?: Partial<HotspotItem>): HotspotItem;
+  /** Remove a hotspot by ID */
+  removeHotspot(id: string): void;
+  /** Update a hotspot's properties */
+  updateHotspot(id: string, updates: Partial<HotspotItem>): void;
+
+  /** Get a deep clone of all hotspots */
+  getHotspots(): HotspotItem[];
+  /** Get a single hotspot by ID */
+  getHotspot(id: string): HotspotItem | undefined;
+  /** Replace all hotspots */
+  setHotspots(hotspots: HotspotItem[]): void;
+
+  /** Get/set the current editor mode ('select' | 'add') */
+  getMode(): EditorMode;
+  setMode(mode: EditorMode): void;
+
+  /** Get/set the image source URL (hotspots are preserved on change) */
+  getSrc(): string;
+  setSrc(url: string): void;
+
+  /** Export hotspots as a JSON string */
+  exportJSON(): string;
+  /** Import hotspots from a JSON string */
+  importJSON(json: string): void;
+
+  /** Event emitter for editor events */
+  readonly events: EventEmitter;
+
+  /** Destroy the editor and clean up */
+  destroy(): void;
+}
+```
+
+**Editor features:**
+
+| Feature | Description |
+|---|---|
+| **Click-to-place** | In "Add" mode, click anywhere on the image to place a new hotspot marker |
+| **Drag-to-reposition** | In "Select" mode, drag existing markers to new positions |
+| **Property panel** | Sidebar with hotspot list and inline form for editing all properties (label, coordinates, trigger, placement, data fields, className, hidden, keepOpen) |
+| **Undo/Redo** | Snapshot-based history with configurable max depth (default 50). Keyboard: `Ctrl+Z` / `Ctrl+Shift+Z` (or `Ctrl+Y`) |
+| **Image URL input** | Toolbar input field to switch images at runtime. Existing hotspots are preserved |
+| **JSON export/import** | `exportJSON()` returns formatted JSON; `importJSON(json)` loads hotspots from JSON string |
+| **Cloudimage support** | Pass `cloudimage` config to use Scaleflex CDN for the editor's image |
+| **Keyboard shortcuts** | `A` (toggle add mode), `V` (select mode), `Delete`/`Backspace` (remove selected), `Escape` (deselect or exit add mode) |
+| **Status bar** | Shows hotspot count, current mode, and selected hotspot ID |
+
+**Editor events:**
+
+| Event | Trigger |
+|---|---|
+| `hotspot:add` | A hotspot was added |
+| `hotspot:remove` | A hotspot was removed |
+| `hotspot:update` | A hotspot's properties were updated |
+| `hotspot:select` | A hotspot was selected |
+| `hotspot:deselect` | Selection was cleared |
+| `mode:change` | Editor mode changed (select ↔ add) |
+| `history:change` | Undo/redo stack changed |
+| `change` | Any hotspot data change (fired alongside specific events) |
+
+**Usage example:**
+
+```js
+import { CIHotspotEditor } from 'js-cloudimage-hotspot/editor';
+
+const editor = new CIHotspotEditor('#editor-root', {
+  src: 'https://example.com/room.jpg',
+  alt: 'Living room',
+  hotspots: [
+    { id: 'sofa', x: '40%', y: '60%', label: 'Sofa' },
+  ],
+  onChange(hotspots) {
+    console.log('Updated:', hotspots);
+  },
+});
+
+// Programmatic usage
+editor.addHotspot({ x: '75%', y: '25%', label: 'Lamp' });
+console.log(editor.exportJSON());
+editor.destroy();
+```
+
+**Build output:**
+
+| Format | File |
+|---|---|
+| ESM | `dist/editor/js-cloudimage-hotspot-editor.esm.js` |
+| CJS | `dist/editor/js-cloudimage-hotspot-editor.cjs.js` |
+| UMD | `dist/editor/js-cloudimage-hotspot-editor.min.js` (exposes `window.CIHotspotEditor`) |
 
 ### 13.7 Multi-Image Navigation (v1.3)
 
@@ -1455,7 +1608,7 @@ The vanilla core gracefully handles server-side rendering environments:
 | **Coordinate System** | % + px | % (top/left) | px | % | px | W3C fragments | px + % | % | HTML map coords |
 | **HTML Init** | Yes (data-attrs) | No | jQuery init | No | No (JSX) | HTML annotations | HTML config | No (JSX) | HTML attributes |
 | **Multi-Image** | v1.3 (scenes) | No | No | No | No | No | Yes | No | No |
-| **Editor Mode** | v1.2+ | No | Yes (admin mode) | No | No | Yes (annotation) | Yes (commercial) | No | No |
+| **Editor Mode** | Yes (v1.2) | No | Yes (admin mode) | No | No | Yes (annotation) | Yes (commercial) | No | No |
 | **Clustering** | Yes (optional) | No | No | No | No | No | No | No | No |
 | **Zero Dependencies** | Yes | No (depends on libs) | jQuery required | No | React required | No | Many | React + Shadcn | jQuery recommended |
 
@@ -1514,12 +1667,12 @@ The vanilla core gracefully handles server-side rendering environments:
 - Expanded test coverage
 - Documentation improvements
 
-### v1.2 — Editor Mode & Framework Wrappers
+### v1.2 — Editor Mode & Framework Wrappers *(Editor: DONE)*
 
-- **Visual editor mode** — click-to-place, drag-to-reposition, inline edit, export/import JSON
-- **Vue wrapper** — `<CIHotspotViewer>` component for Vue 3
-- **Svelte wrapper** — `<CIHotspotViewer>` component for Svelte
-- Editor mode as a separate opt-in import to keep core bundle lean
+- **Visual editor mode** — click-to-place, drag-to-reposition, inline edit, undo/redo, image URL switching, Cloudimage support, export/import JSON (**implemented**)
+- Editor mode ships as a separate opt-in import (`js-cloudimage-hotspot/editor`) keeping core bundle lean (**implemented**)
+- **Vue wrapper** — `<CIHotspotViewer>` component for Vue 3 *(planned)*
+- **Svelte wrapper** — `<CIHotspotViewer>` component for Svelte *(planned)*
 
 ### v1.3 — Multi-Image Navigation
 
@@ -1575,6 +1728,16 @@ All CSS classes use the `ci-hotspot` prefix.
 | `.ci-hotspot-theme-dark` | Container | Dark theme modifier class |
 | `.ci-hotspot-scroll-hint` | Toast element | Scroll-to-zoom hint displayed at bottom-center of container |
 | `.ci-hotspot-scroll-hint--visible` | Toast element | Applied when scroll hint is actively shown |
+| `.ci-editor` | Editor root | Visual editor root container |
+| `.ci-editor-body` | Editor layout | Flex container for canvas + sidebar |
+| `.ci-editor-canvas` | Editor canvas | Area containing the hotspot viewer |
+| `.ci-editor-canvas--add-mode` | Editor canvas | Applied when editor is in "add" mode (crosshair cursor) |
+| `.ci-editor-sidebar` | Editor sidebar | Right panel with toolbar and property panel |
+| `.ci-editor-status` | Status bar | Bottom status bar showing hotspot count, mode, selection |
+| `.ci-editor-toolbar` | Toolbar | Mode buttons, undo/redo buttons |
+| `.ci-editor-url-bar` | URL input | Image URL input field and Load button |
+| `.ci-editor-toast` | Toast notification | Temporary feedback messages |
+| `.ci-editor-toast--visible` | Toast notification | Applied when toast is actively shown |
 
 ### B. Event Reference
 
