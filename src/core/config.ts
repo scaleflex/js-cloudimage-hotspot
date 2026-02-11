@@ -13,6 +13,7 @@ export const DEFAULT_CONFIG: Omit<Required<CIHotspotConfig>, 'src' | 'hotspots' 
   lazyLoad: true,
   sceneTransition: 'fade',
   scrollHint: true,
+  invertMarkerTheme: false,
 };
 
 /** Data attribute to config property mapping */
@@ -39,6 +40,7 @@ export const DATA_ATTR_MAP: Record<string, { key: string; type: 'string' | 'bool
   'data-ci-hotspot-initial-scene': { key: 'initialScene', type: 'string' },
   'data-ci-hotspot-scene-transition': { key: 'sceneTransition', type: 'string' },
   'data-ci-hotspot-scene-aspect-ratio': { key: 'sceneAspectRatio', type: 'string' },
+  'data-ci-hotspot-invert-marker-theme': { key: 'invertMarkerTheme', type: 'boolean' },
 };
 
 /** Parse data attributes from an element into a config object */

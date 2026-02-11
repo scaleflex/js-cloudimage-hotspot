@@ -109,6 +109,8 @@ export interface CIHotspotConfig {
   zoomMin?: number;
   /** Theme — applies a preset of CSS variable values (default: 'light') */
   theme?: Theme;
+  /** Invert marker colors so they blend with the theme instead of contrasting (default: false) */
+  invertMarkerTheme?: boolean;
   /** Custom popover render function */
   renderPopover?: (hotspot: HotspotItem) => string | HTMLElement;
   /** Called when a hotspot is activated (popover opens) */

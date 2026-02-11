@@ -419,6 +419,22 @@
   --ci-hotspot-zoom-controls-color: #f0f0f0;
 }
 
+/* === Inverted Marker Theme (dots blend with background) === */
+.ci-hotspot-marker-inverted {
+  --ci-hotspot-marker-bg: rgba(255, 255, 255, 0.8);
+  --ci-hotspot-marker-color: #1a1a1a;
+  --ci-hotspot-marker-border-color: rgba(0, 0, 0, 0.3);
+  --ci-hotspot-marker-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --ci-hotspot-pulse-color: rgba(0, 0, 0, 0.15);
+}
+
+.ci-hotspot-theme-dark.ci-hotspot-marker-inverted {
+  --ci-hotspot-marker-bg: rgba(0, 0, 0, 0.6);
+  --ci-hotspot-marker-color: #ffffff;
+  --ci-hotspot-marker-border-color: rgba(255, 255, 255, 0.3);
+  --ci-hotspot-pulse-color: rgba(255, 255, 255, 0.15);
+}
+
 /* === Scroll Hint Toast === */
 .ci-hotspot-scroll-hint {
   position: absolute;

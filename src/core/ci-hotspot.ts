@@ -121,6 +121,9 @@ export class CIHotspot implements CIHotspotInstance {
     if (this.config.theme === 'dark') {
       addClass(this.containerEl, 'ci-hotspot-theme-dark');
     }
+    if (this.config.invertMarkerTheme) {
+      addClass(this.containerEl, 'ci-hotspot-marker-inverted');
+    }
   }
 
   private setupImage(): void {

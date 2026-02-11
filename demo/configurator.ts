@@ -28,6 +28,7 @@ export function initConfigurator(): void {
 
   const cfgZoom = document.getElementById('cfg-zoom') as HTMLInputElement;
   const cfgPulse = document.getElementById('cfg-pulse') as HTMLInputElement;
+  const cfgInvertMarker = document.getElementById('cfg-invert-marker') as HTMLInputElement;
   const cfgTrigger = document.getElementById('cfg-trigger') as HTMLSelectElement;
   const cfgTheme = document.getElementById('cfg-theme') as HTMLSelectElement;
   const cfgPlacement = document.getElementById('cfg-placement') as HTMLSelectElement;
@@ -40,6 +41,7 @@ export function initConfigurator(): void {
       alt: 'Luxury high-rise bedroom with channel-tufted bed and city skyline view',
       zoom: cfgZoom.checked,
       pulse: cfgPulse.checked,
+      invertMarkerTheme: cfgInvertMarker.checked,
       trigger: cfgTrigger.value as CIHotspotConfig['trigger'],
       theme: cfgTheme.value as CIHotspotConfig['theme'],
       placement: cfgPlacement.value as CIHotspotConfig['placement'],
@@ -53,6 +55,7 @@ export function initConfigurator(): void {
     if (config.trigger !== 'hover') opts.push(`  trigger: '${config.trigger}',`);
     if (config.zoom) opts.push(`  zoom: true,`);
     if (!config.pulse) opts.push(`  pulse: false,`);
+    if (config.invertMarkerTheme) opts.push(`  invertMarkerTheme: true,`);
     if (config.theme !== 'light') opts.push(`  theme: '${config.theme}',`);
     if (config.placement !== 'top') opts.push(`  placement: '${config.placement}',`);
     opts.push(`  hotspots: ${JSON.stringify(config.hotspots, null, 4).split('\n').map((l, i) => i === 0 ? l : '  ' + l).join('\n')},`);
@@ -70,7 +73,7 @@ export function initConfigurator(): void {
   }
 
   // Bind controls
-  [cfgZoom, cfgPulse].forEach((el) => el.addEventListener('change', rebuild));
+  [cfgZoom, cfgPulse, cfgInvertMarker].forEach((el) => el.addEventListener('change', rebuild));
   [cfgTrigger, cfgTheme, cfgPlacement].forEach((el) => el.addEventListener('change', rebuild));
 
   // Copy button
