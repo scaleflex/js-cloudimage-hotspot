@@ -10,6 +10,7 @@ export class DragManager {
   private markerEl: HTMLElement | null = null;
   private origLeft = '';
   private origTop = '';
+  private rafId: number | null = null;
 
   constructor(private editor: CIHotspotEditor) {
     this.bind();
@@ -51,22 +52,34 @@ export class DragManager {
       if (!this.dragging && Math.abs(dx) + Math.abs(dy) < 3) return;
       this.dragging = true;
 
-      const imgEl = canvas.querySelector<HTMLImageElement>('.ci-hotspot-image');
-      if (!imgEl) return;
+      // Throttle DOM updates to one per animation frame
+      if (this.rafId !== null) return;
+      const clientX = e.clientX;
+      const clientY = e.clientY;
+      this.rafId = requestAnimationFrame(() => {
+        this.rafId = null;
+        if (!this.markerEl) return;
 
-      const rect = imgEl.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
+        const imgEl = canvas.querySelector<HTMLImageElement>('.ci-hotspot-image');
+        if (!imgEl) return;
 
-      // Clamp to 0-100
-      const cx = Math.max(0, Math.min(100, x));
-      const cy = Math.max(0, Math.min(100, y));
+        const rect = imgEl.getBoundingClientRect();
+        const x = ((clientX - rect.left) / rect.width) * 100;
+        const y = ((clientY - rect.top) / rect.height) * 100;
 
-      this.markerEl.style.left = `${cx}%`;
-      this.markerEl.style.top = `${cy}%`;
+        const cx = Math.max(0, Math.min(100, x));
+        const cy = Math.max(0, Math.min(100, y));
+
+        this.markerEl.style.left = `${cx}%`;
+        this.markerEl.style.top = `${cy}%`;
+      });
     };
 
     const onPointerUp = (e: PointerEvent) => {
+      if (this.rafId !== null) {
+        cancelAnimationFrame(this.rafId);
+        this.rafId = null;
+      }
       if (!this.dragId) return;
 
       if (this.dragging && this.markerEl) {
@@ -103,6 +116,10 @@ export class DragManager {
   }
 
   destroy(): void {
+    if (this.rafId !== null) {
+      cancelAnimationFrame(this.rafId);
+      this.rafId = null;
+    }
     this.unbind();
   }
 }

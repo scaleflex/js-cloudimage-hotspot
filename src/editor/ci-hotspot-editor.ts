@@ -176,6 +176,7 @@ export class CIHotspotEditor {
   // === Viewer ===
 
   rebuildViewer(): void {
+    if (this.destroyed) return;
     if (this.viewer) {
       this.viewer.destroy();
       this.viewer = null;
@@ -200,7 +201,8 @@ export class CIHotspotEditor {
 
   // === Hotspot CRUD ===
 
-  addHotspot(partial: Partial<HotspotItem> = {}): HotspotItem {
+  addHotspot(partial: Partial<HotspotItem> = {}): HotspotItem | undefined {
+    if (this.destroyed) return undefined;
     const id = `hotspot-${this.nextId++}`;
     const hotspot: HotspotItem = {
       ...partial,
@@ -223,6 +225,7 @@ export class CIHotspotEditor {
   }
 
   removeHotspot(id: string): void {
+    if (this.destroyed) return;
     const idx = this.hotspots.findIndex((h) => h.id === id);
     if (idx === -1) return;
 
@@ -237,6 +240,7 @@ export class CIHotspotEditor {
   }
 
   updateHotspot(id: string, updates: Partial<HotspotItem>): void {
+    if (this.destroyed) return;
     const idx = this.hotspots.findIndex((h) => h.id === id);
     if (idx === -1) return;
 
@@ -262,6 +266,7 @@ export class CIHotspotEditor {
   }
 
   setHotspots(hotspots: HotspotItem[]): void {
+    if (this.destroyed) return;
     this.hotspots = structuredClone(hotspots);
     this.selection.deselect();
     this.rebuildViewer();
@@ -273,6 +278,7 @@ export class CIHotspotEditor {
   }
 
   setMode(mode: EditorMode): void {
+    if (this.destroyed) return;
     this.mode = mode;
     this.canvasEl.classList.toggle('ci-editor-canvas--add-mode', mode === 'add');
     this.events.emit('mode:change', mode);
@@ -293,6 +299,7 @@ export class CIHotspotEditor {
   }
 
   setSrc(src: string): void {
+    if (this.destroyed) return;
     this.config.src = src;
     this.rebuildViewer();
   }
@@ -319,6 +326,7 @@ export class CIHotspotEditor {
   }
 
   restoreSnapshot(snapshot: EditorSnapshot): void {
+    if (this.destroyed) return;
     this.hotspots = structuredClone(snapshot.hotspots);
     this.rebuildViewer();
     if (snapshot.selectedId && this.hotspots.find((h) => h.id === snapshot.selectedId)) {
@@ -337,6 +345,7 @@ export class CIHotspotEditor {
   }
 
   importJSON(json: string): void {
+    if (this.destroyed) return;
     const parsed = JSON.parse(json);
     if (!Array.isArray(parsed)) throw new Error('Expected an array of hotspots');
     for (const h of parsed) {
@@ -378,6 +387,7 @@ export class CIHotspotEditor {
   // === Toast ===
 
   showToast(message: string, duration = 2000): void {
+    if (this.destroyed) return;
     if (!this.toastEl) {
       this.toastEl = createElement('div', 'ci-editor-toast');
       this.editorEl.appendChild(this.toastEl);

@@ -5,7 +5,9 @@
   --ci-hotspot-marker-size: 24px;
   --ci-hotspot-marker-color: #ffffff;
   --ci-hotspot-marker-bg: rgba(0, 0, 0, 0.6);
-  --ci-hotspot-marker-border: 2px solid rgba(255, 255, 255, 0.8);
+  --ci-hotspot-marker-border-width: 2px;
+  --ci-hotspot-marker-border-color: rgba(255, 255, 255, 0.8);
+  --ci-hotspot-marker-border: var(--ci-hotspot-marker-border-width) solid var(--ci-hotspot-marker-border-color);
   --ci-hotspot-marker-border-radius: 50%;
   --ci-hotspot-marker-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 
@@ -22,6 +24,7 @@
   --ci-hotspot-popover-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   --ci-hotspot-popover-padding: 16px;
   --ci-hotspot-popover-max-width: 320px;
+  --ci-hotspot-popover-max-height: 400px;
   --ci-hotspot-popover-font-family: inherit;
   --ci-hotspot-popover-font-size: 14px;
   --ci-hotspot-popover-line-height: 1.5;
@@ -260,7 +263,9 @@
 /* === Popover Content (built-in template) === */
 .ci-hotspot-popover-content {
   padding: var(--ci-hotspot-popover-padding);
-  overflow: hidden;
+  max-height: var(--ci-hotspot-popover-max-height);
+  overflow-y: auto;
+  overflow-x: hidden;
   border-radius: var(--ci-hotspot-popover-border-radius);
 }
 
@@ -402,7 +407,7 @@
 .ci-hotspot-theme-dark {
   --ci-hotspot-marker-bg: rgba(255, 255, 255, 0.8);
   --ci-hotspot-marker-color: #1a1a1a;
-  --ci-hotspot-marker-border: 2px solid rgba(255, 255, 255, 0.4);
+  --ci-hotspot-marker-border-color: rgba(255, 255, 255, 0.4);
   --ci-hotspot-pulse-color: rgba(255, 255, 255, 0.2);
   --ci-hotspot-popover-bg: #1a1a1a;
   --ci-hotspot-popover-color: #f0f0f0;
@@ -531,6 +536,33 @@
   transition: opacity 100ms ease;
 }
 
+/* Scene transition loading spinner */
+.ci-hotspot-scene-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-top-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  animation: ci-hotspot-spin 0.6s linear infinite;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.ci-hotspot-theme-dark .ci-hotspot-scene-loading::after,
+.ci-hotspot-scene-loading.ci-hotspot-theme-dark::after {
+  border-color: rgba(255, 255, 255, 0.1);
+  border-top-color: rgba(255, 255, 255, 0.5);
+}
+
+@keyframes ci-hotspot-spin {
+  to { transform: rotate(360deg); }
+}
+
 /* === Reduced Motion === */
 @media (prefers-reduced-motion: reduce) {
   .ci-hotspot-marker,
@@ -557,5 +589,9 @@
 
   .ci-hotspot-scene-transitioning .ci-hotspot-markers {
     transition-duration: 0.01ms !important;
+  }
+
+  .ci-hotspot-scene-loading::after {
+    animation-duration: 0.01ms !important;
   }
 }

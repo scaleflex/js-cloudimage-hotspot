@@ -267,9 +267,10 @@ export class CIHotspot implements CIHotspotInstance {
     marker.setAttribute('aria-label', `Navigate to ${sceneLabel}`);
     marker.setAttribute('aria-roledescription', 'navigation hotspot');
 
-    // Hover: show/hide popover (only if popover exists)
+    // Hover: show/hide popover (only if popover exists) + preload target scene
     if (popover) {
       const enterCleanup = addListener(marker, 'mouseenter', () => {
+        this.preloadSceneImage(hotspot.navigateTo!);
         popover.clearHideTimer();
         popover.show();
         setMarkerActive(marker, true);
@@ -285,6 +286,7 @@ export class CIHotspot implements CIHotspotInstance {
       });
 
       const focusCleanup = addListener(marker, 'focus', () => {
+        this.preloadSceneImage(hotspot.navigateTo!);
         popover.clearHideTimer();
         popover.show();
         setMarkerActive(marker, true);
@@ -298,6 +300,15 @@ export class CIHotspot implements CIHotspotInstance {
       });
 
       this.addHotspotCleanups(hotspot.id, enterCleanup, leaveCleanup, focusCleanup, blurCleanup);
+    } else {
+      // No popover — still preload on hover/focus
+      const preloadEnter = addListener(marker, 'mouseenter', () => {
+        this.preloadSceneImage(hotspot.navigateTo!);
+      });
+      const preloadFocus = addListener(marker, 'focus', () => {
+        this.preloadSceneImage(hotspot.navigateTo!);
+      });
+      this.addHotspotCleanups(hotspot.id, preloadEnter, preloadFocus);
     }
 
     // Click: hide popover and navigate
@@ -590,6 +601,23 @@ export class CIHotspot implements CIHotspotInstance {
     });
   }
 
+  private preloadedScenes = new Set<string>();
+
+  private preloadSceneImage(sceneId: string): void {
+    if (this.preloadedScenes.has(sceneId)) return;
+    const scene = this.scenesMap.get(sceneId);
+    if (!scene) return;
+    this.preloadedScenes.add(sceneId);
+    const img = new Image();
+    if (this.config.cloudimage?.token) {
+      const containerWidth = this.containerEl.offsetWidth || 300;
+      const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
+      img.src = buildCloudimageUrl(scene.src, this.config.cloudimage, containerWidth, 1, dpr);
+    } else {
+      img.src = scene.src;
+    }
+  }
+
   private ensureFocusTrap(id: string, popoverEl: HTMLElement, markerEl: HTMLButtonElement): void {
     if (!this.focusTraps.has(id)) {
       this.focusTraps.set(id, createFocusTrap(popoverEl, markerEl));
@@ -700,9 +728,14 @@ export class CIHotspot implements CIHotspotInstance {
     if (incomingImg.complete) {
       doTransition();
     } else {
-      incomingImg.onload = doTransition;
+      addClass(this.containerEl, 'ci-hotspot-scene-loading');
+      incomingImg.onload = () => {
+        removeClass(this.containerEl, 'ci-hotspot-scene-loading');
+        doTransition();
+      };
       incomingImg.onerror = () => {
         if (this.destroyed) return;
+        removeClass(this.containerEl, 'ci-hotspot-scene-loading');
         incomingImg.remove();
         removeClass(this.containerEl, 'ci-hotspot-scene-transitioning');
         this.switchToScene(scene);
@@ -979,6 +1012,7 @@ export class CIHotspot implements CIHotspotInstance {
 
     // Clear scenes state
     this.scenesMap.clear();
+    this.preloadedScenes.clear();
     this.currentSceneId = undefined;
     this.isTransitioning = false;
     if (this.transitionTimer !== undefined) {
