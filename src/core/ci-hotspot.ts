@@ -187,6 +187,19 @@ export class CIHotspot implements CIHotspotInstance {
   }
 
   private addHotspotInternal(hotspot: HotspotItem): void {
+    // Remove existing hotspot with same ID to prevent orphaned DOM
+    if (this.markers.has(hotspot.id)) {
+      const oldMarker = this.markers.get(hotspot.id)!;
+      destroyMarker(oldMarker);
+      this.markers.delete(hotspot.id);
+      this.popovers.get(hotspot.id)?.destroy();
+      this.popovers.delete(hotspot.id);
+      const fns = this.hotspotCleanups.get(hotspot.id);
+      if (fns) { fns.forEach((fn) => fn()); this.hotspotCleanups.delete(hotspot.id); }
+      const trap = this.focusTraps.get(hotspot.id);
+      if (trap) { trap.destroy(); this.focusTraps.delete(hotspot.id); }
+    }
+
     // Normalize coordinates
     const { x, y } = normalizeToPercent(
       hotspot.x,
@@ -523,22 +536,29 @@ export class CIHotspot implements CIHotspotInstance {
   private setupResponsive(): void {
     if (typeof ResizeObserver === 'undefined') return;
 
+    let rafId = 0;
     this.resizeObserver = new ResizeObserver(() => {
-      // Re-sync markers position in fixed-ratio mode
-      this.syncMarkersToImage();
-      // Check responsive hotspot visibility
-      const containerWidth = this.containerEl.offsetWidth;
-      for (const [id, hotspot] of this.normalizedHotspots) {
-        if (hotspot.responsive) {
-          const marker = this.markers.get(id);
-          if (!marker) continue;
-          const shouldHide =
-            (hotspot.responsive.maxWidth && containerWidth > hotspot.responsive.maxWidth) ||
-            (hotspot.responsive.minWidth && containerWidth < hotspot.responsive.minWidth);
-          setMarkerHidden(marker, !!shouldHide);
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        if (this.destroyed) return;
+        // Re-sync markers position in fixed-ratio mode
+        this.syncMarkersToImage();
+        // Check responsive hotspot visibility
+        const containerWidth = this.containerEl.offsetWidth;
+        for (const [id, hotspot] of this.normalizedHotspots) {
+          if (hotspot.responsive) {
+            const marker = this.markers.get(id);
+            if (!marker) continue;
+            const shouldHide =
+              (hotspot.responsive.maxWidth && containerWidth > hotspot.responsive.maxWidth) ||
+              (hotspot.responsive.minWidth && containerWidth < hotspot.responsive.minWidth);
+            setMarkerHidden(marker, !!shouldHide);
+          }
         }
-      }
+      });
     });
+    this.cleanups.push(() => { if (rafId) cancelAnimationFrame(rafId); });
 
     this.resizeObserver.observe(this.containerEl);
     this.cleanups.push(() => this.resizeObserver?.disconnect());
@@ -694,9 +714,8 @@ export class CIHotspot implements CIHotspotInstance {
     transition: SceneTransition,
     onComplete: () => void,
   ): void {
-    this.clearHotspots();
-
     if (transition === 'none') {
+      this.clearHotspots();
       this.switchToScene(scene);
       onComplete();
       return;
@@ -736,6 +755,7 @@ export class CIHotspot implements CIHotspotInstance {
         this.transitionTimer = undefined;
         if (this.destroyed) return;
 
+        this.clearHotspots();
         this.switchToScene(scene);
         incomingImg.remove();
 
@@ -760,6 +780,7 @@ export class CIHotspot implements CIHotspotInstance {
         removeClass(this.containerEl, 'ci-hotspot-scene-loading');
         incomingImg.remove();
         removeClass(this.containerEl, 'ci-hotspot-scene-transitioning');
+        this.clearHotspots();
         this.switchToScene(scene);
         onComplete();
       };

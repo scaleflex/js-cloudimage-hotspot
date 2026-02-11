@@ -135,13 +135,16 @@ export class CIHotspotEditor {
     });
     this.cleanups.push(clickCleanup);
 
-    // Keyboard shortcuts
+    // Keyboard shortcuts (scoped to editor)
     const keyCleanup = addListener(document, 'keydown', (e) => {
       // Don't handle if focus is in an input/textarea/select
       const tag = (e.target as HTMLElement).tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
 
       const mod = e.metaKey || e.ctrlKey;
+      // Non-modifier shortcuts only fire when focus is within this editor
+      const focusInEditor = this.editorEl.contains(document.activeElement) ||
+        this.editorEl.contains(e.target as Node);
 
       if (mod && e.key === 'z' && !e.shiftKey) {
         e.preventDefault();
@@ -152,21 +155,21 @@ export class CIHotspotEditor {
       } else if (mod && e.key === 'y') {
         e.preventDefault();
         this.undoManager.redo();
-      } else if (e.key === 'Delete' || e.key === 'Backspace') {
+      } else if ((e.key === 'Delete' || e.key === 'Backspace') && focusInEditor) {
         const id = this.selection.getSelectedId();
         if (id) {
           e.preventDefault();
           this.removeHotspot(id);
         }
-      } else if (e.key === 'Escape') {
+      } else if (e.key === 'Escape' && focusInEditor) {
         if (this.mode === 'add') {
           this.setMode('select');
         } else {
           this.selection.deselect();
         }
-      } else if (e.key === 'a' && !mod) {
+      } else if (e.key === 'a' && !mod && focusInEditor) {
         this.setMode(this.mode === 'add' ? 'select' : 'add');
-      } else if (e.key === 'v' && !mod) {
+      } else if (e.key === 'v' && !mod && focusInEditor) {
         this.setMode('select');
       }
     });
@@ -261,7 +264,8 @@ export class CIHotspotEditor {
   }
 
   getHotspot(id: string): HotspotItem | undefined {
-    return this.hotspots.find((h) => h.id === id);
+    const hotspot = this.hotspots.find((h) => h.id === id);
+    return hotspot ? structuredClone(hotspot) : undefined;
   }
 
   setHotspots(hotspots: HotspotItem[]): void {

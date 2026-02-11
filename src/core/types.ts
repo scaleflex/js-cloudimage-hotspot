@@ -53,7 +53,8 @@ export interface CloudimageConfig {
 export interface ResponsiveConfig {
   maxWidth?: number;
   minWidth?: number;
-  action: 'hide' | 'collapse';
+  /** Action when breakpoint matches. Currently only 'hide' is implemented. */
+  action?: 'hide' | 'collapse';
 }
 
 /** Individual hotspot definition */

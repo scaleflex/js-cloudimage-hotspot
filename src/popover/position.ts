@@ -131,13 +131,21 @@ function shift(
   let sx = x;
   let sy = y;
 
-  // Horizontal shift
-  if (sx < padding) sx = padding;
-  if (sx + width > containerWidth - padding) sx = containerWidth - padding - width;
+  // Horizontal: center if popover wider than container, otherwise clamp
+  if (width > containerWidth - 2 * padding) {
+    sx = (containerWidth - width) / 2;
+  } else {
+    if (sx < padding) sx = padding;
+    if (sx + width > containerWidth - padding) sx = containerWidth - padding - width;
+  }
 
-  // Vertical shift
-  if (sy < padding) sy = padding;
-  if (sy + height > containerHeight - padding) sy = containerHeight - padding - height;
+  // Vertical: center if popover taller than container, otherwise clamp
+  if (height > containerHeight - 2 * padding) {
+    sy = (containerHeight - height) / 2;
+  } else {
+    if (sy < padding) sy = padding;
+    if (sy + height > containerHeight - padding) sy = containerHeight - padding - height;
+  }
 
   return { x: sx, y: sy };
 }

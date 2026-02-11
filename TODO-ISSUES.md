@@ -37,51 +37,41 @@ Popovers are children of `containerEl` (not the zoomed `viewportEl`). `getBoundi
 
 ## Medium
 
-### 10. Duplicate hotspot IDs create orphaned DOM
-**File:** `src/core/ci-hotspot.ts`
-Internal Map overwrites duplicate ID entries but first hotspot's DOM elements remain orphaned.
+### ~~10. Duplicate hotspot IDs create orphaned DOM~~ FIXED
+`addHotspotInternal()` now checks for existing marker with same ID and cleans up old DOM/listeners/popovers/traps before creating the new one.
 
-### 11. `ResizeObserver` callback not throttled
-**File:** `src/core/ci-hotspot.ts:524-543`
-Fires at high frequency during resize with read-write-read layout thrashing.
+### ~~11. `ResizeObserver` callback not throttled~~ FIXED
+Wrapped callback in `requestAnimationFrame` with deduplication. Cancels pending frame on cleanup.
 
-### 12. `ResponsiveConfig.action: 'collapse'` is dead code
-**File:** `src/core/types.ts:56, src/core/ci-hotspot.ts:529-537`
-The `action` field is required but never read — always hides.
+### ~~12. `ResponsiveConfig.action: 'collapse'` is dead code~~ FIXED
+Made `action` optional in the type definition since the code always uses 'hide' behavior.
 
-### 13. `getHotspot()` returns mutable reference (editor)
-**File:** `src/editor/ci-hotspot-editor.ts:260-262`
-Returns direct reference unlike `getHotspots()` which clones. Bypasses undo tracking.
+### ~~13. `getHotspot()` returns mutable reference (editor)~~ FIXED
+Now returns `structuredClone(hotspot)` like `getHotspots()`.
 
-### 14. Editor keyboard shortcuts are global, not scoped
-**File:** `src/editor/ci-hotspot-editor.ts:136-170`
-Single-key shortcuts (`a`, `v`) on `document` conflict with multiple editors and contenteditable.
+### ~~14. Editor keyboard shortcuts are global, not scoped~~ FIXED
+Non-modifier shortcuts (`a`, `v`, Delete, Escape) now require `focusInEditor` check. Modifier shortcuts (Ctrl+Z, Ctrl+Y) remain global for UX parity.
 
-### 15. Editor import modal missing `role="dialog"` and `aria-modal`
-**File:** `src/editor/editor-toolbar.ts:148-175`
-Screen readers can't identify it as a dialog. Title not linked via `aria-labelledby`.
+### ~~15. Editor import modal missing `role="dialog"` and `aria-modal`~~ FIXED
+Added `role="dialog"`, `aria-modal="true"`, and `aria-labelledby` linked to the title element.
 
-### 16. Sidebar hotspot list items not keyboard accessible
-**File:** `src/editor/property-panel.ts:57-73`
-`<li>` items have click handlers but no `tabindex`, `role`, or keyboard handlers.
+### ~~16. Sidebar hotspot list items not keyboard accessible~~ FIXED
+Added `role="option"`, `tabindex="0"`, and Enter/Space keyboard handlers. List uses `role="listbox"`.
 
 ### ~~17. Protocol-relative URLs bypass `isSafeUrl`~~ FIXED
 Changed `/^\//.test()` to `/^\/(?!\/)/.test()` to reject `//attacker.com` while allowing `/path`.
 
-### 18. `hotspot.className` with spaces throws DOMException
-**File:** `src/markers/marker.ts:17`
-`classList.add('foo bar')` throws. Should split on whitespace.
+### ~~18. `hotspot.className` with spaces throws DOMException~~ FIXED
+Split className on whitespace before passing to `classList.add()`.
 
 ### ~~19. Trailing finger after pinch triggers unwanted panning~~ FIXED
 `wasPinching` flag now suppresses pan moves from the trailing finger after a pinch ends.
 
-### 20. `shift()` produces negative positions for narrow containers
-**File:** `src/popover/position.ts:122-143`
-When popover wider than container, two-step clamping overrides itself.
+### ~~20. `shift()` produces negative positions for narrow containers~~ FIXED
+When popover is wider/taller than container, centers it instead of producing negative positions from conflicting clamps.
 
-### 21. Scene transition clears markers before animation completes
-**File:** `src/core/ci-hotspot.ts:680`
-`clearHotspots()` runs immediately on transition start, blank markers during 400ms fade.
+### ~~21. Scene transition clears markers before animation completes~~ FIXED
+Moved `clearHotspots()` from transition start to inside the timer callback (just before `switchToScene`). Old markers stay visible during fade-out via CSS `ci-hotspot-scene-transitioning` opacity rule.
 
 ---
 
@@ -132,8 +122,8 @@ When popover wider than container, two-step clamping overrides itself.
 **File:** `tests/zoom.test.ts:65`
 Pans positive which clamps to 0, assertion meaningless.
 
-### 35. Duplicate ID test documents bug as expected behavior
-**File:** `tests/behavioral-gaps.test.ts:186`
+### ~~35. Duplicate ID test documents bug as expected behavior~~ FIXED
+Updated test to verify new correct behavior: duplicate IDs replace old marker instead of creating orphaned DOM.
 
 ### 36. Missing: Firefox `deltaMode` wheel events
 ### 37. Missing: `setZoom` with origin parameters

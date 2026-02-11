@@ -151,8 +151,14 @@ export class EditorToolbar {
   private showImportModal(): void {
     const overlay = createElement('div', 'ci-editor-modal-overlay');
     const modal = createElement('div', 'ci-editor-modal');
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+
+    const titleId = 'ci-editor-import-title';
+    modal.setAttribute('aria-labelledby', titleId);
 
     const title = createElement('h3');
+    title.id = titleId;
     title.textContent = 'Import Hotspots JSON';
 
     const textarea = createElement('textarea');

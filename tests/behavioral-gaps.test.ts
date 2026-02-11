@@ -183,11 +183,11 @@ describe('Duplicate hotspot ID handling', () => {
     instance.destroy();
   });
 
-  it('addHotspot with existing ID creates a second marker', () => {
+  it('addHotspot with existing ID replaces the old marker', () => {
     const instance = new CIHotspot(root, makeConfig());
-    instance.addHotspot({ id: 'spot-1', x: '10%', y: '10%', label: 'Duplicate' });
-    // Should have both originals plus the new one (3 total since config had 2)
-    expect(root.querySelectorAll('.ci-hotspot-marker').length).toBe(3);
+    instance.addHotspot({ id: 'spot-1', x: '10%', y: '10%', label: 'Replacement' });
+    // Old marker with same ID is cleaned up, so total stays at 2
+    expect(root.querySelectorAll('.ci-hotspot-marker').length).toBe(2);
     instance.destroy();
   });
 });

@@ -14,7 +14,8 @@ export function createMarker(hotspot: NormalizedHotspot, pulse: boolean): HTMLBu
   marker.style.top = `${hotspot.y}%`;
 
   if (hotspot.className) {
-    addClass(marker, hotspot.className);
+    const classes = hotspot.className.trim().split(/\s+/).filter(Boolean);
+    if (classes.length) addClass(marker, ...classes);
   }
 
   if (hotspot.hidden) {

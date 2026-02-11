@@ -53,9 +53,13 @@ export class PropertyPanel {
     }
 
     const list = createElement('ul', 'ci-editor-hotspot-list');
+    list.setAttribute('role', 'listbox');
+    list.setAttribute('aria-label', 'Hotspot list');
     for (const h of hotspots) {
       const item = createElement('li', 'ci-editor-hotspot-item');
       item.setAttribute('data-list-id', h.id);
+      item.setAttribute('role', 'option');
+      item.setAttribute('tabindex', '0');
 
       const label = createElement('span', 'ci-editor-hotspot-item-label');
       label.textContent = h.label || h.id;
@@ -66,8 +70,13 @@ export class PropertyPanel {
       item.appendChild(label);
       item.appendChild(coords);
 
-      item.addEventListener('click', () => {
-        this.editor.getSelection().select(h.id);
+      const selectHotspot = () => this.editor.getSelection().select(h.id);
+      item.addEventListener('click', selectHotspot);
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          selectHotspot();
+        }
       });
 
       list.appendChild(item);
