@@ -1,6 +1,8 @@
 export interface GestureCallbacks {
   onPinch?: (scale: number, centerX: number, centerY: number) => void;
-  onPan?: (dx: number, dy: number) => void;
+  onPanStart?: () => void;
+  onPan?: (totalDx: number, totalDy: number) => void;
+  onPanEnd?: () => void;
   onDoubleTap?: (x: number, y: number) => void;
 }
 
@@ -11,9 +13,11 @@ export class GestureRecognizer {
   private lastTouchEnd = 0;
   private initialPinchDistance = 0;
   private initialPinchScale = 1;
-  private lastTouchX = 0;
-  private lastTouchY = 0;
+  private panStartX = 0;
+  private panStartY = 0;
   private isPinching = false;
+  private isPanning = false;
+  private wasPinching = false;
   private cleanups: (() => void)[] = [];
 
   constructor(el: HTMLElement, callbacks: GestureCallbacks, getZoom: () => number) {
@@ -40,11 +44,13 @@ export class GestureRecognizer {
     if (e.touches.length === 2) {
       e.preventDefault();
       this.isPinching = true;
+      this.wasPinching = false;
       this.initialPinchDistance = this.getTouchDistance(e.touches);
       this.initialPinchScale = getZoom();
     } else if (e.touches.length === 1) {
-      this.lastTouchX = e.touches[0].clientX;
-      this.lastTouchY = e.touches[0].clientY;
+      this.panStartX = e.touches[0].clientX;
+      this.panStartY = e.touches[0].clientY;
+      this.wasPinching = false;
     }
   }
 
@@ -56,22 +62,40 @@ export class GestureRecognizer {
       const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
       const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
       this.callbacks.onPinch?.(scale, centerX, centerY);
-    } else if (e.touches.length === 1 && !this.isPinching) {
-      const dx = e.touches[0].clientX - this.lastTouchX;
-      const dy = e.touches[0].clientY - this.lastTouchY;
-      this.lastTouchX = e.touches[0].clientX;
-      this.lastTouchY = e.touches[0].clientY;
-      this.callbacks.onPan?.(dx, dy);
+    } else if (e.touches.length === 1 && !this.isPinching && !this.wasPinching) {
+      if (!this.isPanning) {
+        this.isPanning = true;
+        this.callbacks.onPanStart?.();
+      }
+      const totalDx = e.touches[0].clientX - this.panStartX;
+      const totalDy = e.touches[0].clientY - this.panStartY;
+      this.callbacks.onPan?.(totalDx, totalDy);
     }
   }
 
   private handleTouchEnd(e: TouchEvent): void {
     if (this.isPinching && e.touches.length < 2) {
       this.isPinching = false;
+      this.wasPinching = true;
+      // Update pan start to remaining finger position
+      if (e.touches.length === 1) {
+        this.panStartX = e.touches[0].clientX;
+        this.panStartY = e.touches[0].clientY;
+      }
     }
 
-    // Double-tap detection
+    if (this.isPanning) {
+      this.isPanning = false;
+      this.callbacks.onPanEnd?.();
+    }
+
+    // Double-tap detection (suppressed after pinch)
     if (e.changedTouches.length === 1 && e.touches.length === 0) {
+      if (this.wasPinching) {
+        this.wasPinching = false;
+        this.lastTouchEnd = 0;
+        return;
+      }
       const now = Date.now();
       if (now - this.lastTouchEnd < 300) {
         const touch = e.changedTouches[0];

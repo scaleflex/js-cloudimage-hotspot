@@ -46,13 +46,13 @@ function sanitizeSVG(svg: string): string {
 const SVG_BLOCKED_ELEMENTS = new Set([
   'script', 'foreignobject', 'iframe', 'object', 'embed',
   'animate', 'animatetransform', 'animatemotion', 'set',
-  'style', 'a', 'use', 'image',
+  'style', 'a', 'use', 'image', 'feimage',
 ]);
 
 function cleanSVGNode(node: Element): void {
   for (const attr of Array.from(node.attributes)) {
     const name = attr.name.toLowerCase();
-    if (name.startsWith('on')) {
+    if (name.startsWith('on') || name === 'style') {
       node.removeAttribute(attr.name);
     } else if (
       (name === 'href' || name === 'xlink:href') &&

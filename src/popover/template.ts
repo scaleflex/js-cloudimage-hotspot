@@ -74,7 +74,7 @@ function escapeHtml(str: string): string {
 /** Check that a URL uses a safe protocol (allowlist approach) */
 function isSafeUrl(url: string): boolean {
   const normalized = url.replace(/[\s\x00-\x1f]/g, '');
-  return /^https?:\/\//i.test(normalized) || /^\//.test(normalized) || /^#/.test(normalized);
+  return /^https?:\/\//i.test(normalized) || /^\/(?!\/)/.test(normalized) || /^#/.test(normalized);
 }
 
 function escapeAttr(str: string): string {

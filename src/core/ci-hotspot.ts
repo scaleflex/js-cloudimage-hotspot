@@ -39,6 +39,8 @@ export class CIHotspot implements CIHotspotInstance {
   private scenesMap = new Map<string, Scene>();
   private isTransitioning = false;
   private transitionTimer: ReturnType<typeof setTimeout> | undefined;
+  private activeTimers = new Set<ReturnType<typeof setTimeout>>();
+  private sceneHotspotOverrides = new Map<string, HotspotItem[]>();
 
   constructor(element: HTMLElement | string, config: CIHotspotConfig) {
     this.rootEl = getElement(element);
@@ -278,7 +280,7 @@ export class CIHotspot implements CIHotspotInstance {
 
       const leaveCleanup = addListener(marker, 'mouseleave', () => {
         popover.scheduleHide(200);
-        setTimeout(() => {
+        this.trackedTimeout(() => {
           if (!popover.isVisible()) {
             setMarkerActive(marker, false);
           }
@@ -294,7 +296,7 @@ export class CIHotspot implements CIHotspotInstance {
 
       const blurCleanup = addListener(marker, 'blur', () => {
         popover.scheduleHide(200);
-        setTimeout(() => {
+        this.trackedTimeout(() => {
           if (!popover.isVisible()) setMarkerActive(marker, false);
         }, 250);
       });
@@ -359,7 +361,7 @@ export class CIHotspot implements CIHotspotInstance {
 
     const leaveCleanup = addListener(marker, 'mouseleave', () => {
       popover.scheduleHide(200);
-      setTimeout(() => {
+      this.trackedTimeout(() => {
         if (!popover.isVisible()) setMarkerActive(marker, false);
       }, 250);
     });
@@ -421,7 +423,7 @@ export class CIHotspot implements CIHotspotInstance {
     const blurCleanup = addListener(marker, 'blur', () => {
       if (triggerMode === 'hover') {
         popover.scheduleHide(200);
-        setTimeout(() => {
+        this.trackedTimeout(() => {
           if (!popover.isVisible()) setMarkerActive(marker, false);
         }, 250);
       }
@@ -629,6 +631,21 @@ export class CIHotspot implements CIHotspotInstance {
     }
   }
 
+  /** Create a setTimeout that is automatically cleared on destroy */
+  private trackedTimeout(fn: () => void, delay: number): void {
+    const id = setTimeout(() => {
+      this.activeTimers.delete(id);
+      fn();
+    }, delay);
+    this.activeTimers.add(id);
+  }
+
+  /** Sync current hotspots back to scene override map so navigating away and back preserves changes */
+  private syncCurrentSceneHotspots(): void {
+    if (!this.currentSceneId) return;
+    this.sceneHotspotOverrides.set(this.currentSceneId, [...this.config.hotspots]);
+  }
+
   private addHotspotCleanups(id: string, ...fns: (() => void)[]): void {
     let arr = this.hotspotCleanups.get(id);
     if (!arr) {
@@ -752,7 +769,7 @@ export class CIHotspot implements CIHotspotInstance {
   private switchToScene(scene: Scene): void {
     this.config.src = scene.src;
     this.config.alt = scene.alt || '';
-    this.config.hotspots = [...scene.hotspots];
+    this.config.hotspots = this.sceneHotspotOverrides.get(scene.id) ?? [...scene.hotspots];
 
     this.imgEl.alt = scene.alt || '';
 
@@ -899,6 +916,7 @@ export class CIHotspot implements CIHotspotInstance {
     if (this.destroyed) return;
     this.config.hotspots.push(hotspot);
     this.addHotspotInternal(hotspot);
+    this.syncCurrentSceneHotspots();
   }
 
   removeHotspot(id: string): void {
@@ -931,6 +949,7 @@ export class CIHotspot implements CIHotspotInstance {
     }
     this.normalizedHotspots.delete(id);
     this.config.hotspots = this.config.hotspots.filter((h) => h.id !== id);
+    this.syncCurrentSceneHotspots();
   }
 
   updateHotspot(id: string, updates: Partial<HotspotItem>): void {
@@ -954,6 +973,7 @@ export class CIHotspot implements CIHotspotInstance {
     if (newMarker && nextSibling && this.markersEl.contains(nextSibling)) {
       this.markersEl.insertBefore(newMarker, nextSibling);
     }
+    this.syncCurrentSceneHotspots();
   }
 
   update(config: Partial<CIHotspotConfig>): void {
@@ -988,6 +1008,10 @@ export class CIHotspot implements CIHotspotInstance {
   private destroyInternal(): void {
     this.imageLoaded = false;
 
+    // Clear all tracked timers
+    for (const id of this.activeTimers) clearTimeout(id);
+    this.activeTimers.clear();
+
     // Run all per-hotspot cleanup functions
     for (const fns of this.hotspotCleanups.values()) {
       fns.forEach((fn) => fn());
@@ -1018,6 +1042,7 @@ export class CIHotspot implements CIHotspotInstance {
     // Clear scenes state
     this.scenesMap.clear();
     this.preloadedScenes.clear();
+    this.sceneHotspotOverrides.clear();
     this.currentSceneId = undefined;
     this.isTransitioning = false;
     if (this.transitionTimer !== undefined) {

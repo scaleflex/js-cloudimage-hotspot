@@ -38,6 +38,8 @@ export class ZoomPan {
   private gestures: GestureRecognizer | null = null;
   private isGesturing = false;
   private gestureStartZoom = 1;
+  private touchStartPanX = 0;
+  private touchStartPanY = 0;
   private cleanups: (() => void)[] = [];
 
   constructor(viewport: HTMLElement, container: HTMLElement, options: ZoomPanOptions) {
@@ -148,10 +150,14 @@ export class ZoomPan {
           const rect = this.container.getBoundingClientRect();
           this.setZoom(scale, cx - rect.left, cy - rect.top);
         },
-        onPan: (dx, dy) => {
+        onPanStart: () => {
+          this.touchStartPanX = this.panX;
+          this.touchStartPanY = this.panY;
+        },
+        onPan: (totalDx, totalDy) => {
           if (this.zoom <= 1) return;
-          this.panX += dx / this.zoom;
-          this.panY += dy / this.zoom;
+          this.panX = this.touchStartPanX + totalDx / this.zoom;
+          this.panY = this.touchStartPanY + totalDy / this.zoom;
           this.clampPan();
           this.applyTransform();
         },
