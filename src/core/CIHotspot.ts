@@ -405,6 +405,21 @@ export class CIHotspot implements CIHotspotInstance {
 
   // === Public API ===
 
+  /** Get references to the internal DOM elements */
+  getElements(): {
+    container: HTMLElement;
+    viewport: HTMLElement;
+    image: HTMLImageElement;
+    markers: HTMLElement;
+  } {
+    return {
+      container: this.containerEl,
+      viewport: this.viewportEl,
+      image: this.imgEl,
+      markers: this.markersEl,
+    };
+  }
+
   open(id: string): void {
     const popover = this.popovers.get(id);
     const marker = this.markers.get(id);

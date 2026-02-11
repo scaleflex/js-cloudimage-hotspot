@@ -17,6 +17,11 @@
       "types": "./dist/react/index.d.ts",
       "import": "./dist/react/index.js",
       "require": "./dist/react/index.cjs"
+    },
+    "./editor": {
+      "types": "./dist/editor/index.d.ts",
+      "import": "./dist/editor/js-cloudimage-hotspot-editor.esm.js",
+      "require": "./dist/editor/js-cloudimage-hotspot-editor.cjs.js"
     }
   },
   "files": [
@@ -26,9 +31,10 @@
   "scripts": {
     "dev": "vite --config config/vite.demo.config.ts",
     "dev:react": "vite --config config/vite.demo.config.ts demo/react-demo",
-    "build": "npm run build:bundle && npm run build:react && npm run typecheck:emit",
+    "build": "npm run build:bundle && npm run build:react && npm run build:editor && npm run typecheck:emit",
     "build:bundle": "vite build --config config/vite.config.ts",
     "build:react": "vite build --config config/vite.react.config.ts",
+    "build:editor": "vite build --config config/vite.editor.config.ts",
     "build:demo": "vite build --config config/vite.demo.config.ts",
     "typecheck": "tsc --noEmit",
     "typecheck:emit": "tsc --emitDeclarationOnly --declaration --outDir dist",

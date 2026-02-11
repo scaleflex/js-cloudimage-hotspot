@@ -1,0 +1,430 @@
+/* === CIHotspot Editor Stylesheet === */
+
+.ci-editor {
+  --ci-editor-panel-bg: #ffffff;
+  --ci-editor-panel-color: #1a1a1a;
+  --ci-editor-panel-border: 1px solid #e0e0e0;
+  --ci-editor-panel-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --ci-editor-accent: #0058a3;
+  --ci-editor-accent-hover: #004a8c;
+  --ci-editor-danger: #d32f2f;
+  --ci-editor-danger-hover: #b71c1c;
+  --ci-editor-radius: 8px;
+  --ci-editor-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --ci-editor-selected-ring: 0 0 0 3px rgba(0, 88, 163, 0.5);
+  --ci-editor-toolbar-bg: #f5f5f5;
+
+  display: flex;
+  flex-direction: column;
+  font-family: var(--ci-editor-font);
+  color: var(--ci-editor-panel-color);
+  line-height: 1.5;
+}
+
+.ci-editor *,
+.ci-editor *::before,
+.ci-editor *::after {
+  box-sizing: border-box;
+}
+
+/* === Layout === */
+.ci-editor-body {
+  display: flex;
+  gap: 0;
+  min-height: 400px;
+}
+
+.ci-editor-canvas {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: #f0f0f0;
+  border: var(--ci-editor-panel-border);
+  border-radius: var(--ci-editor-radius);
+  cursor: default;
+}
+
+.ci-editor-canvas--add-mode {
+  cursor: crosshair;
+}
+
+.ci-editor-sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  border-left: var(--ci-editor-panel-border);
+  background: var(--ci-editor-panel-bg);
+  overflow-y: auto;
+}
+
+/* === Toolbar === */
+.ci-editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--ci-editor-toolbar-bg);
+  border: var(--ci-editor-panel-border);
+  border-radius: var(--ci-editor-radius) var(--ci-editor-radius) 0 0;
+}
+
+.ci-editor-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ci-editor-toolbar-separator {
+  width: 1px;
+  height: 24px;
+  background: #d0d0d0;
+  margin: 0 4px;
+}
+
+.ci-editor-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--ci-editor-panel-color);
+  font-family: var(--ci-editor-font);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 150ms, border-color 150ms, box-shadow 150ms;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.ci-editor-btn:hover {
+  background: #f5f5f5;
+  border-color: #bbb;
+}
+
+.ci-editor-btn:active {
+  background: #ebebeb;
+}
+
+.ci-editor-btn--active {
+  background: var(--ci-editor-accent);
+  color: #ffffff;
+  border-color: var(--ci-editor-accent);
+}
+
+.ci-editor-btn--active:hover {
+  background: var(--ci-editor-accent-hover);
+  border-color: var(--ci-editor-accent-hover);
+}
+
+.ci-editor-btn--primary {
+  background: var(--ci-editor-accent);
+  color: #ffffff;
+  border-color: var(--ci-editor-accent);
+}
+
+.ci-editor-btn--primary:hover {
+  background: var(--ci-editor-accent-hover);
+}
+
+.ci-editor-btn--danger {
+  color: var(--ci-editor-danger);
+  border-color: var(--ci-editor-danger);
+}
+
+.ci-editor-btn--danger:hover {
+  background: var(--ci-editor-danger);
+  color: #ffffff;
+}
+
+.ci-editor-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+
+.ci-editor-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* === Hotspot count badge === */
+.ci-editor-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--ci-editor-accent);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* === Property Panel === */
+.ci-editor-panel {
+  padding: 16px;
+}
+
+.ci-editor-panel-title {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.ci-editor-panel-empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: #888;
+  font-size: 13px;
+}
+
+.ci-editor-field {
+  margin-bottom: 12px;
+}
+
+.ci-editor-field label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+}
+
+.ci-editor-field input[type="text"],
+.ci-editor-field input[type="number"],
+.ci-editor-field input[type="url"],
+.ci-editor-field textarea,
+.ci-editor-field select {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  font-family: var(--ci-editor-font);
+  font-size: 13px;
+  color: var(--ci-editor-panel-color);
+  background: #ffffff;
+  transition: border-color 150ms;
+}
+
+.ci-editor-field input:focus,
+.ci-editor-field textarea:focus,
+.ci-editor-field select:focus {
+  outline: none;
+  border-color: var(--ci-editor-accent);
+  box-shadow: 0 0 0 2px rgba(0, 88, 163, 0.15);
+}
+
+.ci-editor-field textarea {
+  resize: vertical;
+  min-height: 60px;
+}
+
+.ci-editor-field-row {
+  display: flex;
+  gap: 8px;
+}
+
+.ci-editor-field-row .ci-editor-field {
+  flex: 1;
+}
+
+.ci-editor-panel-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* === Hotspot list in sidebar === */
+.ci-editor-hotspot-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ci-editor-hotspot-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 13px;
+  transition: background 100ms;
+}
+
+.ci-editor-hotspot-item:hover {
+  background: #f5f5f5;
+}
+
+.ci-editor-hotspot-item--selected {
+  background: rgba(0, 88, 163, 0.08);
+  border-left: 3px solid var(--ci-editor-accent);
+  padding-left: 13px;
+}
+
+.ci-editor-hotspot-item-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ci-editor-hotspot-item-coords {
+  font-size: 11px;
+  color: #999;
+  flex-shrink: 0;
+}
+
+/* === Selected marker ring === */
+.ci-hotspot-marker--editor-selected {
+  box-shadow: var(--ci-editor-selected-ring) !important;
+  z-index: 3 !important;
+}
+
+/* === JSON panel === */
+.ci-editor-json {
+  position: relative;
+}
+
+.ci-editor-json pre {
+  margin: 0;
+  padding: 12px;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border-radius: var(--ci-editor-radius);
+  font-family: 'SF Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-x: auto;
+  max-height: 300px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.ci-editor-json-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* === Status bar === */
+.ci-editor-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 12px;
+  background: var(--ci-editor-toolbar-bg);
+  border: var(--ci-editor-panel-border);
+  border-top: none;
+  border-radius: 0 0 var(--ci-editor-radius) var(--ci-editor-radius);
+  font-size: 12px;
+  color: #666;
+}
+
+/* === Toast notification === */
+.ci-editor-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  padding: 8px 20px;
+  background: #333;
+  color: #fff;
+  border-radius: 20px;
+  font-size: 13px;
+  font-family: var(--ci-editor-font);
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms, transform 200ms;
+}
+
+.ci-editor-toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+/* === Import modal === */
+.ci-editor-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.ci-editor-modal {
+  background: var(--ci-editor-panel-bg);
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+  padding: 24px;
+  width: 480px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.ci-editor-modal h3 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.ci-editor-modal textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 12px;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  font-family: 'SF Mono', Consolas, monospace;
+  font-size: 12px;
+  resize: vertical;
+}
+
+.ci-editor-modal textarea:focus {
+  outline: none;
+  border-color: var(--ci-editor-accent);
+}
+
+.ci-editor-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.ci-editor-modal-error {
+  color: var(--ci-editor-danger);
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .ci-editor-body {
+    flex-direction: column;
+  }
+
+  .ci-editor-sidebar {
+    width: 100%;
+    border-left: none;
+    border-top: var(--ci-editor-panel-border);
+    max-height: 300px;
+  }
+
+  .ci-editor-toolbar {
+    flex-wrap: wrap;
+  }
+}

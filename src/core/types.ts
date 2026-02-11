@@ -119,6 +119,13 @@ export interface CIHotspotConfig {
 
 /** Instance methods returned by CIHotspot */
 export interface CIHotspotInstance {
+  /** Get references to internal DOM elements */
+  getElements(): {
+    container: HTMLElement;
+    viewport: HTMLElement;
+    image: HTMLImageElement;
+    markers: HTMLElement;
+  };
   /** Open a specific hotspot popover by ID */
   open(id: string): void;
   /** Close a specific hotspot popover by ID */

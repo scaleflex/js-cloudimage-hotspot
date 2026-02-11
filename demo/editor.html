@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CIHotspot Visual Editor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8f9fa;
+      color: #1a1a1a;
+    }
+
+    .editor-page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .editor-page-header h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .editor-page-header h1 span {
+      color: #0058a3;
+    }
+
+    .editor-page-header-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .editor-page-header-links a {
+      color: #666;
+      text-decoration: none;
+    }
+
+    .editor-page-header-links a:hover {
+      color: #0058a3;
+    }
+
+    .editor-page-container {
+      max-width: 1200px;
+      margin: 24px auto;
+      padding: 0 24px;
+    }
+
+    #editor-root {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .editor-page-footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 12px;
+      color: #999;
+    }
+
+    .editor-page-shortcuts {
+      margin-top: 16px;
+      padding: 16px 24px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .editor-page-shortcuts h3 {
+      margin: 0 0 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .editor-page-shortcuts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 8px;
+    }
+
+    .editor-page-shortcut {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #666;
+    }
+
+    .editor-page-shortcut kbd {
+      display: inline-block;
+      padding: 2px 6px;
+      background: #f0f0f0;
+      border: 1px solid #d0d0d0;
+      border-radius: 4px;
+      font-family: 'SF Mono', Consolas, monospace;
+      font-size: 11px;
+      color: #333;
+    }
+
+    .editor-page-json {
+      margin-top: 16px;
+      padding: 16px 24px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .editor-page-json h3 {
+      margin: 0 0 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .editor-page-json pre {
+      margin: 0;
+      padding: 16px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      border-radius: 8px;
+      font-family: 'SF Mono', Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      overflow-x: auto;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <header class="editor-page-header">
+    <h1>CIHotspot <span>Visual Editor</span></h1>
+    <div class="editor-page-header-links">
+      <a href="./index.html">Viewer Demo</a>
+      <a href="https://github.com/scaleflex/js-cloudimage-hotspot">GitHub</a>
+    </div>
+  </header>
+
+  <div class="editor-page-container">
+    <div id="editor-root"></div>
+
+    <div class="editor-page-shortcuts">
+      <h3>Keyboard Shortcuts</h3>
+      <div class="editor-page-shortcuts-grid">
+        <div class="editor-page-shortcut"><kbd>A</kbd> Toggle Add mode</div>
+        <div class="editor-page-shortcut"><kbd>V</kbd> Select mode</div>
+        <div class="editor-page-shortcut"><kbd>Del</kbd> Delete selected</div>
+        <div class="editor-page-shortcut"><kbd>Esc</kbd> Deselect / exit Add</div>
+        <div class="editor-page-shortcut"><kbd>Ctrl+Z</kbd> Undo</div>
+        <div class="editor-page-shortcut"><kbd>Ctrl+Shift+Z</kbd> Redo</div>
+      </div>
+    </div>
+
+    <div class="editor-page-json">
+      <h3>Live JSON Output</h3>
+      <pre id="json-output">[]</pre>
+    </div>
+  </div>
+
+  <footer class="editor-page-footer">
+    js-cloudimage-hotspot Visual Editor &mdash; MIT License
+  </footer>
+
+  <script type="module" src="./editor-demo.ts"></script>
+</body>
+</html>
