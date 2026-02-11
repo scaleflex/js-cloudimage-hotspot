@@ -19,6 +19,9 @@ export const CIHotspotViewer = forwardRef<CIHotspotViewerRef, CIHotspotViewerPro
       addHotspot: (hotspot) => instance.current?.addHotspot(hotspot),
       removeHotspot: (id: string) => instance.current?.removeHotspot(id),
       updateHotspot: (id, updates) => instance.current?.updateHotspot(id, updates),
+      goToScene: (sceneId: string) => instance.current?.goToScene(sceneId),
+      getCurrentScene: () => instance.current?.getCurrentScene(),
+      getScenes: () => instance.current?.getScenes() ?? [],
     }));
 
     // Find portal targets for React rendering
@@ -45,7 +48,7 @@ export const CIHotspotViewer = forwardRef<CIHotspotViewerRef, CIHotspotViewerPro
       <>
         <div ref={containerRef} className={className} style={style} />
         {renderPopover && Array.from(portalTargets.entries()).map(([id, target]) => {
-          const hotspot = props.hotspots.find((h) => h.id === id);
+          const hotspot = props.hotspots?.find((h) => h.id === id);
           if (!hotspot) return null;
           return createPortal(
             <>{renderPopover(hotspot)}</>,

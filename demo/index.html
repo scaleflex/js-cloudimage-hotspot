@@ -21,6 +21,7 @@
         <a href="#getting-started">Install</a>
         <a href="#triggers">Triggers</a>
         <a href="#themes">Themes</a>
+        <a href="#scenes">Scenes</a>
         <a href="#configurator">Configurator</a>
         <a href="./editor.html">Visual Editor</a>
       </div>
@@ -131,6 +132,26 @@ const viewer = new CIHotspot('#my-image', {
           <div class="demo-card">
             <h3>Dark Theme</h3>
             <div id="theme-dark" class="demo-viewer"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Multi-Image Navigation (Scenes) -->
+    <section id="scenes" class="demo-section demo-section--alt">
+      <div class="demo-section-inner">
+        <div class="demo-section-header">
+          <h2>Multi-Image Navigation</h2>
+          <p>Navigate between scenes with hotspot-driven transitions. Click the arrow markers to move between rooms.</p>
+        </div>
+        <div class="demo-card">
+          <div id="scenes-viewer" class="demo-viewer"></div>
+          <div class="demo-scene-nav">
+            <button class="demo-btn demo-btn--outline demo-btn--small" data-scene="main-hall">Main Hall</button>
+            <button class="demo-btn demo-btn--outline demo-btn--small" data-scene="stairs">Stairs</button>
+            <button class="demo-btn demo-btn--outline demo-btn--small" data-scene="kitchen">Kitchen</button>
+            <button class="demo-btn demo-btn--outline demo-btn--small" data-scene="bedroom">Bedroom</button>
+            <button class="demo-btn demo-btn--outline demo-btn--small" data-scene="rest-zone">Rest Zone</button>
           </div>
         </div>
       </div>

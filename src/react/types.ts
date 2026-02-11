@@ -1,10 +1,10 @@
-import type { CIHotspotConfig, CIHotspotInstance, HotspotItem } from '../core/types';
+import type { CIHotspotConfig, CIHotspotInstance, HotspotItem, Scene, SceneTransition } from '../core/types';
 import type { CSSProperties, ReactNode, RefObject } from 'react';
 
 export interface CIHotspotViewerProps {
-  src: string;
+  src?: string;
   alt?: string;
-  hotspots: HotspotItem[];
+  hotspots?: HotspotItem[];
   trigger?: CIHotspotConfig['trigger'];
   zoom?: boolean;
   zoomMax?: number;
@@ -20,6 +20,11 @@ export interface CIHotspotViewerProps {
   onClose?: (hotspot: HotspotItem) => void;
   onZoom?: (level: number) => void;
   onClick?: (event: MouseEvent, hotspot: HotspotItem) => void;
+  scenes?: Scene[];
+  initialScene?: string;
+  sceneTransition?: SceneTransition;
+  sceneAspectRatio?: string;
+  onSceneChange?: (sceneId: string, scene: Scene) => void;
   className?: string;
   style?: CSSProperties;
 }
@@ -34,6 +39,9 @@ export interface CIHotspotViewerRef {
   addHotspot(hotspot: HotspotItem): void;
   removeHotspot(id: string): void;
   updateHotspot(id: string, updates: Partial<HotspotItem>): void;
+  goToScene(sceneId: string): void;
+  getCurrentScene(): string | undefined;
+  getScenes(): string[];
 }
 
 export interface UseCIHotspotOptions extends Omit<CIHotspotViewerProps, 'className' | 'style'> {}

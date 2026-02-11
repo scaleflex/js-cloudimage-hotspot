@@ -1,6 +1,6 @@
 import type { CIHotspotConfig, CloudimageConfig } from './types';
 
-export const DEFAULT_CONFIG: Omit<Required<CIHotspotConfig>, 'src' | 'hotspots' | 'cloudimage' | 'renderPopover' | 'onOpen' | 'onClose' | 'onZoom' | 'onClick'> = {
+export const DEFAULT_CONFIG: Omit<Required<CIHotspotConfig>, 'src' | 'hotspots' | 'cloudimage' | 'renderPopover' | 'onOpen' | 'onClose' | 'onZoom' | 'onClick' | 'scenes' | 'initialScene' | 'onSceneChange' | 'sceneAspectRatio'> = {
   alt: '',
   trigger: 'hover',
   zoom: false,
@@ -11,6 +11,8 @@ export const DEFAULT_CONFIG: Omit<Required<CIHotspotConfig>, 'src' | 'hotspots' 
   zoomControls: true,
   placement: 'top',
   lazyLoad: true,
+  sceneTransition: 'fade',
+  scrollHint: true,
 };
 
 /** Data attribute to config property mapping */
@@ -32,6 +34,10 @@ export const DATA_ATTR_MAP: Record<string, { key: string; type: 'string' | 'bool
   'data-ci-hotspot-ci-domain': { key: 'domain', type: 'string', nested: 'cloudimage' },
   'data-ci-hotspot-ci-limit-factor': { key: 'limitFactor', type: 'number', nested: 'cloudimage' },
   'data-ci-hotspot-ci-params': { key: 'params', type: 'string', nested: 'cloudimage' },
+  'data-ci-hotspot-scenes': { key: 'scenes', type: 'json' },
+  'data-ci-hotspot-initial-scene': { key: 'initialScene', type: 'string' },
+  'data-ci-hotspot-scene-transition': { key: 'sceneTransition', type: 'string' },
+  'data-ci-hotspot-scene-aspect-ratio': { key: 'sceneAspectRatio', type: 'string' },
 };
 
 /** Parse data attributes from an element into a config object */
@@ -88,7 +94,29 @@ export function mergeConfig(userConfig: Partial<CIHotspotConfig>): CIHotspotConf
 
 /** Validate config — throws on critical issues */
 export function validateConfig(config: CIHotspotConfig): void {
-  if (!config.src) {
+  if (config.scenes && config.scenes.length > 0) {
+    const sceneIds = new Set<string>();
+    for (const scene of config.scenes) {
+      if (!scene.id) throw new Error('CIHotspot: each scene must have an "id"');
+      if (sceneIds.has(scene.id)) {
+        throw new Error(`CIHotspot: duplicate scene ID "${scene.id}"`);
+      }
+      sceneIds.add(scene.id);
+      if (!scene.src) throw new Error(`CIHotspot: scene "${scene.id}" must have a "src"`);
+    }
+    for (const scene of config.scenes) {
+      for (const hotspot of scene.hotspots || []) {
+        if (hotspot.navigateTo && !sceneIds.has(hotspot.navigateTo)) {
+          throw new Error(`CIHotspot: hotspot "${hotspot.id}" navigateTo "${hotspot.navigateTo}" is not a valid scene ID`);
+        }
+      }
+    }
+    if (config.initialScene) {
+      if (!sceneIds.has(config.initialScene)) {
+        throw new Error(`CIHotspot: initialScene "${config.initialScene}" not found in scenes`);
+      }
+    }
+  } else if (!config.src) {
     throw new Error('CIHotspot: "src" is required');
   }
 }

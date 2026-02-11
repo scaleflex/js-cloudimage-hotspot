@@ -14,9 +14,9 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
     if (!el) return;
 
     const config: CIHotspotConfig = {
-      src: optionsRef.current.src,
+      src: optionsRef.current.src || '',
       alt: optionsRef.current.alt,
-      hotspots: optionsRef.current.hotspots,
+      hotspots: optionsRef.current.hotspots || [],
       trigger: optionsRef.current.trigger,
       zoom: optionsRef.current.zoom,
       zoomMax: optionsRef.current.zoomMax,
@@ -31,6 +31,11 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
       onClose: optionsRef.current.onClose,
       onZoom: optionsRef.current.onZoom,
       onClick: optionsRef.current.onClick,
+      scenes: optionsRef.current.scenes,
+      initialScene: optionsRef.current.initialScene,
+      sceneTransition: optionsRef.current.sceneTransition,
+      sceneAspectRatio: optionsRef.current.sceneAspectRatio,
+      onSceneChange: optionsRef.current.onSceneChange,
     };
 
     // If renderPopover is provided, adapt ReactNode -> HTMLElement
@@ -52,14 +57,18 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
     };
   }, []);
 
+  // Stabilize array references for dependency comparison
+  const scenesKey = JSON.stringify(options.scenes);
+  const hotspotsKey = JSON.stringify(options.hotspots);
+
   // Update on options change
   useEffect(() => {
     if (!instanceRef.current) return;
 
     instanceRef.current.update({
-      src: options.src,
+      src: options.src || '',
       alt: options.alt,
-      hotspots: options.hotspots,
+      hotspots: options.hotspots || [],
       trigger: options.trigger,
       zoom: options.zoom,
       zoomMax: options.zoomMax,
@@ -74,11 +83,16 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
       onClose: options.onClose,
       onZoom: options.onZoom,
       onClick: options.onClick,
+      scenes: options.scenes,
+      initialScene: options.initialScene,
+      sceneTransition: options.sceneTransition,
+      sceneAspectRatio: options.sceneAspectRatio,
+      onSceneChange: options.onSceneChange,
     });
   }, [
     options.src,
     options.alt,
-    options.hotspots,
+    hotspotsKey,
     options.trigger,
     options.zoom,
     options.zoomMax,
@@ -88,6 +102,10 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
     options.placement,
     options.zoomControls,
     options.lazyLoad,
+    scenesKey,
+    options.initialScene,
+    options.sceneTransition,
+    options.sceneAspectRatio,
   ]);
 
   return { containerRef, instance: instanceRef };

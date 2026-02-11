@@ -7,6 +7,8 @@ import type {
   Placement,
   TriggerMode,
   Theme,
+  Scene,
+  SceneTransition,
 } from './core/types';
 
 export type {
@@ -18,6 +20,8 @@ export type {
   Placement,
   TriggerMode,
   Theme,
+  Scene,
+  SceneTransition,
 };
 
 export { CIHotspot } from './core/ci-hotspot';

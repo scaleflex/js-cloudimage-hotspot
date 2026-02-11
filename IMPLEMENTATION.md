@@ -493,6 +493,54 @@ After the initial 10-phase implementation, several refinements and fixes were ap
 
 ---
 
+## Update 10: Multi-Image Navigation — v1.3 Scenes API
+
+Implemented the Scenes API for multi-image navigation with per-image hotspot sets.
+
+### New Types (`src/core/types.ts`)
+- `SceneTransition` type: `'fade' | 'slide' | 'none'`
+- `Scene` interface: `{ id, src, alt?, hotspots[] }`
+- Extended `CIHotspotConfig` with `scenes?`, `initialScene?`, `sceneTransition?`, `onSceneChange?`
+- Extended `CIHotspotInstance` with `goToScene()`, `getCurrentScene()`, `getScenes()`
+
+### Core Implementation (`src/core/ci-hotspot.ts`)
+- **Surgical scene switching**: Keeps container/viewport/zoom/keyboard intact, only swaps image + markers
+- **Cleanup separation**: Split `cleanups[]` into global `cleanups[]` and `hotspotCleanups[]` for per-hotspot listeners
+- `initScenes()` — Populates scenes map, sets initial scene's src/hotspots before DOM build
+- `clearHotspots()` — Removes markers, popovers, and hotspot-level event listeners
+- `performSceneTransition()` — Creates temporary incoming `<img>`, applies CSS animation classes, swaps on completion
+- `switchToScene()` — Updates image src, aria-label, re-initializes hotspots
+- `goToScene()` — Public API: validates, closes popovers, resets zoom, runs transition, announces to screen reader
+- `bindNavigateTrigger()` — Handles `navigateTo` hotspots: adds navigate marker class, binds click/keyboard to `goToScene()`
+- `navigateTo` hotspots display hover popovers with auto-generated destination info, and navigate on click
+
+### Config (`src/core/config.ts`)
+- New data-attributes: `data-ci-hotspot-scenes`, `data-ci-hotspot-initial-scene`, `data-ci-hotspot-scene-transition`
+- Updated `validateConfig()`: scenes mode doesn't require top-level `src`, validates scene `id`/`src`, validates `initialScene`
+- Updated `autoInit()` selector: `[data-ci-hotspot-src], [data-ci-hotspot-scenes]`
+
+### CSS (`src/styles/index.css`)
+- Scene transition animations: fade-in/fade-out, slide-in/slide-out keyframes
+- `.ci-hotspot-marker--navigate` styling with chevron arrow via `::after`
+- `.ci-hotspot-scene-transitioning` hides markers during transition
+- Reduced-motion overrides for scene transitions
+
+### React Wrapper
+- Updated `CIHotspotViewerProps` with `scenes?`, `initialScene?`, `sceneTransition?`, `onSceneChange?`
+- Made `src` and `hotspots` optional (not needed when scenes is provided)
+- Updated `CIHotspotViewerRef` with `goToScene()`, `getCurrentScene()`, `getScenes()`
+- Updated hook and component to pass through scene config and expose scene methods
+
+### Demo
+- New "Multi-Image Navigation" section with 5-scene real estate tour (Main Hall, Stairs, Kitchen, Bedroom, Rest Zone)
+- `navigateTo` hotspots link rooms together; info hotspots show descriptions on hover
+- External scene navigation buttons wired to `goToScene()`
+
+### Tests (`tests/scenes.test.ts`)
+- 35+ tests covering: scene initialization, `goToScene()`, marker creation, `navigateTo` behavior, popovers, `initialScene` config, `onSceneChange` callback, backward compatibility, validation, data-attribute support, destroy cleanup, transitions, aspect ratio
+
+---
+
 ## Dependency Graph (Execution Order)
 
 ```

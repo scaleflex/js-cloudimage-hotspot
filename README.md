@@ -13,6 +13,7 @@ Interactive image hotspots with zoom, popovers, and accessibility. Zero dependen
 - **React wrapper** — Separate entry point with component, hook, and ref API
 - **TypeScript** — Full type definitions
 - **Cloudimage CDN** — Optional responsive image loading
+- **Multi-image scenes** — Navigate between images with animated transitions
 - **< 15 KB gzipped** — Zero runtime dependencies
 
 ## Installation
@@ -107,6 +108,11 @@ new CIHotspot(element: HTMLElement | string, config: CIHotspotConfig)
 | `onZoom` | `(level) => void` | — | Zoom change callback |
 | `onClick` | `(event, hotspot) => void` | — | Marker click callback |
 | `cloudimage` | `CloudimageConfig` | — | Cloudimage CDN config |
+| `scenes` | `Scene[]` | — | Array of scenes for multi-image navigation |
+| `initialScene` | `string` | first scene | Scene ID to display initially |
+| `sceneTransition` | `'fade' \| 'slide' \| 'none'` | `'fade'` | Scene transition animation |
+| `sceneAspectRatio` | `string` | — | Fixed viewport ratio (e.g. `'16/9'`). Prevents layout jumps. |
+| `onSceneChange` | `(id, scene) => void` | — | Scene change callback |
 
 ### HotspotItem
 
@@ -123,6 +129,7 @@ new CIHotspot(element: HTMLElement | string, config: CIHotspotConfig)
 | `className` | `string` | Custom CSS class |
 | `hidden` | `boolean` | Initially hidden |
 | `icon` | `string` | Custom icon |
+| `navigateTo` | `string` | Scene ID to navigate to on click |
 
 ### Instance Methods
 
@@ -138,6 +145,9 @@ instance.removeHotspot(id: string): void
 instance.updateHotspot(id: string, updates: Partial<HotspotItem>): void
 instance.update(config: Partial<CIHotspotConfig>): void
 instance.destroy(): void
+instance.goToScene(sceneId: string): void
+instance.getCurrentScene(): string | undefined
+instance.getScenes(): string[]
 ```
 
 ### Static Methods
@@ -193,6 +203,43 @@ function ProductImage() {
   );
 }
 ```
+
+## Multi-Image Scenes
+
+Navigate between multiple images, each with its own hotspots:
+
+```js
+const viewer = new CIHotspot('#tour', {
+  scenes: [
+    {
+      id: 'living-room',
+      src: '/living-room.jpg',
+      alt: 'Living room',
+      hotspots: [
+        { id: 'sofa', x: '40%', y: '60%', label: 'Sofa', data: { title: 'Modern Sofa' } },
+        { id: 'go-kitchen', x: '85%', y: '50%', label: 'Go to Kitchen', navigateTo: 'kitchen' },
+      ],
+    },
+    {
+      id: 'kitchen',
+      src: '/kitchen.jpg',
+      alt: 'Kitchen',
+      hotspots: [
+        { id: 'island', x: '50%', y: '65%', label: 'Island', data: { title: 'Marble Island' } },
+        { id: 'go-back', x: '10%', y: '50%', label: 'Back', navigateTo: 'living-room' },
+      ],
+    },
+  ],
+  sceneTransition: 'fade',  // 'fade' | 'slide' | 'none'
+});
+
+// Programmatic navigation
+viewer.goToScene('kitchen');
+viewer.getCurrentScene(); // 'kitchen'
+viewer.getScenes();       // ['living-room', 'kitchen']
+```
+
+Hotspots with `navigateTo` display as arrow markers and switch scenes on click.
 
 ## Theming
 

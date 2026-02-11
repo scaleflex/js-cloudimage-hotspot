@@ -7,6 +7,21 @@ export type Placement = 'top' | 'bottom' | 'left' | 'right' | 'auto';
 /** Theme name */
 export type Theme = 'light' | 'dark';
 
+/** Scene transition animation type */
+export type SceneTransition = 'fade' | 'slide' | 'none';
+
+/** A scene in multi-image navigation */
+export interface Scene {
+  /** Unique scene identifier */
+  id: string;
+  /** Image source URL for this scene */
+  src: string;
+  /** Alt text for this scene's image */
+  alt?: string;
+  /** Hotspots specific to this scene */
+  hotspots: HotspotItem[];
+}
+
 /** Data fields for the built-in popover template */
 export interface PopoverData {
   title?: string;
@@ -115,6 +130,16 @@ export interface CIHotspotConfig {
   lazyLoad?: boolean;
   /** Optional Cloudimage integration for responsive image loading */
   cloudimage?: CloudimageConfig;
+  /** Array of scenes for multi-image navigation (v1.3) */
+  scenes?: Scene[];
+  /** Initial scene ID to display (defaults to first scene) */
+  initialScene?: string;
+  /** Scene transition animation type (default: 'fade') */
+  sceneTransition?: SceneTransition;
+  /** Fixed aspect ratio for the scene container (e.g. '16/9'). Prevents layout jumps between scenes with different image dimensions. Images use object-fit: contain. */
+  sceneAspectRatio?: string;
+  /** Called when the active scene changes */
+  onSceneChange?: (sceneId: string, scene: Scene) => void;
 }
 
 /** Instance methods returned by CIHotspot */
@@ -148,6 +173,12 @@ export interface CIHotspotInstance {
   destroy(): void;
   /** Update the entire configuration */
   update(config: Partial<CIHotspotConfig>): void;
+  /** Navigate to a scene by ID */
+  goToScene(sceneId: string): void;
+  /** Get the current scene ID (returns undefined if not in scenes mode) */
+  getCurrentScene(): string | undefined;
+  /** Get all scene IDs (returns empty array if not in scenes mode) */
+  getScenes(): string[];
 }
 
 // --- Internal types (not exported from main entry) ---
