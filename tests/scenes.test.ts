@@ -413,6 +413,92 @@ describe('Scenes validation', () => {
   });
 });
 
+// #38 — Scene transition image load error
+describe('Scene transition image load error', () => {
+  let root: HTMLElement;
+  const OriginalImage = globalThis.Image;
+
+  beforeEach(() => {
+    root = document.createElement('div');
+    root.id = 'test-root';
+    document.body.appendChild(root);
+  });
+
+  afterEach(() => {
+    root.remove();
+    globalThis.Image = OriginalImage;
+  });
+
+  it('scene switch completes even when incoming image fails to load', () => {
+    // Override createElement to make incoming images non-complete so the onerror path is used
+    const origCreate = document.createElement.bind(document);
+    let capturedImg: HTMLImageElement | null = null;
+    vi.spyOn(document, 'createElement').mockImplementation((tag: string, options?: ElementCreationOptions) => {
+      const el = origCreate(tag, options);
+      if (tag === 'img' && !capturedImg) {
+        // Make the first new img element appear as not yet loaded
+        Object.defineProperty(el, 'complete', { value: false, configurable: true });
+        capturedImg = el as HTMLImageElement;
+      }
+      return el;
+    });
+
+    const instance = new CIHotspot(root, makeScenesConfig({ sceneTransition: 'fade' }));
+    // Reset capturedImg after initial setup (the main image was already created)
+    capturedImg = null;
+
+    instance.goToScene('scene-b');
+
+    // Now capturedImg should be the incoming transition image
+    expect(capturedImg).toBeTruthy();
+
+    // Simulate image load error
+    if (capturedImg) {
+      capturedImg.onerror?.(new Event('error'));
+    }
+
+    vi.restoreAllMocks();
+
+    // Scene should still complete the switch despite the error
+    expect(instance.getCurrentScene()).toBe('scene-b');
+    // Transitioning class should be removed
+    const container = root.querySelector('.ci-hotspot-container');
+    expect(container?.classList.contains('ci-hotspot-scene-transitioning')).toBe(false);
+    expect(container?.classList.contains('ci-hotspot-scene-loading')).toBe(false);
+    instance.destroy();
+  });
+
+  it('markers update correctly after image load error', () => {
+    const origCreate = document.createElement.bind(document);
+    let capturedImg: HTMLImageElement | null = null;
+    vi.spyOn(document, 'createElement').mockImplementation((tag: string, options?: ElementCreationOptions) => {
+      const el = origCreate(tag, options);
+      if (tag === 'img' && !capturedImg) {
+        Object.defineProperty(el, 'complete', { value: false, configurable: true });
+        capturedImg = el as HTMLImageElement;
+      }
+      return el;
+    });
+
+    const instance = new CIHotspot(root, makeScenesConfig({ sceneTransition: 'fade' }));
+    capturedImg = null;
+
+    instance.goToScene('scene-b');
+
+    if (capturedImg) {
+      (capturedImg as HTMLImageElement).onerror?.(new Event('error'));
+    }
+
+    vi.restoreAllMocks();
+
+    // Should have scene-b markers
+    const markers = root.querySelectorAll('.ci-hotspot-marker');
+    const ids = Array.from(markers).map((m) => m.getAttribute('data-hotspot-id'));
+    expect(ids).toContain('b1');
+    instance.destroy();
+  });
+});
+
 describe('Scenes data attributes', () => {
   let root: HTMLElement;
 

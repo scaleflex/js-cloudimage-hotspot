@@ -194,32 +194,83 @@ describe('Duplicate hotspot ID handling', () => {
 
 // #22
 describe('Responsive hotspot hide/collapse', () => {
-  it('hotspot with responsive maxWidth hides below threshold', () => {
+  let resizeCallbacks: (() => void)[];
+  let OriginalResizeObserver: typeof ResizeObserver;
+  let origRAF: typeof requestAnimationFrame;
+
+  beforeEach(() => {
+    resizeCallbacks = [];
+    OriginalResizeObserver = globalThis.ResizeObserver;
+    origRAF = globalThis.requestAnimationFrame;
+    // Mock ResizeObserver to capture callbacks and allow manual trigger
+    globalThis.ResizeObserver = class MockResizeObserver {
+      constructor(cb: ResizeObserverCallback) {
+        resizeCallbacks.push(() => cb([] as unknown as ResizeObserverEntry[], this as unknown as ResizeObserver));
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    } as unknown as typeof ResizeObserver;
+    // Mock requestAnimationFrame to execute synchronously
+    globalThis.requestAnimationFrame = (cb: FrameRequestCallback) => { cb(0); return 0; };
+  });
+
+  afterEach(() => {
+    globalThis.ResizeObserver = OriginalResizeObserver;
+    globalThis.requestAnimationFrame = origRAF;
+  });
+
+  it('hotspot with responsive maxWidth hides when container is wider', () => {
+    const containerEl = root;
+    Object.defineProperty(containerEl, 'offsetWidth', { value: 800, configurable: true });
+
     const instance = new CIHotspot(root, makeConfig({
       hotspots: [
-        { id: 'resp', x: '50%', y: '50%', label: 'Responsive', responsive: { maxWidth: 500, action: 'hide' } },
+        { id: 'resp', x: '50%', y: '50%', label: 'Responsive', responsive: { maxWidth: 500 } },
       ],
     }));
-    // In jsdom, container width is 0 which is < 500, so marker should be hidden
-    const marker = root.querySelector('[data-hotspot-id="resp"]');
+
+    // The CI container is inside root — find it and mock its offsetWidth too
+    const ciContainer = root.querySelector('.ci-hotspot-container') as HTMLElement;
+    if (ciContainer) Object.defineProperty(ciContainer, 'offsetWidth', { value: 800, configurable: true });
+
+    // Fire the ResizeObserver callback
+    resizeCallbacks.forEach((cb) => cb());
+
+    const marker = root.querySelector('[data-hotspot-id="resp"]') as HTMLElement;
     expect(marker).toBeTruthy();
-    // The marker should exist but might have hidden class
+    // Container is 800px, maxWidth is 500 → should be hidden
+    expect(marker.classList.contains('ci-hotspot-marker--hidden')).toBe(true);
     instance.destroy();
   });
 
-  it('hotspot with responsive minWidth shown above threshold', () => {
+  it('hotspot with responsive minWidth hides when container is narrower', () => {
+    const containerEl = root;
+    Object.defineProperty(containerEl, 'offsetWidth', { value: 50, configurable: true });
+
     const instance = new CIHotspot(root, makeConfig({
       hotspots: [
-        { id: 'resp2', x: '50%', y: '50%', label: 'Responsive 2', responsive: { minWidth: 100, action: 'hide' } },
+        { id: 'resp2', x: '50%', y: '50%', label: 'Responsive 2', responsive: { minWidth: 100 } },
       ],
     }));
-    const marker = root.querySelector('[data-hotspot-id="resp2"]');
+
+    const ciContainer = root.querySelector('.ci-hotspot-container') as HTMLElement;
+    if (ciContainer) Object.defineProperty(ciContainer, 'offsetWidth', { value: 50, configurable: true });
+
+    resizeCallbacks.forEach((cb) => cb());
+
+    const marker = root.querySelector('[data-hotspot-id="resp2"]') as HTMLElement;
     expect(marker).toBeTruthy();
+    // Container is 50px, minWidth is 100 → should be hidden
+    expect(marker.classList.contains('ci-hotspot-marker--hidden')).toBe(true);
     instance.destroy();
   });
 
   it('hotspot without responsive config is always visible', () => {
     const instance = new CIHotspot(root, makeConfig());
+
+    resizeCallbacks.forEach((cb) => cb());
+
     const marker = root.querySelector('[data-hotspot-id="spot-1"]');
     expect(marker).toBeTruthy();
     expect(marker?.classList.contains('ci-hotspot-marker--hidden')).toBe(false);

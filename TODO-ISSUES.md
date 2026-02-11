@@ -114,19 +114,26 @@ Toast uses `z-index: 10001`, modal overlay stays at `10000`.
 
 ## Test Issues
 
-### 33. Responsive hide test is a false positive
-**File:** `tests/behavioral-gaps.test.ts:196`
-`ResizeObserver` never fires in jsdom, test passes trivially.
+### ~~33. Responsive hide test is a false positive~~ FIXED
+Mocked `ResizeObserver` and `requestAnimationFrame` to fire synchronously. Tests now verify `ci-hotspot-marker--hidden` class is applied for both `maxWidth` and `minWidth` thresholds.
 
-### 34. `pan works when zoomed` test is vacuous
-**File:** `tests/zoom.test.ts:65`
-Pans positive which clamps to 0, assertion meaningless.
+### ~~34. `pan works when zoomed` test is vacuous~~ FIXED
+Changed to pan negative (valid range is `[-max, 0]`). Asserts the actual translate values are negative.
 
 ### ~~35. Duplicate ID test documents bug as expected behavior~~ FIXED
 Updated test to verify new correct behavior: duplicate IDs replace old marker instead of creating orphaned DOM.
 
-### 36. Missing: Firefox `deltaMode` wheel events
-### 37. Missing: `setZoom` with origin parameters
-### 38. Missing: Scene transition image load error
-### 39. Missing: Double-click blocked when ZoomPan disabled
-### 40. Missing: `ZoomPan.destroy()` removes document listeners
+### ~~36. Missing: Firefox `deltaMode` wheel events~~ FIXED
+Added test verifying `deltaMode=1` (line mode) produces larger zoom change than `deltaMode=0` for same `deltaY`.
+
+### ~~37. Missing: `setZoom` with origin parameters~~ FIXED
+Added 3 tests: zoom toward center, top-left, and bottom-right. Verifies pan adjustment produces correct directional offsets.
+
+### ~~38. Missing: Scene transition image load error~~ FIXED
+Mocked `createElement` to make incoming image non-`complete`, then fires `onerror`. Verifies scene switch completes and markers update despite load failure.
+
+### ~~39. Missing: Double-click blocked when ZoomPan disabled~~ FIXED
+Added tests for disabled double-click (stays at zoom 1) and re-enabled double-click (zooms to 2).
+
+### ~~40. Missing: `ZoomPan.destroy()` removes document listeners~~ FIXED
+Verifies that after destroy, document mousemove events don't affect a newly created ZoomPan instance.
