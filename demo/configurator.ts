@@ -1,9 +1,9 @@
 import CIHotspot from '../src/index';
-import type { CIHotspotConfig } from '../src/core/types';
+import type { CIHotspotConfig } from '../src';
 
 const DEMO_IMAGE = 'https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/alexandra-gorn-unsplash.jpg';
 
-let instance: ReturnType<typeof CIHotspot.prototype.destroy extends () => void ? InstanceType<typeof CIHotspot> : never> | null = null;
+let instance: CIHotspot | null = null;
 
 const defaultHotspots = [
   {
