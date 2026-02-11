@@ -20,7 +20,7 @@ export interface CIHotspotViewerProps {
   onOpen?: (hotspot: HotspotItem) => void;
   onClose?: (hotspot: HotspotItem) => void;
   onZoom?: (level: number) => void;
-  onClick?: (event: MouseEvent, hotspot: HotspotItem) => void;
+  onClick?: (event: MouseEvent | KeyboardEvent, hotspot: HotspotItem) => void;
   scenes?: Scene[];
   initialScene?: string;
   sceneTransition?: SceneTransition;

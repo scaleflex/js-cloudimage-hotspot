@@ -327,8 +327,8 @@ export class CIHotspot implements CIHotspotInstance {
         e.preventDefault();
         popover?.hide();
         setMarkerActive(marker, false);
-        this.config.onClick?.(e as unknown as MouseEvent, hotspot);
-        hotspot.onClick?.(e as unknown as MouseEvent, hotspot);
+        this.config.onClick?.(e, hotspot);
+        hotspot.onClick?.(e, hotspot);
         this.goToScene(hotspot.navigateTo!);
       }
     });
@@ -430,7 +430,7 @@ export class CIHotspot implements CIHotspotInstance {
     const keyCleanup = addListener(marker, 'keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        this.config.onClick?.(e as unknown as MouseEvent, hotspot);
+        this.config.onClick?.(e, hotspot);
         if (popover.isVisible()) {
           popover.hide();
           setMarkerActive(marker, false);

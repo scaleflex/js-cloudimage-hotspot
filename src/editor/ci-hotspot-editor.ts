@@ -80,6 +80,9 @@ export class CIHotspotEditor {
 
   private buildDOM(): void {
     this.editorEl = createElement('div', 'ci-editor');
+    if (this.config.theme === 'dark') {
+      this.editorEl.classList.add('ci-editor--dark');
+    }
     this.canvasEl = createElement('div', 'ci-editor-canvas');
     this.sidebarEl = createElement('div', 'ci-editor-sidebar');
     this.statusEl = createElement('div', 'ci-editor-status');

@@ -130,6 +130,9 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
     options.initialScene,
     options.sceneTransition,
     options.sceneAspectRatio,
+    // Note: Callback props (onOpen, onClose, onZoom, onClick, onSceneChange) are
+    // intentionally excluded from this dependency array. They are read from optionsRef
+    // at call time, so they always reflect the latest value without triggering re-init.
   ]);
 
   return { containerRef, instance: instanceRef };

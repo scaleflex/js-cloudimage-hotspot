@@ -79,7 +79,7 @@ export interface HotspotItem {
   /** Override global placement for this specific hotspot's popover */
   placement?: Placement;
   /** Custom click handler for this hotspot */
-  onClick?: (event: MouseEvent, hotspot: HotspotItem) => void;
+  onClick?: (event: MouseEvent | KeyboardEvent, hotspot: HotspotItem) => void;
   /** Whether this hotspot marker is initially hidden (default: false) */
   hidden?: boolean;
   /** Custom icon — CSS class name, SVG string, or image URL */
@@ -117,7 +117,7 @@ export interface CIHotspotConfig {
   /** Called on zoom level change */
   onZoom?: (level: number) => void;
   /** Called when a hotspot marker is clicked */
-  onClick?: (event: MouseEvent, hotspot: HotspotItem) => void;
+  onClick?: (event: MouseEvent | KeyboardEvent, hotspot: HotspotItem) => void;
   /** Enable/disable marker pulse animation (default: true) */
   pulse?: boolean;
   /** Show zoom controls UI (default: true when zoom is enabled) */

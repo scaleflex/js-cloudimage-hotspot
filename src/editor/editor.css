@@ -457,6 +457,131 @@
   margin-top: 8px;
 }
 
+/* === Dark Theme === */
+.ci-editor--dark {
+  --ci-editor-panel-bg: #1e1e1e;
+  --ci-editor-panel-color: #e0e0e0;
+  --ci-editor-panel-border: 1px solid #3a3a3a;
+  --ci-editor-panel-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --ci-editor-accent: #4a9eff;
+  --ci-editor-accent-hover: #3a8eef;
+  --ci-editor-danger: #ef5350;
+  --ci-editor-danger-hover: #e53935;
+  --ci-editor-selected-ring: 0 0 0 3px rgba(74, 158, 255, 0.5);
+  --ci-editor-toolbar-bg: #252525;
+}
+
+.ci-editor--dark .ci-editor-canvas {
+  background: #2a2a2a;
+}
+
+.ci-editor--dark .ci-editor-toolbar-separator {
+  background: #444;
+}
+
+.ci-editor--dark .ci-editor-btn {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
+.ci-editor--dark .ci-editor-btn:hover {
+  background: #333;
+  border-color: #555;
+}
+
+.ci-editor--dark .ci-editor-btn:active {
+  background: #3a3a3a;
+}
+
+.ci-editor--dark .ci-editor-btn--active {
+  background: var(--ci-editor-accent);
+  color: #ffffff;
+  border-color: var(--ci-editor-accent);
+}
+
+.ci-editor--dark .ci-editor-btn--active:hover {
+  background: var(--ci-editor-accent-hover);
+  border-color: var(--ci-editor-accent-hover);
+}
+
+.ci-editor--dark .ci-editor-btn--primary {
+  background: var(--ci-editor-accent);
+  color: #ffffff;
+  border-color: var(--ci-editor-accent);
+}
+
+.ci-editor--dark .ci-editor-btn:disabled {
+  opacity: 0.3;
+}
+
+.ci-editor--dark .ci-editor-toolbar-url {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
+.ci-editor--dark .ci-editor-btn-icon {
+  color: #999;
+}
+
+.ci-editor--dark .ci-editor-field label {
+  color: #999;
+}
+
+.ci-editor--dark .ci-editor-field input[type="text"],
+.ci-editor--dark .ci-editor-field input[type="number"],
+.ci-editor--dark .ci-editor-field input[type="url"],
+.ci-editor--dark .ci-editor-field textarea,
+.ci-editor--dark .ci-editor-field select {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
+.ci-editor--dark .ci-editor-panel-empty {
+  color: #777;
+}
+
+.ci-editor--dark .ci-editor-hotspot-item {
+  border-bottom-color: #333;
+}
+
+.ci-editor--dark .ci-editor-hotspot-item:hover {
+  background: #2a2a2a;
+}
+
+.ci-editor--dark .ci-editor-hotspot-item--selected {
+  background: rgba(74, 158, 255, 0.1);
+}
+
+.ci-editor--dark .ci-editor-hotspot-item-coords {
+  color: #777;
+}
+
+.ci-editor--dark .ci-editor-status {
+  color: #888;
+}
+
+.ci-editor--dark .ci-editor-panel-actions {
+  border-top-color: #3a3a3a;
+}
+
+.ci-editor--dark .ci-editor-toast {
+  background: #e0e0e0;
+  color: #1e1e1e;
+}
+
+.ci-editor--dark .ci-editor-modal {
+  background: #1e1e1e;
+}
+
+.ci-editor--dark .ci-editor-modal textarea {
+  background: #2a2a2a;
+  color: #e0e0e0;
+  border-color: #444;
+}
+
 /* === Responsive === */
 @media (max-width: 768px) {
   .ci-editor-body {

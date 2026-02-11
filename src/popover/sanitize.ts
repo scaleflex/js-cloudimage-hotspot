@@ -9,6 +9,10 @@ const ALLOWED_ATTRS = new Set([
 
 const SAFE_HREF_PATTERN = /^(?:https?:|mailto:)/i;
 const SAFE_SRC_PATTERN = /^(?:https?:|data:image\/(?!svg[+%]))/i;
+const SAFE_REL_VALUES = new Set([
+  'noopener', 'noreferrer', 'nofollow', 'external', 'author', 'help',
+  'license', 'next', 'prev', 'search', 'tag', 'bookmark',
+]);
 
 /**
  * Sanitize HTML string to prevent XSS.
@@ -63,6 +67,13 @@ function sanitizeNode(node: Node): void {
           el.removeAttribute(attr.name);
         } else if (name === 'src' && !SAFE_SRC_PATTERN.test(attr.value.trim())) {
           el.removeAttribute(attr.name);
+        } else if (name === 'rel') {
+          const safeTokens = attr.value.trim().toLowerCase().split(/\s+/).filter((t) => SAFE_REL_VALUES.has(t));
+          if (safeTokens.length === 0) {
+            el.removeAttribute(attr.name);
+          } else {
+            el.setAttribute(attr.name, safeTokens.join(' '));
+          }
         }
       }
 

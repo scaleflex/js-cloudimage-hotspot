@@ -4,26 +4,6 @@ Final review findings, organized by severity.
 
 ---
 
-## Low
-
-### 9. Sanitizer `rel` attribute not validated
-**File:** `src/popover/sanitize.ts:6-8`
-The `rel` attribute is allowed without value validation. Values like `dns-prefetch` could trigger prefetch attacks.
-
-### 10. React hook: callback props not in dependency array
-**File:** `src/react/use-ci-hotspot.ts:100-119`
-`onOpen`, `onClose`, `onZoom`, `onClick`, `onSceneChange` aren't in the deps array. Intentional (uses `optionsRef`), but worth documenting.
-
-### 11. `KeyboardEvent` cast to `MouseEvent` in keyboard handler
-**File:** `src/core/ci-hotspot.ts:428`
-`e as unknown as MouseEvent` is a lossy cast. The `onClick` type should accept `MouseEvent | KeyboardEvent`.
-
-### 12. No editor dark theme CSS
-**File:** `src/editor/editor.css`
-Editor uses hardcoded colors with no `.ci-hotspot-theme-dark` overrides.
-
----
-
 ## Test Gaps
 
 ### 13. Gesture recognition — 0% coverage
