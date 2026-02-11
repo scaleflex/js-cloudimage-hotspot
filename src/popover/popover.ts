@@ -27,7 +27,7 @@ export class Popover {
     this.hotspot = hotspot;
     this.options = options;
 
-    const isDialog = options.triggerMode === 'click';
+    const isDialog = options.triggerMode === 'click' || options.triggerMode === 'load';
     this.element = createElement('div', 'ci-hotspot-popover', {
       'role': isDialog ? 'dialog' : 'tooltip',
       'id': `ci-hotspot-popover-${hotspot.id}`,
@@ -70,7 +70,7 @@ export class Popover {
     containerEl.appendChild(this.element);
 
     // Set appropriate ARIA relationship on marker
-    if (this.options.triggerMode === 'click') {
+    if (this.options.triggerMode === 'click' || this.options.triggerMode === 'load') {
       markerEl.setAttribute('aria-haspopup', 'dialog');
       markerEl.setAttribute('aria-controls', this.element.id);
     } else {

@@ -214,13 +214,103 @@ describe('CIHotspot', () => {
     instance.destroy();
   });
 
-  it('load trigger shows all popovers after image load', () => {
+  it('load trigger shows only first popover after image load', () => {
     const instance = new CIHotspot(root, makeConfig({ trigger: 'load' }));
     // jsdom doesn't fire image load events, so simulate it
     const img = root.querySelector('.ci-hotspot-image') as HTMLImageElement;
     img.dispatchEvent(new Event('load'));
     const popovers = root.querySelectorAll('.ci-hotspot-popover--visible');
-    expect(popovers.length).toBe(2);
+    expect(popovers.length).toBe(1);
+    instance.destroy();
+  });
+});
+
+describe('CIHotspot load trigger close mechanisms', () => {
+  let root: HTMLElement;
+
+  beforeEach(() => {
+    root = document.createElement('div');
+    root.id = 'test-root';
+    document.body.appendChild(root);
+  });
+
+  afterEach(() => {
+    root.remove();
+  });
+
+  function createLoadInstance(overrides?: Partial<CIHotspotConfig>) {
+    const instance = new CIHotspot(root, makeConfig({ trigger: 'load', ...overrides }));
+    const img = root.querySelector('.ci-hotspot-image') as HTMLImageElement;
+    img.dispatchEvent(new Event('load'));
+    return instance;
+  }
+
+  it('clicking the marker closes the load popover', () => {
+    const instance = createLoadInstance();
+    const marker = root.querySelector('.ci-hotspot-marker') as HTMLElement;
+    marker.click();
+    const visible = root.querySelectorAll('.ci-hotspot-popover--visible');
+    expect(visible.length).toBe(0);
+    instance.destroy();
+  });
+
+  it('clicking outside closes the load popover', () => {
+    const instance = createLoadInstance();
+    expect(root.querySelectorAll('.ci-hotspot-popover--visible').length).toBe(1);
+    document.body.click();
+    expect(root.querySelectorAll('.ci-hotspot-popover--visible').length).toBe(0);
+    instance.destroy();
+  });
+
+  it('clicking the marker again reopens the load popover', () => {
+    const instance = createLoadInstance();
+    const marker = root.querySelector('.ci-hotspot-marker') as HTMLElement;
+    // Close
+    marker.click();
+    expect(root.querySelectorAll('.ci-hotspot-popover--visible').length).toBe(0);
+    // Reopen
+    marker.click();
+    expect(root.querySelectorAll('.ci-hotspot-popover--visible').length).toBe(1);
+    instance.destroy();
+  });
+
+  it('keepOpen prevents outside click from closing', () => {
+    const instance = createLoadInstance({
+      hotspots: [
+        { id: 'spot-1', x: '40%', y: '60%', label: 'Spot 1', data: { title: 'Item 1' }, keepOpen: true },
+        { id: 'spot-2', x: '75%', y: '25%', label: 'Spot 2', data: { title: 'Item 2' } },
+      ],
+    });
+    expect(root.querySelectorAll('.ci-hotspot-popover--visible').length).toBe(1);
+    document.body.click();
+    // Should still be visible because keepOpen is true
+    expect(root.querySelectorAll('.ci-hotspot-popover--visible').length).toBe(1);
+    instance.destroy();
+  });
+
+  it('load popover has dialog ARIA attributes', () => {
+    const instance = createLoadInstance();
+    const popover = root.querySelector('.ci-hotspot-popover') as HTMLElement;
+    expect(popover.getAttribute('role')).toBe('dialog');
+    const marker = root.querySelector('.ci-hotspot-marker') as HTMLElement;
+    expect(marker.getAttribute('aria-haspopup')).toBe('dialog');
+    expect(marker.hasAttribute('aria-controls')).toBe(true);
+    instance.destroy();
+  });
+
+  it('clicking a different hotspot marker closes the first load popover', () => {
+    const instance = createLoadInstance();
+    const markers = root.querySelectorAll('.ci-hotspot-marker');
+    // First popover is open
+    expect(root.querySelectorAll('.ci-hotspot-popover--visible').length).toBe(1);
+    // Click the second marker
+    (markers[1] as HTMLElement).click();
+    // The second popover should now be open (and first closed)
+    const visible = root.querySelectorAll('.ci-hotspot-popover--visible');
+    expect(visible.length).toBe(1);
+    // Verify it's the second popover that's visible
+    const allPopovers = root.querySelectorAll('.ci-hotspot-popover');
+    expect(allPopovers[1]?.classList.contains('ci-hotspot-popover--visible')).toBe(true);
     instance.destroy();
   });
 });

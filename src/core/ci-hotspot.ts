@@ -264,8 +264,11 @@ export class CIHotspot implements CIHotspotInstance {
 
     // Handle per-hotspot trigger override for 'load'
     if (triggerMode === 'load' && this.imageLoaded) {
+      this.closeAll();
       popover.show();
       setMarkerActive(marker, true);
+      this.ensureFocusTrap(hotspot.id, popover.element, marker);
+      this.focusTraps.get(hotspot.id)?.activate();
     }
   }
 
@@ -363,7 +366,7 @@ export class CIHotspot implements CIHotspotInstance {
   ): void {
     if (triggerMode === 'hover') {
       this.bindHoverTrigger(hotspot, marker, popover);
-    } else if (triggerMode === 'click') {
+    } else if (triggerMode === 'click' || triggerMode === 'load') {
       this.bindClickTrigger(hotspot, marker, popover);
     }
     this.bindKeyboardTrigger(hotspot, marker, popover, triggerMode);
@@ -504,6 +507,9 @@ export class CIHotspot implements CIHotspotInstance {
         popover.show();
         const marker = this.markers.get(id);
         if (marker) setMarkerActive(marker, true);
+        this.ensureFocusTrap(id, popover.element, marker!);
+        this.focusTraps.get(id)?.activate();
+        break;
       }
     }
   }
