@@ -388,8 +388,13 @@ export class CIHotspot implements CIHotspotInstance {
       }
     });
 
-    const outsideCleanup = addListener(document, 'click', () => {
-      if (popover.isVisible() && !hotspot.keepOpen) {
+    const outsideCleanup = addListener(document, 'click', (e) => {
+      if (
+        popover.isVisible() &&
+        !hotspot.keepOpen &&
+        !popover.element.contains(e.target as Node) &&
+        !marker.contains(e.target as Node)
+      ) {
         popover.hide();
         setMarkerActive(marker, false);
         trap.deactivate();

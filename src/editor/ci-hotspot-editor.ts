@@ -405,6 +405,7 @@ export class CIHotspotEditor {
     this.cleanups.forEach((fn) => fn());
     this.cleanups = [];
     this.dragManager.destroy();
+    this.selection.destroy();
     this.toolbar.destroy();
     this.viewer?.destroy();
     this.events.removeAll();
