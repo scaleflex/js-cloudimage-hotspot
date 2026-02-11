@@ -33,6 +33,7 @@ export class CIHotspot implements CIHotspotInstance {
   private keyboardHandler: KeyboardHandler | null = null;
   private focusTraps = new Map<string, ReturnType<typeof createFocusTrap>>();
   private cleanups: (() => void)[] = [];
+  private imageLoaded = false;
   private destroyed = false;
 
   constructor(element: HTMLElement | string, config: CIHotspotConfig) {
@@ -106,8 +107,11 @@ export class CIHotspot implements CIHotspotInstance {
   private setupImage(): void {
     const onLoad = () => {
       removeClass(this.containerEl, 'ci-hotspot-loading');
+      this.imageLoaded = true;
       // Normalize pixel coordinates now that we know natural dimensions
       this.renormalizePixelCoordinates();
+      // Now that the image defines the container size, show load-trigger popovers
+      this.showLoadTriggerPopovers();
     };
 
     this.imgEl.addEventListener('load', onLoad);
@@ -160,15 +164,6 @@ export class CIHotspot implements CIHotspotInstance {
     for (const hotspot of this.config.hotspots) {
       this.addHotspotInternal(hotspot);
     }
-
-    // Show load-trigger popovers immediately
-    if (this.config.trigger === 'load') {
-      for (const [, popover] of this.popovers) {
-        popover.show();
-        const marker = this.markers.get(popover.getHotspot().id);
-        if (marker) setMarkerActive(marker, true);
-      }
-    }
   }
 
   private addHotspotInternal(hotspot: HotspotItem): void {
@@ -207,7 +202,7 @@ export class CIHotspot implements CIHotspotInstance {
     this.bindTrigger(hotspot, marker, popover, triggerMode);
 
     // Handle per-hotspot trigger override for 'load'
-    if (triggerMode === 'load') {
+    if (triggerMode === 'load' && this.imageLoaded) {
       popover.show();
       setMarkerActive(marker, true);
     }
@@ -329,6 +324,18 @@ export class CIHotspot implements CIHotspotInstance {
           normalized.x = x;
           normalized.y = y;
         }
+      }
+    }
+  }
+
+  private showLoadTriggerPopovers(): void {
+    for (const [id, popover] of this.popovers) {
+      const hotspot = this.config.hotspots.find((h) => h.id === id);
+      const triggerMode = hotspot?.trigger || this.config.trigger || 'hover';
+      if (triggerMode === 'load' && !popover.isVisible()) {
+        popover.show();
+        const marker = this.markers.get(id);
+        if (marker) setMarkerActive(marker, true);
       }
     }
   }
@@ -495,6 +502,8 @@ export class CIHotspot implements CIHotspotInstance {
   }
 
   private destroyInternal(): void {
+    this.imageLoaded = false;
+
     // Run all cleanup functions
     this.cleanups.forEach((fn) => fn());
     this.cleanups = [];
