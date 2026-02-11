@@ -42,7 +42,7 @@ export default function App() {
 
   return (
     <div className="demo-container">
-      <h1>React Demo — CIHotspotViewer</h1>
+      <h1>React Demo — Cloudimage Hotspot Viewer</h1>
 
       <CIHotspotViewer
         ref={viewerRef}

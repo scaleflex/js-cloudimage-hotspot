@@ -1,4 +1,4 @@
-import type { HotspotItem, Placement, TriggerMode } from '../core/types';
+import type { CloudimageConfig, HotspotItem, Placement, TriggerMode } from '../core/types';
 
 /** Editor configuration */
 export interface EditorConfig {
@@ -14,6 +14,8 @@ export interface EditorConfig {
   defaultPlacement?: Placement;
   /** Called whenever hotspots change */
   onChange?: (hotspots: HotspotItem[]) => void;
+  /** Cloudimage CDN configuration (passed through to the internal viewer) */
+  cloudimage?: CloudimageConfig;
   /** Maximum undo history size (default: 50) */
   maxHistory?: number;
 }

@@ -188,6 +188,7 @@ export class CIHotspotEditor {
       trigger: 'click',
       pulse: false,
       lazyLoad: false,
+      ...(this.config.cloudimage ? { cloudimage: this.config.cloudimage } : {}),
     });
 
     // Re-apply selection visuals
