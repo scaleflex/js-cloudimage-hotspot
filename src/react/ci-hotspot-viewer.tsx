@@ -1,6 +1,6 @@
 import React, { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { useCIHotspot } from './useCIHotspot';
+import { useCIHotspot } from './use-ci-hotspot';
 import type { CIHotspotViewerProps, CIHotspotViewerRef } from './types';
 
 export const CIHotspotViewer = forwardRef<CIHotspotViewerRef, CIHotspotViewerProps>(

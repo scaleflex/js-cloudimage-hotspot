@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { ZoomPan } from '../src/zoom/ZoomPan';
+import { ZoomPan } from '../src/zoom/zoom-pan';
 import { createZoomControls } from '../src/zoom/controls';
-import { ScrollHint } from '../src/zoom/ScrollHint';
+import { ScrollHint } from '../src/zoom/scroll-hint';
 
 describe('ZoomPan', () => {
   let container: HTMLElement;

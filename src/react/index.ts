@@ -1,5 +1,5 @@
-export { CIHotspotViewer } from './CIHotspotViewer';
-export { useCIHotspot } from './useCIHotspot';
+export { CIHotspotViewer } from './ci-hotspot-viewer';
+export { useCIHotspot } from './use-ci-hotspot';
 export type {
   CIHotspotViewerProps,
   CIHotspotViewerRef,

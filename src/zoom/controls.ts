@@ -1,5 +1,5 @@
 import { createElement } from '../utils/dom';
-import type { ZoomPan } from './ZoomPan';
+import type { ZoomPan } from './zoom-pan';
 
 export interface ZoomControlsOptions {
   zoomMin: number;

@@ -1,6 +1,6 @@
 import type { HotspotItem } from '../core/types';
 import { createElement } from '../utils/dom';
-import type { CIHotspotEditor } from './CIHotspotEditor';
+import type { CIHotspotEditor } from './ci-hotspot-editor';
 
 export class PropertyPanel {
   private panelEl: HTMLElement;

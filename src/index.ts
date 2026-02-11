@@ -20,6 +20,6 @@ export type {
   Theme,
 };
 
-export { CIHotspot } from './core/CIHotspot';
-import { CIHotspot } from './core/CIHotspot';
+export { CIHotspot } from './core/ci-hotspot';
+import { CIHotspot } from './core/ci-hotspot';
 export default CIHotspot;

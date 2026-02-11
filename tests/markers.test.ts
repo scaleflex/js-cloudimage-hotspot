@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { createMarker, setMarkerActive, setMarkerHidden, destroyMarker } from '../src/markers/Marker';
+import { createMarker, setMarkerActive, setMarkerHidden, destroyMarker } from '../src/markers/marker';
 import type { NormalizedHotspot } from '../src/core/types';
 
 function makeHotspot(overrides?: Partial<NormalizedHotspot>): NormalizedHotspot {

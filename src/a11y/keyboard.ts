@@ -1,4 +1,4 @@
-import type { ZoomPan } from '../zoom/ZoomPan';
+import type { ZoomPan } from '../zoom/zoom-pan';
 import { addListener } from '../utils/events';
 
 export interface KeyboardHandlerOptions {

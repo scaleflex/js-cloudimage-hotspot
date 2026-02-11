@@ -1,5 +1,5 @@
 import type { EditorSnapshot } from './types';
-import type { CIHotspotEditor } from './CIHotspotEditor';
+import type { CIHotspotEditor } from './ci-hotspot-editor';
 
 export class UndoManager {
   private undoStack: EditorSnapshot[] = [];

@@ -1,5 +1,5 @@
 import { addListener } from '../utils/events';
-import type { CIHotspotEditor } from './CIHotspotEditor';
+import type { CIHotspotEditor } from './ci-hotspot-editor';
 
 export class DragManager {
   private cleanups: (() => void)[] = [];

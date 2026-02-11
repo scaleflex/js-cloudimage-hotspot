@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback } from 'react';
 import type { CIHotspotInstance, CIHotspotConfig, HotspotItem } from '../core/types';
-import { CIHotspot } from '../core/CIHotspot';
+import { CIHotspot } from '../core/ci-hotspot';
 import type { UseCIHotspotOptions, UseCIHotspotReturn } from './types';
 
 export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {

@@ -2,12 +2,12 @@ import type { HotspotItem, Placement, TriggerMode } from '../core/types';
 import type { EditorConfig, EditorMode, EditorSnapshot } from './types';
 import { createElement, injectStyles } from '../utils/dom';
 import { EventEmitter, addListener } from '../utils/events';
-import { CIHotspot } from '../core/CIHotspot';
-import { EditorToolbar } from './EditorToolbar';
-import { SelectionManager } from './SelectionManager';
-import { PropertyPanel } from './PropertyPanel';
-import { DragManager } from './DragManager';
-import { UndoManager } from './UndoManager';
+import { CIHotspot } from '../core/ci-hotspot';
+import { EditorToolbar } from './editor-toolbar';
+import { SelectionManager } from './selection-manager';
+import { PropertyPanel } from './property-panel';
+import { DragManager } from './drag-manager';
+import { UndoManager } from './undo-manager';
 import editorCss from './editor.css?inline';
 import viewerCss from '../styles/index.css?inline';
 

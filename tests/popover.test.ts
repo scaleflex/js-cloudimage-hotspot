@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { Popover } from '../src/popover/Popover';
+import { Popover } from '../src/popover/popover';
 import { renderBuiltInTemplate, renderPopoverContent } from '../src/popover/template';
 import type { HotspotItem } from '../src/core/types';
 

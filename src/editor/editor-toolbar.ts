@@ -1,5 +1,5 @@
 import { createElement } from '../utils/dom';
-import type { CIHotspotEditor } from './CIHotspotEditor';
+import type { CIHotspotEditor } from './ci-hotspot-editor';
 
 const ICONS = {
   cursor: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>',

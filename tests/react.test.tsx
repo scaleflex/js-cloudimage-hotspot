@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import React, { createRef } from 'react';
 import { render, cleanup, act } from '@testing-library/react';
-import { CIHotspotViewer } from '../src/react/CIHotspotViewer';
+import { CIHotspotViewer } from '../src/react/ci-hotspot-viewer';
 import type { CIHotspotViewerRef } from '../src/react/types';
 import type { HotspotItem } from '../src/core/types';
 
