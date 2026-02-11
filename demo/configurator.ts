@@ -1,24 +1,24 @@
 import CIHotspot from '../src/index';
 import type { CIHotspotConfig } from '../src/core/types';
 
-const DEMO_IMAGE = 'https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/spacejoy-2-unsplash.jpg';
+const DEMO_IMAGE = 'https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/alexandra-gorn-unsplash.jpg';
 
 let instance: ReturnType<typeof CIHotspot.prototype.destroy extends () => void ? InstanceType<typeof CIHotspot> : never> | null = null;
 
 const defaultHotspots = [
   {
     id: 'cfg-1',
-    x: '52%',
-    y: '55%',
-    label: 'Channel-Tufted Bed',
-    data: { title: 'Channel-Tufted Bed', description: 'Upholstered king frame in cream linen with vertical channel stitching and plush layered bedding.' },
+    x: '50%',
+    y: '82%',
+    label: 'Emerald Dresser',
+    data: { title: 'Emerald Dresser', description: 'Hand-painted vintage four-drawer chest in deep emerald green with original round knobs.' },
   },
   {
     id: 'cfg-2',
-    x: '42%',
-    y: '16%',
-    label: 'Brass Chandelier',
-    data: { title: 'Brass Chandelier', description: 'Six-arm sputnik fixture in brushed brass with exposed-bulb warm LEDs.' },
+    x: '40%',
+    y: '24%',
+    label: 'Botanical Gallery',
+    data: { title: 'Botanical Gallery', description: 'Pair of framed watercolor leaf prints on a white-painted exposed-brick wall.' },
   },
 ];
 

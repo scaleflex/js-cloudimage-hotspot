@@ -34,7 +34,7 @@
   /* === Popover Content (built-in template) === */
   --ci-hotspot-title-font-size: 16px;
   --ci-hotspot-title-font-weight: 600;
-  --ci-hotspot-title-color: var(--ci-hotspot-popover-color);
+  --ci-hotspot-title-color: #1a1a1a;
   --ci-hotspot-price-color: #2d8c3c;
   --ci-hotspot-price-font-size: 18px;
   --ci-hotspot-price-font-weight: 700;
@@ -392,6 +392,7 @@
   --ci-hotspot-popover-color: #f0f0f0;
   --ci-hotspot-popover-border: 1px solid rgba(255, 255, 255, 0.1);
   --ci-hotspot-popover-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --ci-hotspot-title-color: #f0f0f0;
   --ci-hotspot-description-color: #aaaaaa;
   --ci-hotspot-zoom-controls-bg: rgba(30, 30, 30, 0.9);
   --ci-hotspot-zoom-controls-color: #f0f0f0;

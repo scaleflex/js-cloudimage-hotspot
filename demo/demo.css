@@ -422,11 +422,39 @@ kbd {
 /* ── Configurator ────────────────────────────────── */
 .demo-configurator {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 40fr 60fr;
   gap: 20px;
+  align-items: stretch;
 }
 
-.demo-configurator-panel h3 {
+.demo-configurator-preview {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-configurator-preview .demo-viewer {
+  flex: 1;
+}
+
+.demo-configurator-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-configurator-panel #cfg-code {
+  flex: 1;
+  margin-bottom: 12px;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.demo-configurator-panel .demo-btn {
+  align-self: flex-start;
+}
+
+.demo-configurator-preview > h3,
+.demo-configurator-panel > h3 {
   font-size: 14px;
   font-weight: 600;
   text-transform: uppercase;
@@ -435,8 +463,14 @@ kbd {
   margin-bottom: 12px;
 }
 
-.demo-configurator-panel h3:not(:first-child) {
-  margin-top: 20px;
+.demo-configurator-panel > h3:not(:first-child) {
+  margin-top: 28px;
+}
+
+@media (max-width: 768px) {
+  .demo-configurator {
+    grid-template-columns: 1fr;
+  }
 }
 
 .demo-configurator-controls {
