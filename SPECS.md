@@ -155,6 +155,9 @@ interface CIHotspotConfig {
   /** Enable lazy loading of the image (default: true) */
   lazyLoad?: boolean;
 
+  /** Show scroll hint when user scrolls without Ctrl/Cmd over zoomed container (default: true when zoom enabled) */
+  scrollHint?: boolean;
+
   /** Optional Cloudimage integration for responsive image loading */
   cloudimage?: {
     /** Cloudimage customer token (e.g. 'demo'). Enables Cloudimage when set. */
@@ -306,6 +309,7 @@ CIHotspot.autoInit(root?: HTMLElement): CIHotspotInstance[];
 | `data-ci-hotspot-placement` | `placement` | `'top' \| 'bottom' \| 'left' \| 'right' \| 'auto'` |
 | `data-ci-hotspot-lazy-load` | `lazyLoad` | `'true' \| 'false'` |
 | `data-ci-hotspot-zoom-controls` | `zoomControls` | `'true' \| 'false'` |
+| `data-ci-hotspot-scroll-hint` | `scrollHint` | `'true' \| 'false'` |
 | `data-ci-hotspot-ci-token` | `cloudimage.token` | `string` |
 | `data-ci-hotspot-ci-api-version` | `cloudimage.apiVersion` | `string` |
 | `data-ci-hotspot-ci-domain` | `cloudimage.domain` | `string` |
@@ -618,7 +622,34 @@ Hotspot markers maintain their visual size during zoom using a **counter-scale**
 
 This keeps markers at a consistent clickable/tappable size regardless of zoom level while preserving their correct position on the image.
 
-### 6.5 Zoom Controls UI
+### 6.5 Scroll / Wheel Gating & Scroll Hint
+
+To prevent accidental zoom when users intend to scroll the page, the library gates wheel-based zoom behind a modifier key:
+
+- **Regular scroll** (no modifier key): passes through to the page — the container does not intercept it
+- **Ctrl+scroll** (or **Cmd+scroll** on Mac): triggers zoom in/out centered on cursor position
+- **Safari trackpad pinch**: handled natively via the proprietary `GestureEvent` API — no modifier key required
+
+When a user scrolls without the modifier key over a zoom-enabled container, a **scroll hint toast** appears at the bottom-center of the container:
+
+```
+┌─────────────────────────────────────────┐
+│                                         │
+│              [image]                    │
+│                                         │
+│       ┌───────────────────────┐         │
+│       │ Use ⌘ + scroll to zoom│         │
+│       └───────────────────────┘         │
+└─────────────────────────────────────────┘
+```
+
+- The hint auto-hides after 1.5 seconds
+- Platform-aware: shows "⌘" on macOS, "Ctrl" elsewhere
+- Respects `prefers-reduced-motion` (no slide animation)
+- `aria-hidden="true"` — decorative hint, not for screen readers
+- Disable with `scrollHint: false` in config (or `data-ci-hotspot-scroll-hint="false"`)
+
+### 6.6 Zoom Controls UI
 
 When `zoomControls` is enabled (default when `zoom: true`), a floating control bar appears at the bottom-right of the container:
 
@@ -773,6 +804,7 @@ interface CIHotspotViewerProps {
   pulse?: boolean;
   placement?: 'top' | 'bottom' | 'left' | 'right' | 'auto';
   zoomControls?: boolean;
+  scrollHint?: boolean;
   lazyLoad?: boolean;
   cloudimage?: CIHotspotConfig['cloudimage'];
   renderPopover?: (hotspot: HotspotItem) => React.ReactNode;
@@ -1124,15 +1156,14 @@ The demo site is hosted at `https://scaleflex.github.io/js-cloudimage-hotspot/` 
 
 | Section | Description |
 |---|---|
-| **Hero** | Full-width IKEA-style living room image with 4–5 hotspots; interactive and immediately engaging |
-| **Getting Started** | Installation instructions (npm + CDN), minimal code example |
-| **Trigger Modes** | Side-by-side comparison of hover, click, and load triggers |
-| **Zoom & Pan** | Image with zoom enabled; demonstrates mouse wheel, pinch, and controls |
-| **Custom Styling** | Same image with multiple theme variations (light, dark, brand colors) via CSS variable overrides |
-| **HTML Initialization** | Complete working example using only data-attributes — zero JavaScript |
-| **React Example** | Code snippet and live preview of the React wrapper |
-| **Accessibility** | Demonstrates keyboard navigation with on-screen key indicator |
-| **API Playground** | Interactive configurator (see below) |
+| **Hero** | Gradient background with animated gradient heading text, feature pills, and dual CTA buttons (Get Started / GitHub). Immediately communicates the library's value proposition |
+| **Getting Started** | Side-by-side npm and CDN installation cards with dark-themed code blocks and copy-to-clipboard |
+| **Trigger Modes** | 3-column responsive grid comparing hover, click, and load triggers with live examples |
+| **Themes** | Light and dark theme demonstrations side-by-side |
+| **Interactive Configurator** | Full-width configurator with preview panel above and options panel below (trigger, zoom, theme, pulse, placement toggles). Real-time generated code with copy button |
+| **Footer** | Modern footer with links to documentation, GitHub, and npm |
+
+The demo uses a **sticky navigation bar** with backdrop-filter blur effect and scroll-aware active link highlighting. The layout is fully responsive, collapsing to single-column on screens below 768px.
 
 ### 12.2 Interactive Configurator
 
@@ -1542,6 +1573,8 @@ All CSS classes use the `ci-hotspot` prefix.
 | `.ci-hotspot-cluster` | `<button>` | Cluster indicator when markers are grouped |
 | `.ci-hotspot-loading` | Container | Applied while image is loading |
 | `.ci-hotspot-theme-dark` | Container | Dark theme modifier class |
+| `.ci-hotspot-scroll-hint` | Toast element | Scroll-to-zoom hint displayed at bottom-center of container |
+| `.ci-hotspot-scroll-hint--visible` | Toast element | Applied when scroll hint is actively shown |
 
 ### B. Event Reference
 
@@ -1579,3 +1612,4 @@ All data attributes use the `data-ci-hotspot-` prefix.
 | `data-ci-hotspot-ci-domain` | `string` | `config.cloudimage.domain` |
 | `data-ci-hotspot-ci-limit-factor` | `number string` | `config.cloudimage.limitFactor` |
 | `data-ci-hotspot-ci-params` | `string` | `config.cloudimage.params` |
+| `data-ci-hotspot-scroll-hint` | `boolean string` | `config.scrollHint` |

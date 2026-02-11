@@ -276,6 +276,95 @@ Built `js-cloudimage-hotspot` from scratch — a zero-dependency TypeScript libr
 
 ---
 
+## Post-Implementation Updates
+
+After the initial 10-phase implementation, several refinements and fixes were applied.
+
+---
+
+### Update 1: Scroll Hint & Trackpad Zoom Gating
+
+**Commits:** `87bdab4`, `dcbb636`
+
+**Goal:** Prevent accidental zoom when users intend to scroll the page, and guide them to use Ctrl/Cmd+scroll for zoom. Fix pan clamping to prevent white offset at zoom edges.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/zoom/ScrollHint.ts` | Created | New UI component: toast-style hint at bottom-center of container. Platform-aware messaging (⌘ on Mac, Ctrl otherwise). Auto-hides after 1.5s. `aria-hidden="true"` for a11y |
+| `src/zoom/ZoomPan.ts` | Modified | Added scroll gating: regular `wheel` events pass through without zooming; only `ctrlKey`/`metaKey` wheel events trigger zoom. Added `onScrollWithoutZoom` callback to trigger scroll hint. Added Safari `GestureEvent` support for native trackpad pinch. Fixed `clampPan()` to use `maxPan = containerSize * (zoom - 1) / zoom` preventing white offset. Added cursor management (`grab`/`grabbing`) |
+| `src/core/CIHotspot.ts` | Modified | Integrated `ScrollHint` into `initZoom()` when `config.scrollHint !== false`. Added cleanup in `destroyInternal()` |
+| `src/core/types.ts` | Modified | Added `scrollHint?: boolean` config option |
+| `src/styles/index.css` | Modified | Added `.ci-hotspot-scroll-hint` styles: absolute bottom-center toast with slide-up animation, dark semi-transparent bg, 300ms transitions, reduced-motion support |
+| `tests/zoom.test.ts` | Modified | Added 171 lines of tests: scroll hint creation/show/hide/auto-hide/destroy, wheel gating (regular scroll vs Ctrl+scroll), `onScrollWithoutZoom` callback, disabled state, Firefox `deltaMode` handling |
+| `docs/zoom-trackpad-fix.md` | Created | Technical documentation for the trackpad zoom fix |
+
+#### Results
+- Regular page scrolling passes through unblocked when cursor is over the hotspot container
+- Ctrl/Cmd+scroll zooms as expected
+- Scroll hint appears and auto-hides when user attempts to scroll over the container
+- Pan clamping prevents image from offsetting beyond edges at any zoom level
+- All new tests passing
+
+---
+
+### Update 2: Load-Trigger Popover Deferred Positioning
+
+**Commit:** `6bf152d`
+
+**Goal:** Fix popovers with `trigger: 'load'` rendering at incorrect positions because they were shown before the image had loaded (image dimensions unknown).
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/core/CIHotspot.ts` | Modified | Added `showLoadTriggerPopovers()` method called after image `load` event. Added `imageLoaded` flag. Load-trigger popovers are now deferred until image dimensions are available for accurate positioning |
+
+#### Results
+- Load-triggered popovers now position correctly relative to their markers
+- No visual jump or misplacement on initial render
+
+---
+
+### Update 3: Demo Page Redesign
+
+**Commits:** `8b4c670`, `5b4fb6a`
+
+**Goal:** Redesign demo page with polished UI, streamlined sections, scroll-aware navigation, and a better configurator layout.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `demo/index.html` | Modified | Restructured to: sticky nav with scroll-aware styling, hero section with gradient text and feature pills, getting started with npm/CDN side-by-side, trigger modes 3-column grid, themes section, interactive configurator, modern footer. Clean semantic HTML with `<nav>`, `<main>`, `<footer>`, `<section>` landmarks |
+| `demo/demo.css` | Modified | Complete CSS overhaul (+429 lines): sticky nav with backdrop-filter blur, hero gradient bg, card components with hover effects, responsive grid layouts (768px/640px breakpoints), code block dark theme, button variants (primary/outline/small), form controls with focus states, Inter font with `clamp()` sizing, blue (#0058a3) primary palette |
+| `demo/demo.ts` | Modified | Updated initialization to match new HTML structure, scroll-aware nav active link highlighting |
+
+#### Results
+- Professional, polished demo page with modern UI patterns
+- Configurator options panel moved to full-width row below preview for better usability
+- Fully responsive down to mobile widths
+
+---
+
+### Update 4: Dark Theme Popover Title Fix
+
+**Commit:** `65a7286`
+
+**Goal:** Fix popover title color in dark theme being overridden by demo card styles.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `demo/demo.css` | Modified | Scoped card title styles to prevent bleeding into popover title elements when dark theme is active |
+
+#### Results
+- Dark theme popover titles render with correct color
+
+---
+
 ## Dependency Graph (Execution Order)
 
 ```
