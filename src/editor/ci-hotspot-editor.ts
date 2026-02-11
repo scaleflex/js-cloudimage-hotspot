@@ -147,13 +147,13 @@ export class CIHotspotEditor {
       const focusInEditor = this.editorEl.contains(document.activeElement) ||
         this.editorEl.contains(e.target as Node);
 
-      if (mod && e.key === 'z' && !e.shiftKey) {
+      if (mod && e.key === 'z' && !e.shiftKey && focusInEditor) {
         e.preventDefault();
         this.undoManager.undo();
-      } else if (mod && e.key === 'z' && e.shiftKey) {
+      } else if (mod && e.key === 'z' && e.shiftKey && focusInEditor) {
         e.preventDefault();
         this.undoManager.redo();
-      } else if (mod && e.key === 'y') {
+      } else if (mod && e.key === 'y' && focusInEditor) {
         e.preventDefault();
         this.undoManager.redo();
       } else if ((e.key === 'Delete' || e.key === 'Backspace') && focusInEditor) {

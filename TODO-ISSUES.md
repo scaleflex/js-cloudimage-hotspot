@@ -177,3 +177,15 @@ Both utility functions are exported but never imported anywhere.
 ### 47. ~~`EventEmitter.once()` is dead code~~ FIXED
 The `once` method is defined but never called anywhere.
 **Fix:** Removed the method and its test case.
+
+---
+
+# Round 3
+
+---
+
+## Medium
+
+### 48. ~~Editor undo/redo shortcuts fire globally without focus check~~ FIXED
+The document-level keydown handler checks `focusInEditor` for Delete/Escape/a/v, but Ctrl+Z, Ctrl+Shift+Z, and Ctrl+Y fire regardless of focus location. If there are multiple editors on the page, or focus is in a different component, these shortcuts still trigger undo/redo — breaking standard browser undo in other inputs.
+**Fix:** Added `focusInEditor` guard to all three undo/redo branches.
