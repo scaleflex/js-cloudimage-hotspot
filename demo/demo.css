@@ -558,6 +558,21 @@ kbd {
   text-decoration: none;
 }
 
+/* ── Custom green theme override ─────────────────── */
+#theme-custom .ci-hotspot-container {
+  --ci-hotspot-marker-bg: rgba(34, 139, 34, 0.85);
+  --ci-hotspot-marker-color: #ffffff;
+  --ci-hotspot-marker-border: 2px solid rgba(144, 238, 144, 0.9);
+  --ci-hotspot-pulse-color: rgba(34, 139, 34, 0.25);
+  --ci-hotspot-popover-bg: #f0fdf4;
+  --ci-hotspot-popover-color: #14532d;
+  --ci-hotspot-popover-border: 1px solid rgba(34, 139, 34, 0.2);
+  --ci-hotspot-popover-shadow: 0 8px 32px rgba(34, 139, 34, 0.15);
+  --ci-hotspot-title-color: #166534;
+  --ci-hotspot-description-color: #4d7c0f;
+  --ci-hotspot-arrow-color: #f0fdf4;
+}
+
 /* ── Responsive tweaks ───────────────────────────── */
 @media (max-width: 640px) {
   .demo-section {

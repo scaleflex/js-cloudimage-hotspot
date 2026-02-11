@@ -126,6 +126,22 @@ new CIHotspot('#theme-dark', {
   ],
 });
 
+// Custom green styling demo
+new CIHotspot('#theme-custom', {
+  src: DEMO_IMAGE_2,
+  alt: 'Emerald dresser vignette — custom green styling',
+  trigger: 'hover',
+  hotspots: [
+    {
+      id: 'tc1',
+      x: '55%',
+      y: '46%',
+      label: 'Pampas Vase',
+      data: { title: 'Pampas Vase', description: 'Terracotta pitcher filled with dried pampas grass plumes in warm golden tones.' },
+    },
+  ],
+});
+
 // Multi-Image Navigation (Scenes) demo
 const scenesViewer = new CIHotspot('#scenes-viewer', {
   scenes: [
