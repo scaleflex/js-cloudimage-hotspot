@@ -69,19 +69,6 @@ new CIHotspot('#trigger-load', {
   hotspots: triggerHotspots,
 });
 
-// Zoom viewer
-new CIHotspot('#zoom-viewer', {
-  src: DEMO_IMAGE,
-  alt: 'Zoom and pan demo',
-  zoom: true,
-  zoomMax: 4,
-  trigger: 'hover',
-  hotspots: [
-    { id: 'z1', x: '30%', y: '45%', label: 'Zoom Spot 1', data: { title: 'Detail 1', description: 'Zoom in to see more detail' } },
-    { id: 'z2', x: '65%', y: '60%', label: 'Zoom Spot 2', data: { title: 'Detail 2' } },
-  ],
-});
-
 // Theme demos
 new CIHotspot('#theme-light', {
   src: DEMO_IMAGE_2,
@@ -103,21 +90,33 @@ new CIHotspot('#theme-dark', {
   ],
 });
 
-// Auto-init for HTML section
-CIHotspot.autoInit(document.getElementById('html-init-viewer')?.parentElement || undefined);
-
-// Accessibility demo
-new CIHotspot('#a11y-viewer', {
-  src: DEMO_IMAGE,
-  alt: 'Accessibility demo',
-  trigger: 'click',
-  zoom: true,
-  hotspots: [
-    { id: 'a1', x: '25%', y: '40%', label: 'Keyboard accessible spot 1', data: { title: 'Spot 1', description: 'Tab here, press Enter' } },
-    { id: 'a2', x: '55%', y: '55%', label: 'Keyboard accessible spot 2', data: { title: 'Spot 2', description: 'Focus triggers popover' } },
-    { id: 'a3', x: '80%', y: '30%', label: 'Keyboard accessible spot 3', data: { title: 'Spot 3', description: 'Escape closes' } },
-  ],
-});
-
 // Configurator
 initConfigurator();
+
+// ── Nav: scroll shadow + active section highlighting ──
+const nav = document.getElementById('demo-nav');
+const navLinks = document.querySelectorAll<HTMLAnchorElement>('.demo-nav-links a');
+const sections = document.querySelectorAll<HTMLElement>('main section[id]');
+
+function updateNav(): void {
+  // Shadow on scroll
+  if (nav) {
+    nav.classList.toggle('scrolled', window.scrollY > 10);
+  }
+
+  // Active section
+  let currentId = '';
+  const offset = 120;
+  for (const section of sections) {
+    if (section.offsetTop - offset <= window.scrollY) {
+      currentId = section.id;
+    }
+  }
+  for (const link of navLinks) {
+    const href = link.getAttribute('href');
+    link.classList.toggle('active', href === `#${currentId}`);
+  }
+}
+
+window.addEventListener('scroll', updateNav, { passive: true });
+updateNav();

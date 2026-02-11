@@ -3,24 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>js-cloudimage-hotspot — Demo</title>
+  <title>js-cloudimage-hotspot — Interactive Image Hotspots</title>
   <link rel="stylesheet" href="./demo.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
   <!-- Nav -->
-  <nav class="demo-nav">
+  <nav class="demo-nav" id="demo-nav">
     <div class="demo-nav-inner">
-      <a href="#" class="demo-logo">CIHotspot</a>
+      <a href="#" class="demo-logo">
+        <span class="demo-logo-icon">&#9678;</span> CIHotspot
+      </a>
       <div class="demo-nav-links">
-        <a href="#hero">Hero</a>
-        <a href="#getting-started">Getting Started</a>
+        <a href="#hero" class="active">Demo</a>
+        <a href="#getting-started">Install</a>
         <a href="#triggers">Triggers</a>
-        <a href="#zoom">Zoom</a>
         <a href="#themes">Themes</a>
-        <a href="#html-init">HTML Init</a>
-        <a href="#a11y">Accessibility</a>
         <a href="#configurator">Configurator</a>
       </div>
+      <a href="https://github.com/scaleflex/js-cloudimage-hotspot" class="demo-nav-github" target="_blank" rel="noopener" aria-label="GitHub">
+        <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      </a>
     </div>
   </nav>
 
@@ -28,18 +33,33 @@
     <!-- Hero Section -->
     <section id="hero" class="demo-section demo-hero">
       <div class="demo-section-inner">
-        <h1>js-cloudimage-hotspot</h1>
-        <p class="demo-subtitle">Interactive image hotspots with zoom, popovers, and accessibility. Zero dependencies.</p>
-        <div id="hero-viewer" class="demo-viewer"></div>
+        <div class="demo-hero-badge">Open Source Library</div>
+        <h1>js-cloudimage-<span class="demo-gradient-text">hotspot</span></h1>
+        <p class="demo-subtitle">Add interactive hotspots to any image with zoom, popovers, and full accessibility. Zero dependencies, under 10 KB gzipped.</p>
+        <div class="demo-hero-actions">
+          <a href="#getting-started" class="demo-btn demo-btn--primary">Get Started</a>
+          <a href="https://github.com/scaleflex/js-cloudimage-hotspot" class="demo-btn demo-btn--outline" target="_blank" rel="noopener">GitHub</a>
+        </div>
+        <div class="demo-hero-features">
+          <span class="demo-pill">Zoom & Pan</span>
+          <span class="demo-pill">Hover / Click / Load</span>
+          <span class="demo-pill">WCAG 2.1 AA</span>
+          <span class="demo-pill">Dark Mode</span>
+          <span class="demo-pill">React Ready</span>
+        </div>
+        <div id="hero-viewer" class="demo-viewer demo-viewer--hero"></div>
       </div>
     </section>
 
     <!-- Getting Started -->
-    <section id="getting-started" class="demo-section">
+    <section id="getting-started" class="demo-section demo-section--alt">
       <div class="demo-section-inner">
-        <h2>Getting Started</h2>
+        <div class="demo-section-header">
+          <h2>Getting Started</h2>
+          <p>Install from npm or load from CDN &mdash; get running in under a minute.</p>
+        </div>
         <div class="demo-columns">
-          <div class="demo-column">
+          <div class="demo-column demo-card">
             <h3>Install via npm</h3>
             <pre><code>npm install js-cloudimage-hotspot</code></pre>
             <pre><code>import CIHotspot from 'js-cloudimage-hotspot';
@@ -56,7 +76,7 @@ const viewer = new CIHotspot('#my-image', {
   ]
 });</code></pre>
           </div>
-          <div class="demo-column">
+          <div class="demo-column demo-card">
             <h3>Use via CDN</h3>
             <pre><code>&lt;script src="https://cdn.scaleflex.it/plugins/js-cloudimage-hotspot/latest/js-cloudimage-hotspot.min.js"&gt;&lt;/script&gt;
 
@@ -72,47 +92,42 @@ const viewer = new CIHotspot('#my-image', {
     </section>
 
     <!-- Trigger Modes -->
-    <section id="triggers" class="demo-section demo-section--alt">
+    <section id="triggers" class="demo-section">
       <div class="demo-section-inner">
-        <h2>Trigger Modes</h2>
-        <p>Choose how popovers are activated: hover, click, or show on load.</p>
+        <div class="demo-section-header">
+          <h2>Trigger Modes</h2>
+          <p>Choose how popovers are activated: hover for desktop, click for touch, or show on load for key items.</p>
+        </div>
         <div class="demo-grid">
-          <div>
-            <h3>Hover</h3>
+          <div class="demo-card">
+            <h3><span class="demo-card-icon">&#128065;</span> Hover</h3>
             <div id="trigger-hover" class="demo-viewer"></div>
           </div>
-          <div>
-            <h3>Click</h3>
+          <div class="demo-card">
+            <h3><span class="demo-card-icon">&#128070;</span> Click</h3>
             <div id="trigger-click" class="demo-viewer"></div>
           </div>
-          <div>
-            <h3>Load</h3>
+          <div class="demo-card">
+            <h3><span class="demo-card-icon">&#9889;</span> Load</h3>
             <div id="trigger-load" class="demo-viewer"></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Zoom & Pan -->
-    <section id="zoom" class="demo-section">
-      <div class="demo-section-inner">
-        <h2>Zoom & Pan</h2>
-        <p>Use mouse wheel, pinch gesture, or the controls to zoom. Drag to pan when zoomed in.</p>
-        <div id="zoom-viewer" class="demo-viewer"></div>
-      </div>
-    </section>
-
     <!-- Custom Styling / Themes -->
-    <section id="themes" class="demo-section demo-section--alt">
+    <section id="themes" class="demo-section">
       <div class="demo-section-inner">
-        <h2>Themes & Custom Styling</h2>
-        <p>Built-in light and dark themes. Customize everything with CSS variables.</p>
+        <div class="demo-section-header">
+          <h2>Themes & Custom Styling</h2>
+          <p>Built-in light and dark themes. Customize every detail with 40+ CSS custom properties.</p>
+        </div>
         <div class="demo-grid demo-grid--2">
-          <div>
-            <h3>Light Theme (default)</h3>
+          <div class="demo-card">
+            <h3>Light Theme</h3>
             <div id="theme-light" class="demo-viewer"></div>
           </div>
-          <div>
+          <div class="demo-card">
             <h3>Dark Theme</h3>
             <div id="theme-dark" class="demo-viewer"></div>
           </div>
@@ -120,71 +135,45 @@ const viewer = new CIHotspot('#my-image', {
       </div>
     </section>
 
-    <!-- HTML Initialization -->
-    <section id="html-init" class="demo-section">
-      <div class="demo-section-inner">
-        <h2>HTML Data-Attribute Initialization</h2>
-        <p>Zero JavaScript required. Just add data attributes and call <code>CIHotspot.autoInit()</code>.</p>
-        <div
-          id="html-init-viewer"
-          data-ci-hotspot-src="https://scaleflex.cloudimg.io/v7/demo/river.jpg"
-          data-ci-hotspot-alt="River landscape"
-          data-ci-hotspot-trigger="click"
-          data-ci-hotspot-theme="light"
-          data-ci-hotspot-items='[
-            {"id":"bridge","x":"50%","y":"55%","label":"Stone Bridge","data":{"title":"Stone Bridge","description":"A scenic old bridge"}},
-            {"id":"tree","x":"20%","y":"40%","label":"Ancient Tree","data":{"title":"Ancient Oak","description":"Over 200 years old"}}
-          ]'
-        ></div>
-      </div>
-    </section>
-
-    <!-- Accessibility Showcase -->
-    <section id="a11y" class="demo-section demo-section--alt">
-      <div class="demo-section-inner">
-        <h2>Accessibility</h2>
-        <p>Full WCAG 2.1 AA compliance. Tab between markers, Enter/Space to toggle, Escape to close. Arrow keys to pan when zoomed.</p>
-        <div id="a11y-viewer" class="demo-viewer"></div>
-        <div class="demo-key-hints">
-          <span><kbd>Tab</kbd> Navigate markers</span>
-          <span><kbd>Enter</kbd> Toggle popover</span>
-          <span><kbd>Esc</kbd> Close popover</span>
-          <span><kbd>+/-</kbd> Zoom</span>
-          <span><kbd>Arrows</kbd> Pan</span>
-        </div>
-      </div>
-    </section>
-
     <!-- Interactive Configurator -->
-    <section id="configurator" class="demo-section">
+    <section id="configurator" class="demo-section demo-section--alt">
       <div class="demo-section-inner">
-        <h2>Interactive Configurator</h2>
-        <p>Toggle options and see the code update in real-time.</p>
+        <div class="demo-section-header">
+          <h2>Interactive Configurator</h2>
+          <p>Toggle options and see the generated code update in real time.</p>
+        </div>
         <div class="demo-configurator">
           <div class="demo-configurator-preview">
             <div id="configurator-viewer" class="demo-viewer"></div>
           </div>
-          <div class="demo-configurator-panel">
+          <div class="demo-configurator-panel demo-card">
+            <h3>Options</h3>
             <div class="demo-configurator-controls">
-              <label><input type="checkbox" id="cfg-zoom"> Zoom</label>
-              <label><input type="checkbox" id="cfg-pulse" checked> Pulse</label>
-              <label>
-                Trigger:
+              <label class="demo-toggle">
+                <input type="checkbox" id="cfg-zoom">
+                <span class="demo-toggle-label">Zoom</span>
+              </label>
+              <label class="demo-toggle">
+                <input type="checkbox" id="cfg-pulse" checked>
+                <span class="demo-toggle-label">Pulse</span>
+              </label>
+              <label class="demo-select-label">
+                Trigger
                 <select id="cfg-trigger">
                   <option value="hover">hover</option>
                   <option value="click">click</option>
                   <option value="load">load</option>
                 </select>
               </label>
-              <label>
-                Theme:
+              <label class="demo-select-label">
+                Theme
                 <select id="cfg-theme">
                   <option value="light">light</option>
                   <option value="dark">dark</option>
                 </select>
               </label>
-              <label>
-                Placement:
+              <label class="demo-select-label">
+                Placement
                 <select id="cfg-placement">
                   <option value="top">top</option>
                   <option value="bottom">bottom</option>
@@ -196,7 +185,7 @@ const viewer = new CIHotspot('#my-image', {
             </div>
             <h3>Generated Code</h3>
             <pre id="cfg-code"><code></code></pre>
-            <button id="cfg-copy" class="demo-btn">Copy to Clipboard</button>
+            <button id="cfg-copy" class="demo-btn demo-btn--primary demo-btn--small">Copy to Clipboard</button>
           </div>
         </div>
       </div>
@@ -204,7 +193,20 @@ const viewer = new CIHotspot('#my-image', {
   </main>
 
   <footer class="demo-footer">
-    <p>js-cloudimage-hotspot &mdash; MIT License &mdash; <a href="https://github.com/scaleflex/js-cloudimage-hotspot">GitHub</a></p>
+    <div class="demo-footer-inner">
+      <div class="demo-footer-brand">
+        <span class="demo-logo"><span class="demo-logo-icon">&#9678;</span> CIHotspot</span>
+        <p>Interactive image hotspots for the modern web.</p>
+      </div>
+      <div class="demo-footer-links">
+        <a href="https://github.com/scaleflex/js-cloudimage-hotspot">GitHub</a>
+        <a href="https://www.npmjs.com/package/js-cloudimage-hotspot">npm</a>
+        <a href="https://github.com/scaleflex/js-cloudimage-hotspot/blob/main/README.md">Docs</a>
+      </div>
+    </div>
+    <div class="demo-footer-copy">
+      <p>MIT License &mdash; Built by <a href="https://www.scaleflex.com" target="_blank" rel="noopener">Scaleflex</a></p>
+    </div>
   </footer>
 
   <script type="module" src="./demo.ts"></script>
