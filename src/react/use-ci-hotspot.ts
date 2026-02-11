@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback } from 'react';
+import { useRef, useEffect } from 'react';
 import type { CIHotspotInstance, CIHotspotConfig, HotspotItem } from '../core/types';
 import { CIHotspot } from '../core/ci-hotspot';
 import type { UseCIHotspotOptions, UseCIHotspotReturn } from './types';
@@ -6,6 +6,7 @@ import type { UseCIHotspotOptions, UseCIHotspotReturn } from './types';
 export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const instanceRef = useRef<CIHotspotInstance | null>(null);
+  const initializedRef = useRef(false);
   const optionsRef = useRef(options);
   optionsRef.current = options;
 
@@ -61,8 +62,12 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
   const scenesKey = JSON.stringify(options.scenes);
   const hotspotsKey = JSON.stringify(options.hotspots);
 
-  // Update on options change
+  // Update on options change (skip initial mount — instance was just created)
   useEffect(() => {
+    if (!initializedRef.current) {
+      initializedRef.current = true;
+      return;
+    }
     if (!instanceRef.current) return;
 
     instanceRef.current.update({

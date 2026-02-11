@@ -35,6 +35,7 @@ export class CIHotspotEditor {
 
   readonly events = new EventEmitter();
   private cleanups: (() => void)[] = [];
+  private toastEl: HTMLElement | null = null;
   private destroyed = false;
 
   constructor(element: HTMLElement | string, config: EditorConfig) {
@@ -377,14 +378,13 @@ export class CIHotspotEditor {
   // === Toast ===
 
   showToast(message: string, duration = 2000): void {
-    let toast = document.querySelector('.ci-editor-toast') as HTMLElement;
-    if (!toast) {
-      toast = createElement('div', 'ci-editor-toast');
-      document.body.appendChild(toast);
+    if (!this.toastEl) {
+      this.toastEl = createElement('div', 'ci-editor-toast');
+      this.editorEl.appendChild(this.toastEl);
     }
-    toast.textContent = message;
-    toast.classList.add('ci-editor-toast--visible');
-    setTimeout(() => toast.classList.remove('ci-editor-toast--visible'), duration);
+    this.toastEl.textContent = message;
+    this.toastEl.classList.add('ci-editor-toast--visible');
+    setTimeout(() => this.toastEl?.classList.remove('ci-editor-toast--visible'), duration);
   }
 
   // === Lifecycle ===
@@ -398,6 +398,7 @@ export class CIHotspotEditor {
     this.toolbar.destroy();
     this.viewer?.destroy();
     this.events.removeAll();
+    this.toastEl = null;
     this.rootEl.innerHTML = '';
   }
 }

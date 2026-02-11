@@ -26,11 +26,13 @@ export class Popover {
     this.hotspot = hotspot;
     this.options = options;
 
+    const isDialog = options.triggerMode === 'click';
     this.element = createElement('div', 'ci-hotspot-popover', {
-      'role': 'tooltip',
+      'role': isDialog ? 'dialog' : 'tooltip',
       'id': `ci-hotspot-popover-${hotspot.id}`,
       'aria-hidden': 'true',
       'data-placement': options.placement === 'auto' ? 'top' : options.placement,
+      ...(isDialog && hotspot.label ? { 'aria-label': hotspot.label } : {}),
     });
 
     this.arrowEl = createElement('div', 'ci-hotspot-popover-arrow');
@@ -60,8 +62,13 @@ export class Popover {
     this.markerEl = markerEl;
     containerEl.appendChild(this.element);
 
-    // Set aria-describedby on marker
-    markerEl.setAttribute('aria-describedby', this.element.id);
+    // Set appropriate ARIA relationship on marker
+    if (this.options.triggerMode === 'click') {
+      markerEl.setAttribute('aria-haspopup', 'dialog');
+      markerEl.setAttribute('aria-controls', this.element.id);
+    } else {
+      markerEl.setAttribute('aria-describedby', this.element.id);
+    }
   }
 
   /** Show the popover */
@@ -151,6 +158,8 @@ export class Popover {
   destroy(): void {
     this.clearHideTimer();
     this.markerEl?.removeAttribute('aria-describedby');
+    this.markerEl?.removeAttribute('aria-controls');
+    this.markerEl?.removeAttribute('aria-haspopup');
     this.element.remove();
     this.markerEl = null;
     this.containerEl = null;

@@ -178,6 +178,12 @@
   animation: ci-hotspot-breathe 2.4s ease-in-out infinite;
 }
 
+/* Stop pulse animation on hover/active so it doesn't fight the transform */
+.ci-hotspot-marker--pulse:hover,
+.ci-hotspot-marker--pulse.ci-hotspot-marker--active {
+  animation: none;
+}
+
 @keyframes ci-hotspot-breathe {
   0%, 100% {
     transform: translate(-50%, -50%) scale(calc(1 / var(--zoom, 1)));
@@ -308,6 +314,11 @@
   opacity: 0.9;
 }
 
+.ci-hotspot-popover-cta:focus-visible {
+  outline: 3px solid #4A90D9;
+  outline-offset: 2px;
+}
+
 /* === Zoom Controls === */
 .ci-hotspot-zoom-controls {
   position: absolute;
@@ -349,6 +360,11 @@
 
 .ci-hotspot-zoom-controls button:disabled:hover {
   background: transparent;
+}
+
+.ci-hotspot-zoom-controls button:focus-visible {
+  outline: 3px solid #4A90D9;
+  outline-offset: -3px;
 }
 
 /* === Cluster Indicator === */

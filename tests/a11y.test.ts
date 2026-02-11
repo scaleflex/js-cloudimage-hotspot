@@ -27,10 +27,10 @@ describe('Accessibility — ARIA', () => {
     root.remove();
   });
 
-  it('container has role="img" and aria-label', () => {
+  it('container has role="group" and aria-label', () => {
     const instance = new CIHotspot(root, makeConfig({ alt: 'My image' }));
     const container = root.querySelector('.ci-hotspot-container');
-    expect(container?.getAttribute('role')).toBe('img');
+    expect(container?.getAttribute('role')).toBe('group');
     expect(container?.getAttribute('aria-label')).toBe('My image');
     instance.destroy();
   });
@@ -202,7 +202,7 @@ describe('Accessibility — ARIA utilities', () => {
   it('setContainerAria sets role and label', () => {
     const container = document.createElement('div');
     setContainerAria(container, 'Product image');
-    expect(container.getAttribute('role')).toBe('img');
+    expect(container.getAttribute('role')).toBe('group');
     expect(container.getAttribute('aria-label')).toBe('Product image');
   });
 

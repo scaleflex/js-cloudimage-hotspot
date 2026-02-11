@@ -225,14 +225,35 @@ describe('Popover class', () => {
     expect(container.contains(popover.element)).toBe(false);
   });
 
-  it('mount sets aria-describedby on marker', () => {
+  it('mount sets aria-describedby on marker for hover mode', () => {
+    const hotspot = makeHotspot({ id: 'my-spot' });
+    const popover = new Popover(hotspot, { placement: 'top', triggerMode: 'hover' });
+    const marker = document.createElement('button');
+    container.appendChild(marker);
+    popover.mount(container, marker);
+
+    expect(marker.getAttribute('aria-describedby')).toBe('ci-hotspot-popover-my-spot');
+    popover.destroy();
+  });
+
+  it('mount sets aria-controls and aria-haspopup on marker for click mode', () => {
     const hotspot = makeHotspot({ id: 'my-spot' });
     const popover = new Popover(hotspot, { placement: 'top', triggerMode: 'click' });
     const marker = document.createElement('button');
     container.appendChild(marker);
     popover.mount(container, marker);
 
-    expect(marker.getAttribute('aria-describedby')).toBe('ci-hotspot-popover-my-spot');
+    expect(marker.getAttribute('aria-controls')).toBe('ci-hotspot-popover-my-spot');
+    expect(marker.getAttribute('aria-haspopup')).toBe('dialog');
+    expect(marker.getAttribute('aria-describedby')).toBeNull();
+    popover.destroy();
+  });
+
+  it('click-mode popover has role="dialog" with aria-label', () => {
+    const hotspot = makeHotspot({ id: 'my-spot', label: 'Product info' });
+    const popover = new Popover(hotspot, { placement: 'top', triggerMode: 'click' });
+    expect(popover.element.getAttribute('role')).toBe('dialog');
+    expect(popover.element.getAttribute('aria-label')).toBe('Product info');
     popover.destroy();
   });
 });

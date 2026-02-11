@@ -27,7 +27,7 @@ export function setContainerAria(
   container: HTMLElement,
   alt: string,
 ): void {
-  container.setAttribute('role', 'img');
+  container.setAttribute('role', 'group');
   container.setAttribute('aria-label', alt || 'Image with hotspots');
 }
 

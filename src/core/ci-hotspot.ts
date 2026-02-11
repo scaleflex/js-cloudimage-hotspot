@@ -4,7 +4,6 @@ import { getElement, createElement, addClass, removeClass, injectStyles } from '
 import { normalizeToPercent } from '../utils/coordinates';
 import { addListener } from '../utils/events';
 import { createMarker, setMarkerActive, setMarkerHidden, destroyMarker } from '../markers/marker';
-import { setPulseState } from '../markers/pulse';
 import { Popover } from '../popover/popover';
 import { ZoomPan } from '../zoom/zoom-pan';
 import { createZoomControls } from '../zoom/controls';
@@ -33,12 +32,13 @@ export class CIHotspot implements CIHotspotInstance {
   private keyboardHandler: KeyboardHandler | null = null;
   private focusTraps = new Map<string, ReturnType<typeof createFocusTrap>>();
   private cleanups: (() => void)[] = [];
-  private hotspotCleanups: (() => void)[] = [];
+  private hotspotCleanups = new Map<string, (() => void)[]>();
   private imageLoaded = false;
   private destroyed = false;
   private currentSceneId: string | undefined;
   private scenesMap = new Map<string, Scene>();
   private isTransitioning = false;
+  private transitionTimer: ReturnType<typeof setTimeout> | undefined;
 
   constructor(element: HTMLElement | string, config: CIHotspotConfig) {
     this.rootEl = getElement(element);
@@ -95,7 +95,7 @@ export class CIHotspot implements CIHotspotInstance {
     this.containerEl.appendChild(this.viewportEl);
 
     // Set container role and aria-label for accessibility
-    this.containerEl.setAttribute('role', 'img');
+    this.containerEl.setAttribute('role', 'group');
     this.containerEl.setAttribute('aria-label', this.config.alt || 'Image with hotspots');
 
     // Fixed aspect-ratio for scenes mode
@@ -295,7 +295,7 @@ export class CIHotspot implements CIHotspotInstance {
         }, 250);
       });
 
-      this.hotspotCleanups.push(enterCleanup, leaveCleanup, focusCleanup, blurCleanup);
+      this.addHotspotCleanups(hotspot.id, enterCleanup, leaveCleanup, focusCleanup, blurCleanup);
     }
 
     // Click: hide popover and navigate
@@ -320,7 +320,7 @@ export class CIHotspot implements CIHotspotInstance {
       }
     });
 
-    this.hotspotCleanups.push(clickCleanup, keyCleanup);
+    this.addHotspotCleanups(hotspot.id, clickCleanup, keyCleanup);
   }
 
   private bindTrigger(
@@ -348,9 +348,13 @@ export class CIHotspot implements CIHotspotInstance {
         }, 250);
       });
 
-      this.hotspotCleanups.push(enterCleanup, leaveCleanup);
+      this.addHotspotCleanups(hotspot.id, enterCleanup, leaveCleanup);
 
     } else if (triggerMode === 'click') {
+      // Create focus trap for click-mode popovers (traps Tab within popover)
+      const trap = createFocusTrap(popover.element, marker);
+      this.focusTraps.set(hotspot.id, trap);
+
       const clickCleanup = addListener(marker, 'click', (e) => {
         e.stopPropagation();
         this.config.onClick?.(e, hotspot);
@@ -359,11 +363,13 @@ export class CIHotspot implements CIHotspotInstance {
         if (popover.isVisible()) {
           popover.hide();
           setMarkerActive(marker, false);
+          trap.deactivate();
         } else {
           // Close all other popovers first
           this.closeAll();
           popover.show();
           setMarkerActive(marker, true);
+          trap.activate();
         }
       });
 
@@ -372,10 +378,11 @@ export class CIHotspot implements CIHotspotInstance {
         if (popover.isVisible() && !hotspot.keepOpen) {
           popover.hide();
           setMarkerActive(marker, false);
+          trap.deactivate();
         }
       });
 
-      this.hotspotCleanups.push(clickCleanup, outsideCleanup);
+      this.addHotspotCleanups(hotspot.id, clickCleanup, outsideCleanup);
     }
 
     // Keyboard: focus/blur for hover-like behavior regardless of trigger
@@ -404,21 +411,26 @@ export class CIHotspot implements CIHotspotInstance {
         if (popover.isVisible()) {
           popover.hide();
           setMarkerActive(marker, false);
+          this.focusTraps.get(hotspot.id)?.deactivate();
         } else {
           this.closeAll();
           popover.show();
           setMarkerActive(marker, true);
+          // Lazily create focus trap for non-click modes when opened via keyboard
+          this.ensureFocusTrap(hotspot.id, popover.element, marker);
+          this.focusTraps.get(hotspot.id)?.activate();
         }
       } else if (e.key === 'Escape') {
         if (popover.isVisible()) {
           popover.hide();
           setMarkerActive(marker, false);
+          this.focusTraps.get(hotspot.id)?.deactivate();
           marker.focus();
         }
       }
     });
 
-    this.hotspotCleanups.push(focusCleanup, blurCleanup, keyCleanup);
+    this.addHotspotCleanups(hotspot.id, focusCleanup, blurCleanup, keyCleanup);
   }
 
   private renormalizePixelCoordinates(): void {
@@ -558,7 +570,7 @@ export class CIHotspot implements CIHotspotInstance {
     const initialScene = this.scenesMap.get(initialId)!;
     this.config.src = initialScene.src;
     this.config.alt = initialScene.alt || '';
-    this.config.hotspots = initialScene.hotspots;
+    this.config.hotspots = [...initialScene.hotspots];
     this.currentSceneId = initialId;
   }
 
@@ -573,9 +585,26 @@ export class CIHotspot implements CIHotspotInstance {
     });
   }
 
+  private ensureFocusTrap(id: string, popoverEl: HTMLElement, markerEl: HTMLButtonElement): void {
+    if (!this.focusTraps.has(id)) {
+      this.focusTraps.set(id, createFocusTrap(popoverEl, markerEl));
+    }
+  }
+
+  private addHotspotCleanups(id: string, ...fns: (() => void)[]): void {
+    let arr = this.hotspotCleanups.get(id);
+    if (!arr) {
+      arr = [];
+      this.hotspotCleanups.set(id, arr);
+    }
+    arr.push(...fns);
+  }
+
   private clearHotspots(): void {
-    this.hotspotCleanups.forEach((fn) => fn());
-    this.hotspotCleanups = [];
+    for (const fns of this.hotspotCleanups.values()) {
+      fns.forEach((fn) => fn());
+    }
+    this.hotspotCleanups.clear();
 
     for (const [, popover] of this.popovers) {
       popover.destroy();
@@ -648,7 +677,8 @@ export class CIHotspot implements CIHotspotInstance {
 
       this.viewportEl.insertBefore(incomingImg, this.markersEl);
 
-      setTimeout(() => {
+      this.transitionTimer = setTimeout(() => {
+        this.transitionTimer = undefined;
         if (this.destroyed) return;
 
         this.switchToScene(scene);
@@ -679,7 +709,7 @@ export class CIHotspot implements CIHotspotInstance {
   private switchToScene(scene: Scene): void {
     this.config.src = scene.src;
     this.config.alt = scene.alt || '';
-    this.config.hotspots = scene.hotspots;
+    this.config.hotspots = [...scene.hotspots];
 
     this.imgEl.alt = scene.alt || '';
 
@@ -731,34 +761,42 @@ export class CIHotspot implements CIHotspotInstance {
   }
 
   open(id: string): void {
+    if (this.destroyed) return;
     const popover = this.popovers.get(id);
     const marker = this.markers.get(id);
     if (popover && marker) {
+      this.closeAll();
       popover.show();
       setMarkerActive(marker, true);
+      this.focusTraps.get(id)?.activate();
     }
   }
 
   close(id: string): void {
+    if (this.destroyed) return;
     const popover = this.popovers.get(id);
     const marker = this.markers.get(id);
     if (popover && marker) {
       popover.hide();
       setMarkerActive(marker, false);
+      this.focusTraps.get(id)?.deactivate();
     }
   }
 
   closeAll(): void {
+    if (this.destroyed) return;
     for (const [id, popover] of this.popovers) {
       if (popover.isVisible()) {
         popover.hide();
         const marker = this.markers.get(id);
         if (marker) setMarkerActive(marker, false);
+        this.focusTraps.get(id)?.deactivate();
       }
     }
   }
 
   setZoom(level: number): void {
+    if (this.destroyed) return;
     this.zoomPan?.setZoom(level);
   }
 
@@ -767,10 +805,12 @@ export class CIHotspot implements CIHotspotInstance {
   }
 
   resetZoom(): void {
+    if (this.destroyed) return;
     this.zoomPan?.resetZoom();
   }
 
   goToScene(sceneId: string): void {
+    if (this.destroyed) return;
     if (this.isTransitioning) return;
     if (!this.scenesMap.size) return;
     if (sceneId === this.currentSceneId) return;
@@ -813,11 +853,28 @@ export class CIHotspot implements CIHotspotInstance {
   }
 
   addHotspot(hotspot: HotspotItem): void {
+    if (this.destroyed) return;
     this.config.hotspots.push(hotspot);
     this.addHotspotInternal(hotspot);
   }
 
   removeHotspot(id: string): void {
+    if (this.destroyed) return;
+
+    // Clean up per-hotspot listeners
+    const fns = this.hotspotCleanups.get(id);
+    if (fns) {
+      fns.forEach((fn) => fn());
+      this.hotspotCleanups.delete(id);
+    }
+
+    // Clean up focus trap
+    const trap = this.focusTraps.get(id);
+    if (trap) {
+      trap.destroy();
+      this.focusTraps.delete(id);
+    }
+
     const marker = this.markers.get(id);
     const popover = this.popovers.get(id);
 
@@ -834,8 +891,13 @@ export class CIHotspot implements CIHotspotInstance {
   }
 
   updateHotspot(id: string, updates: Partial<HotspotItem>): void {
+    if (this.destroyed) return;
     const idx = this.config.hotspots.findIndex((h) => h.id === id);
     if (idx === -1) return;
+
+    // Track marker's DOM position before removal
+    const oldMarker = this.markers.get(id);
+    const nextSibling = oldMarker?.nextElementSibling || null;
 
     // Remove and re-add with updated config
     const current = this.config.hotspots[idx];
@@ -843,9 +905,16 @@ export class CIHotspot implements CIHotspotInstance {
     this.removeHotspot(id);
     this.config.hotspots.splice(idx, 0, updated);
     this.addHotspotInternal(updated);
+
+    // Restore DOM order
+    const newMarker = this.markers.get(id);
+    if (newMarker && nextSibling && this.markersEl.contains(nextSibling)) {
+      this.markersEl.insertBefore(newMarker, nextSibling);
+    }
   }
 
   update(config: Partial<CIHotspotConfig>): void {
+    if (this.destroyed) return;
     // Destroy current state and rebuild
     this.destroyInternal();
     this.config = mergeConfig({ ...this.config, ...config });
@@ -876,9 +945,11 @@ export class CIHotspot implements CIHotspotInstance {
   private destroyInternal(): void {
     this.imageLoaded = false;
 
-    // Run all cleanup functions
-    this.hotspotCleanups.forEach((fn) => fn());
-    this.hotspotCleanups = [];
+    // Run all per-hotspot cleanup functions
+    for (const fns of this.hotspotCleanups.values()) {
+      fns.forEach((fn) => fn());
+    }
+    this.hotspotCleanups.clear();
     this.cleanups.forEach((fn) => fn());
     this.cleanups = [];
 
@@ -905,6 +976,10 @@ export class CIHotspot implements CIHotspotInstance {
     this.scenesMap.clear();
     this.currentSceneId = undefined;
     this.isTransitioning = false;
+    if (this.transitionTimer !== undefined) {
+      clearTimeout(this.transitionTimer);
+      this.transitionTimer = undefined;
+    }
 
     // Destroy keyboard handler
     this.keyboardHandler?.destroy();

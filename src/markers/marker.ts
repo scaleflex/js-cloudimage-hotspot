@@ -32,10 +32,49 @@ export function createMarker(hotspot: NormalizedHotspot, pulse: boolean): HTMLBu
   return marker;
 }
 
+/** Sanitize SVG string to prevent XSS via injected scripts or event handlers */
+function sanitizeSVG(svg: string): string {
+  if (typeof DOMParser === 'undefined') return '';
+  const doc = new DOMParser().parseFromString(svg, 'image/svg+xml');
+  const root = doc.documentElement;
+  // If parsing failed, return empty
+  if (root.querySelector('parsererror')) return '';
+  cleanSVGNode(root);
+  return new XMLSerializer().serializeToString(root);
+}
+
+const SVG_BLOCKED_ELEMENTS = new Set([
+  'script', 'foreignobject', 'iframe', 'object', 'embed',
+  'animate', 'animatetransform', 'animatemotion', 'set',
+  'style', 'a', 'use',
+]);
+
+function cleanSVGNode(node: Element): void {
+  for (const attr of Array.from(node.attributes)) {
+    const name = attr.name.toLowerCase();
+    if (name.startsWith('on')) {
+      node.removeAttribute(attr.name);
+    } else if (
+      (name === 'href' || name === 'xlink:href') &&
+      /^\s*javascript\s*:/i.test(attr.value)
+    ) {
+      node.removeAttribute(attr.name);
+    }
+  }
+  for (const child of Array.from(node.children)) {
+    if (SVG_BLOCKED_ELEMENTS.has(child.tagName.toLowerCase())) {
+      child.remove();
+      continue;
+    }
+    cleanSVGNode(child);
+  }
+}
+
 /** Set marker icon content */
 function setMarkerIcon(marker: HTMLButtonElement, icon: string): void {
-  if (icon.startsWith('<svg') || icon.startsWith('<SVG')) {
-    marker.innerHTML = icon;
+  const trimmed = icon.trim();
+  if (/^<svg[\s>]/i.test(trimmed) || /^<\?xml/i.test(trimmed)) {
+    marker.innerHTML = sanitizeSVG(icon);
   } else if (icon.match(/\.(png|jpg|jpeg|gif|svg|webp)$/i) || icon.startsWith('http') || icon.startsWith('/')) {
     const img = createElement('img', undefined, {
       src: icon,

@@ -178,6 +178,11 @@
   color: #ffffff;
 }
 
+.ci-editor-btn:focus-visible {
+  outline: 3px solid #4A90D9;
+  outline-offset: 2px;
+}
+
 .ci-editor-btn:disabled {
   opacity: 0.4;
   cursor: default;
@@ -436,6 +441,7 @@
 .ci-editor-modal textarea:focus {
   outline: none;
   border-color: var(--ci-editor-accent);
+  box-shadow: 0 0 0 2px rgba(0, 88, 163, 0.15);
 }
 
 .ci-editor-modal-actions {

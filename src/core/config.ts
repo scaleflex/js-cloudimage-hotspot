@@ -29,6 +29,7 @@ export const DATA_ATTR_MAP: Record<string, { key: string; type: 'string' | 'bool
   'data-ci-hotspot-placement': { key: 'placement', type: 'string' },
   'data-ci-hotspot-lazy-load': { key: 'lazyLoad', type: 'boolean' },
   'data-ci-hotspot-zoom-controls': { key: 'zoomControls', type: 'boolean' },
+  'data-ci-hotspot-scroll-hint': { key: 'scrollHint', type: 'boolean' },
   'data-ci-hotspot-ci-token': { key: 'token', type: 'string', nested: 'cloudimage' },
   'data-ci-hotspot-ci-api-version': { key: 'apiVersion', type: 'string', nested: 'cloudimage' },
   'data-ci-hotspot-ci-domain': { key: 'domain', type: 'string', nested: 'cloudimage' },
@@ -75,6 +76,7 @@ function coerceValue(value: string, type: string): unknown {
       try {
         return JSON.parse(value);
       } catch {
+        console.warn(`CIHotspot: failed to parse JSON value "${value}"`);
         return undefined;
       }
     default:

@@ -79,7 +79,7 @@ describe('CIHotspot', () => {
   it('sets container role and aria-label', () => {
     const instance = new CIHotspot(root, makeConfig({ alt: 'Test image' }));
     const container = root.querySelector('.ci-hotspot-container');
-    expect(container?.getAttribute('role')).toBe('img');
+    expect(container?.getAttribute('role')).toBe('group');
     expect(container?.getAttribute('aria-label')).toBe('Test image');
     instance.destroy();
   });
@@ -104,16 +104,18 @@ describe('CIHotspot', () => {
   it('closeAll closes all open popovers', () => {
     const instance = new CIHotspot(root, makeConfig({ trigger: 'click' }));
 
+    // open() calls closeAll() first (single-popover-at-a-time), so open both via direct calls
     instance.open('spot-1');
-    instance.open('spot-2');
-
     const popover1 = root.querySelector('#ci-hotspot-popover-spot-1');
-    const popover2 = root.querySelector('#ci-hotspot-popover-spot-2');
     expect(popover1?.classList.contains('ci-hotspot-popover--visible')).toBe(true);
+
+    // Opening spot-2 closes spot-1 (correct click-mode behavior)
+    instance.open('spot-2');
+    const popover2 = root.querySelector('#ci-hotspot-popover-spot-2');
+    expect(popover1?.classList.contains('ci-hotspot-popover--visible')).toBe(false);
     expect(popover2?.classList.contains('ci-hotspot-popover--visible')).toBe(true);
 
     instance.closeAll();
-    expect(popover1?.classList.contains('ci-hotspot-popover--visible')).toBe(false);
     expect(popover2?.classList.contains('ci-hotspot-popover--visible')).toBe(false);
 
     instance.destroy();

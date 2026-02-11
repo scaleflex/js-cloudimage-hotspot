@@ -7,7 +7,8 @@ const ALLOWED_ATTRS = new Set([
   'class', 'href', 'src', 'alt', 'title', 'target', 'rel',
 ]);
 
-const SAFE_URL_PATTERN = /^(?:https?|mailto):/i;
+const SAFE_HREF_PATTERN = /^(?:https?:|mailto:)/i;
+const SAFE_SRC_PATTERN = /^(?:https?:|data:image\/(?!svg\+xml))/i;
 
 /**
  * Sanitize HTML string to prevent XSS.
@@ -57,8 +58,10 @@ function sanitizeNode(node: Node): void {
           continue;
         }
 
-        // Block javascript: URLs
-        if ((name === 'href' || name === 'src') && !SAFE_URL_PATTERN.test(attr.value.trim())) {
+        // Block unsafe URLs per attribute type
+        if (name === 'href' && !SAFE_HREF_PATTERN.test(attr.value.trim())) {
+          el.removeAttribute(attr.name);
+        } else if (name === 'src' && !SAFE_SRC_PATTERN.test(attr.value.trim())) {
           el.removeAttribute(attr.name);
         }
       }

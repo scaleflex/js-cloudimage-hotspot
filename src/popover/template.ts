@@ -23,7 +23,7 @@ export function renderBuiltInTemplate(data: PopoverData): string {
     bodyParts.push(`<p class="ci-hotspot-popover-description">${escapeHtml(data.description)}</p>`);
   }
 
-  if (data.url) {
+  if (data.url && isSafeUrl(data.url)) {
     const ctaText = data.ctaText || 'View details';
     bodyParts.push(
       `<a class="ci-hotspot-popover-cta" href="${escapeAttr(data.url)}">${escapeHtml(String(ctaText))}</a>`,
@@ -71,10 +71,17 @@ function escapeHtml(str: string): string {
     .replace(/"/g, '&quot;');
 }
 
+/** Check that a URL uses a safe protocol (allowlist approach) */
+function isSafeUrl(url: string): boolean {
+  const normalized = url.replace(/[\s\x00-\x1f]/g, '');
+  return /^https?:\/\//i.test(normalized) || /^\//.test(normalized) || /^#/.test(normalized);
+}
+
 function escapeAttr(str: string): string {
   return str
     .replace(/&/g, '&amp;')
     .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
 }
