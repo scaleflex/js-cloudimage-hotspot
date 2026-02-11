@@ -214,8 +214,11 @@ describe('CIHotspot', () => {
     instance.destroy();
   });
 
-  it('load trigger shows all popovers immediately', () => {
+  it('load trigger shows all popovers after image load', () => {
     const instance = new CIHotspot(root, makeConfig({ trigger: 'load' }));
+    // jsdom doesn't fire image load events, so simulate it
+    const img = root.querySelector('.ci-hotspot-image') as HTMLImageElement;
+    img.dispatchEvent(new Event('load'));
     const popovers = root.querySelectorAll('.ci-hotspot-popover--visible');
     expect(popovers.length).toBe(2);
     instance.destroy();
