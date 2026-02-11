@@ -330,62 +330,68 @@ export class CIHotspot implements CIHotspotInstance {
     triggerMode: string,
   ): void {
     if (triggerMode === 'hover') {
-      // Show on mouse enter marker
-      const enterCleanup = addListener(marker, 'mouseenter', () => {
-        popover.clearHideTimer();
+      this.bindHoverTrigger(hotspot, marker, popover);
+    } else if (triggerMode === 'click') {
+      this.bindClickTrigger(hotspot, marker, popover);
+    }
+    this.bindKeyboardTrigger(hotspot, marker, popover, triggerMode);
+  }
+
+  private bindHoverTrigger(hotspot: HotspotItem, marker: HTMLButtonElement, popover: Popover): void {
+    const enterCleanup = addListener(marker, 'mouseenter', () => {
+      popover.clearHideTimer();
+      popover.show();
+      setMarkerActive(marker, true);
+    });
+
+    const leaveCleanup = addListener(marker, 'mouseleave', () => {
+      popover.scheduleHide(200);
+      setTimeout(() => {
+        if (!popover.isVisible()) setMarkerActive(marker, false);
+      }, 250);
+    });
+
+    this.addHotspotCleanups(hotspot.id, enterCleanup, leaveCleanup);
+  }
+
+  private bindClickTrigger(hotspot: HotspotItem, marker: HTMLButtonElement, popover: Popover): void {
+    const trap = createFocusTrap(popover.element, marker);
+    this.focusTraps.set(hotspot.id, trap);
+
+    const clickCleanup = addListener(marker, 'click', (e) => {
+      e.stopPropagation();
+      this.config.onClick?.(e, hotspot);
+      hotspot.onClick?.(e, hotspot);
+
+      if (popover.isVisible()) {
+        popover.hide();
+        setMarkerActive(marker, false);
+        trap.deactivate();
+      } else {
+        this.closeAll();
         popover.show();
         setMarkerActive(marker, true);
-      });
+        trap.activate();
+      }
+    });
 
-      // Schedule hide on mouse leave marker
-      const leaveCleanup = addListener(marker, 'mouseleave', () => {
-        popover.scheduleHide(200);
-        // After hide delay, deactivate marker
-        setTimeout(() => {
-          if (!popover.isVisible()) {
-            setMarkerActive(marker, false);
-          }
-        }, 250);
-      });
+    const outsideCleanup = addListener(document, 'click', () => {
+      if (popover.isVisible() && !hotspot.keepOpen) {
+        popover.hide();
+        setMarkerActive(marker, false);
+        trap.deactivate();
+      }
+    });
 
-      this.addHotspotCleanups(hotspot.id, enterCleanup, leaveCleanup);
+    this.addHotspotCleanups(hotspot.id, clickCleanup, outsideCleanup);
+  }
 
-    } else if (triggerMode === 'click') {
-      // Create focus trap for click-mode popovers (traps Tab within popover)
-      const trap = createFocusTrap(popover.element, marker);
-      this.focusTraps.set(hotspot.id, trap);
-
-      const clickCleanup = addListener(marker, 'click', (e) => {
-        e.stopPropagation();
-        this.config.onClick?.(e, hotspot);
-        hotspot.onClick?.(e, hotspot);
-
-        if (popover.isVisible()) {
-          popover.hide();
-          setMarkerActive(marker, false);
-          trap.deactivate();
-        } else {
-          // Close all other popovers first
-          this.closeAll();
-          popover.show();
-          setMarkerActive(marker, true);
-          trap.activate();
-        }
-      });
-
-      // Click outside to close
-      const outsideCleanup = addListener(document, 'click', () => {
-        if (popover.isVisible() && !hotspot.keepOpen) {
-          popover.hide();
-          setMarkerActive(marker, false);
-          trap.deactivate();
-        }
-      });
-
-      this.addHotspotCleanups(hotspot.id, clickCleanup, outsideCleanup);
-    }
-
-    // Keyboard: focus/blur for hover-like behavior regardless of trigger
+  private bindKeyboardTrigger(
+    hotspot: HotspotItem,
+    marker: HTMLButtonElement,
+    popover: Popover,
+    triggerMode: string,
+  ): void {
     const focusCleanup = addListener(marker, 'focus', () => {
       if (triggerMode === 'hover') {
         popover.clearHideTimer();
@@ -403,7 +409,6 @@ export class CIHotspot implements CIHotspotInstance {
       }
     });
 
-    // Enter/Space toggle
     const keyCleanup = addListener(marker, 'keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -416,7 +421,6 @@ export class CIHotspot implements CIHotspotInstance {
           this.closeAll();
           popover.show();
           setMarkerActive(marker, true);
-          // Lazily create focus trap for non-click modes when opened via keyboard
           this.ensureFocusTrap(hotspot.id, popover.element, marker);
           this.focusTraps.get(hotspot.id)?.activate();
         }
@@ -457,7 +461,7 @@ export class CIHotspot implements CIHotspotInstance {
 
   private showLoadTriggerPopovers(): void {
     for (const [id, popover] of this.popovers) {
-      const hotspot = this.config.hotspots.find((h) => h.id === id);
+      const hotspot = this.normalizedHotspots.get(id);
       const triggerMode = hotspot?.trigger || this.config.trigger || 'hover';
       if (triggerMode === 'load' && !popover.isVisible()) {
         popover.show();
@@ -505,13 +509,12 @@ export class CIHotspot implements CIHotspotInstance {
       // Check responsive hotspot visibility
       const containerWidth = this.containerEl.offsetWidth;
       for (const [id, hotspot] of this.normalizedHotspots) {
-        const original = this.config.hotspots.find((h) => h.id === id);
-        if (original?.responsive) {
+        if (hotspot.responsive) {
           const marker = this.markers.get(id);
           if (!marker) continue;
           const shouldHide =
-            (original.responsive.maxWidth && containerWidth > original.responsive.maxWidth) ||
-            (original.responsive.minWidth && containerWidth < original.responsive.minWidth);
+            (hotspot.responsive.maxWidth && containerWidth > hotspot.responsive.maxWidth) ||
+            (hotspot.responsive.minWidth && containerWidth < hotspot.responsive.minWidth);
           setMarkerHidden(marker, !!shouldHide);
         }
       }

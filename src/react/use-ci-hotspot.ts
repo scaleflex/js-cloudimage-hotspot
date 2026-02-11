@@ -3,6 +3,20 @@ import type { CIHotspotInstance, CIHotspotConfig, HotspotItem } from '../core/ty
 import { CIHotspot } from '../core/ci-hotspot';
 import type { UseCIHotspotOptions, UseCIHotspotReturn } from './types';
 
+/** Returns a stable string key for a value, only re-stringifying when the reference changes */
+function useStableKey(value: unknown): string {
+  const ref = useRef({ value, key: JSON.stringify(value) });
+  if (value !== ref.current.value) {
+    const key = JSON.stringify(value);
+    if (key !== ref.current.key) {
+      ref.current = { value, key };
+    } else {
+      ref.current.value = value;
+    }
+  }
+  return ref.current.key;
+}
+
 export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const instanceRef = useRef<CIHotspotInstance | null>(null);
@@ -60,9 +74,9 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
   }, []);
 
   // Stabilize object/array references for dependency comparison
-  const scenesKey = JSON.stringify(options.scenes);
-  const hotspotsKey = JSON.stringify(options.hotspots);
-  const cloudimageKey = JSON.stringify(options.cloudimage);
+  const scenesKey = useStableKey(options.scenes);
+  const hotspotsKey = useStableKey(options.hotspots);
+  const cloudimageKey = useStableKey(options.cloudimage);
 
   // Update on options change (skip initial mount — instance was just created)
   useEffect(() => {

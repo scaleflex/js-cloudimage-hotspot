@@ -21,6 +21,7 @@ export class Popover {
   private markerEl: HTMLElement | null = null;
   private containerEl: HTMLElement | null = null;
   private options: PopoverOptions;
+  private hoverCleanups: (() => void)[] = [];
 
   constructor(hotspot: HotspotItem, options: PopoverOptions) {
     this.hotspot = hotspot;
@@ -51,8 +52,14 @@ export class Popover {
 
     // Hover delay: clear hide timer when mouse enters popover
     if (options.triggerMode === 'hover') {
-      this.element.addEventListener('mouseenter', () => this.clearHideTimer());
-      this.element.addEventListener('mouseleave', () => this.scheduleHide());
+      const onEnter = () => this.clearHideTimer();
+      const onLeave = () => this.scheduleHide();
+      this.element.addEventListener('mouseenter', onEnter);
+      this.element.addEventListener('mouseleave', onLeave);
+      this.hoverCleanups.push(
+        () => this.element.removeEventListener('mouseenter', onEnter),
+        () => this.element.removeEventListener('mouseleave', onLeave),
+      );
     }
   }
 
@@ -157,6 +164,8 @@ export class Popover {
   /** Destroy the popover and clean up */
   destroy(): void {
     this.clearHideTimer();
+    this.hoverCleanups.forEach((fn) => fn());
+    this.hoverCleanups = [];
     this.markerEl?.removeAttribute('aria-describedby');
     this.markerEl?.removeAttribute('aria-controls');
     this.markerEl?.removeAttribute('aria-haspopup');
