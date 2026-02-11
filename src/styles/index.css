@@ -1,0 +1,409 @@
+/* === CIHotspot Stylesheet === */
+
+.ci-hotspot-container {
+  /* === Marker === */
+  --ci-hotspot-marker-size: 24px;
+  --ci-hotspot-marker-color: #ffffff;
+  --ci-hotspot-marker-bg: rgba(0, 0, 0, 0.6);
+  --ci-hotspot-marker-border: 2px solid rgba(255, 255, 255, 0.8);
+  --ci-hotspot-marker-border-radius: 50%;
+  --ci-hotspot-marker-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+  /* === Marker Pulse Animation === */
+  --ci-hotspot-pulse-color: rgba(0, 0, 0, 0.2);
+  --ci-hotspot-pulse-size: 40px;
+  --ci-hotspot-pulse-duration: 1.8s;
+
+  /* === Popover === */
+  --ci-hotspot-popover-bg: #ffffff;
+  --ci-hotspot-popover-color: #1a1a1a;
+  --ci-hotspot-popover-border: 1px solid rgba(0, 0, 0, 0.1);
+  --ci-hotspot-popover-border-radius: 12px;
+  --ci-hotspot-popover-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --ci-hotspot-popover-padding: 16px;
+  --ci-hotspot-popover-max-width: 320px;
+  --ci-hotspot-popover-font-family: inherit;
+  --ci-hotspot-popover-font-size: 14px;
+  --ci-hotspot-popover-line-height: 1.5;
+  --ci-hotspot-popover-z-index: 1000;
+
+  /* === Popover Arrow === */
+  --ci-hotspot-arrow-size: 8px;
+  --ci-hotspot-arrow-color: var(--ci-hotspot-popover-bg);
+
+  /* === Popover Content (built-in template) === */
+  --ci-hotspot-title-font-size: 16px;
+  --ci-hotspot-title-font-weight: 600;
+  --ci-hotspot-title-color: var(--ci-hotspot-popover-color);
+  --ci-hotspot-price-color: #2d8c3c;
+  --ci-hotspot-price-font-size: 18px;
+  --ci-hotspot-price-font-weight: 700;
+  --ci-hotspot-description-color: #666666;
+  --ci-hotspot-cta-bg: #0058a3;
+  --ci-hotspot-cta-color: #ffffff;
+  --ci-hotspot-cta-border-radius: 8px;
+  --ci-hotspot-cta-padding: 8px 16px;
+
+  /* === Transitions === */
+  --ci-hotspot-hover-transition: 200ms ease;
+  --ci-hotspot-popover-transition: 300ms ease;
+
+  /* === Zoom Controls === */
+  --ci-hotspot-zoom-controls-bg: rgba(255, 255, 255, 0.9);
+  --ci-hotspot-zoom-controls-color: #333333;
+  --ci-hotspot-zoom-controls-border-radius: 8px;
+  --ci-hotspot-zoom-controls-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* === Scoped box-sizing === */
+.ci-hotspot-container *,
+.ci-hotspot-container *::before,
+.ci-hotspot-container *::after {
+  box-sizing: border-box;
+}
+
+/* === Container === */
+.ci-hotspot-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  line-height: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* === Viewport (zoom/pan target) === */
+.ci-hotspot-viewport {
+  position: relative;
+  width: 100%;
+  transform-origin: 0 0;
+  will-change: transform;
+  transition: transform 300ms ease;
+}
+
+.ci-hotspot-viewport--dragging {
+  transition: none;
+}
+
+/* === Image === */
+.ci-hotspot-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+/* === Markers layer === */
+.ci-hotspot-markers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* === Marker (button) === */
+.ci-hotspot-marker {
+  position: absolute;
+  width: var(--ci-hotspot-marker-size);
+  height: var(--ci-hotspot-marker-size);
+  padding: 0;
+  border: var(--ci-hotspot-marker-border);
+  border-radius: var(--ci-hotspot-marker-border-radius);
+  background: var(--ci-hotspot-marker-bg);
+  color: var(--ci-hotspot-marker-color);
+  box-shadow: var(--ci-hotspot-marker-shadow);
+  cursor: pointer;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(calc(1 / var(--zoom, 1)));
+  transition: transform var(--ci-hotspot-hover-transition),
+              box-shadow var(--ci-hotspot-hover-transition);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  line-height: 1;
+  outline: none;
+}
+
+.ci-hotspot-marker:hover {
+  transform: translate(-50%, -50%) scale(calc(1.2 / var(--zoom, 1)));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.ci-hotspot-marker:focus-visible {
+  outline: 3px solid #4A90D9;
+  outline-offset: 2px;
+}
+
+.ci-hotspot-marker--active {
+  transform: translate(-50%, -50%) scale(calc(1.2 / var(--zoom, 1)));
+  z-index: 2;
+}
+
+.ci-hotspot-marker--hidden {
+  display: none;
+}
+
+/* === Pulse animation === */
+.ci-hotspot-marker--pulse::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--ci-hotspot-pulse-size);
+  height: var(--ci-hotspot-pulse-size);
+  border-radius: 50%;
+  background: var(--ci-hotspot-pulse-color);
+  transform: translate(-50%, -50%) scale(1);
+  animation: ci-hotspot-pulse var(--ci-hotspot-pulse-duration) ease-out infinite;
+  pointer-events: none;
+}
+
+@keyframes ci-hotspot-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* === Breathe animation (subtle marker scale) === */
+.ci-hotspot-marker--pulse {
+  animation: ci-hotspot-breathe 2.4s ease-in-out infinite;
+}
+
+@keyframes ci-hotspot-breathe {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(calc(1 / var(--zoom, 1)));
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(calc(1.15 / var(--zoom, 1)));
+  }
+}
+
+/* === Popover === */
+.ci-hotspot-popover {
+  position: absolute;
+  z-index: var(--ci-hotspot-popover-z-index);
+  max-width: var(--ci-hotspot-popover-max-width);
+  background: var(--ci-hotspot-popover-bg);
+  color: var(--ci-hotspot-popover-color);
+  border: var(--ci-hotspot-popover-border);
+  border-radius: var(--ci-hotspot-popover-border-radius);
+  box-shadow: var(--ci-hotspot-popover-shadow);
+  font-family: var(--ci-hotspot-popover-font-family);
+  font-size: var(--ci-hotspot-popover-font-size);
+  line-height: var(--ci-hotspot-popover-line-height);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(4px);
+  transition: opacity var(--ci-hotspot-popover-transition),
+              transform var(--ci-hotspot-popover-transition);
+}
+
+.ci-hotspot-popover--visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+  animation: ci-hotspot-popover-in var(--ci-hotspot-popover-transition) forwards;
+}
+
+@keyframes ci-hotspot-popover-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Popover Arrow === */
+.ci-hotspot-popover-arrow {
+  position: absolute;
+  width: calc(var(--ci-hotspot-arrow-size) * 2);
+  height: calc(var(--ci-hotspot-arrow-size) * 2);
+  background: var(--ci-hotspot-arrow-color);
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+
+.ci-hotspot-popover[data-placement="top"] .ci-hotspot-popover-arrow {
+  bottom: calc(var(--ci-hotspot-arrow-size) * -1);
+}
+
+.ci-hotspot-popover[data-placement="bottom"] .ci-hotspot-popover-arrow {
+  top: calc(var(--ci-hotspot-arrow-size) * -1);
+}
+
+.ci-hotspot-popover[data-placement="left"] .ci-hotspot-popover-arrow {
+  right: calc(var(--ci-hotspot-arrow-size) * -1);
+}
+
+.ci-hotspot-popover[data-placement="right"] .ci-hotspot-popover-arrow {
+  left: calc(var(--ci-hotspot-arrow-size) * -1);
+}
+
+/* === Popover Content (built-in template) === */
+.ci-hotspot-popover-content {
+  padding: var(--ci-hotspot-popover-padding);
+  overflow: hidden;
+  border-radius: var(--ci-hotspot-popover-border-radius);
+}
+
+.ci-hotspot-popover-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: calc(var(--ci-hotspot-popover-border-radius) - 4px) calc(var(--ci-hotspot-popover-border-radius) - 4px) 0 0;
+  margin: calc(var(--ci-hotspot-popover-padding) * -1);
+  margin-bottom: 12px;
+  width: calc(100% + var(--ci-hotspot-popover-padding) * 2);
+}
+
+.ci-hotspot-popover-body {
+  line-height: 1.5;
+}
+
+.ci-hotspot-popover-title {
+  margin: 0 0 4px;
+  font-size: var(--ci-hotspot-title-font-size);
+  font-weight: var(--ci-hotspot-title-font-weight);
+  color: var(--ci-hotspot-title-color);
+}
+
+.ci-hotspot-popover-price {
+  display: inline-block;
+  margin-bottom: 8px;
+  font-size: var(--ci-hotspot-price-font-size);
+  font-weight: var(--ci-hotspot-price-font-weight);
+  color: var(--ci-hotspot-price-color);
+}
+
+.ci-hotspot-popover-description {
+  margin: 0 0 12px;
+  color: var(--ci-hotspot-description-color);
+}
+
+.ci-hotspot-popover-cta {
+  display: inline-block;
+  padding: var(--ci-hotspot-cta-padding);
+  background: var(--ci-hotspot-cta-bg);
+  color: var(--ci-hotspot-cta-color);
+  border-radius: var(--ci-hotspot-cta-border-radius);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  transition: opacity 200ms ease;
+}
+
+.ci-hotspot-popover-cta:hover {
+  opacity: 0.9;
+}
+
+/* === Zoom Controls === */
+.ci-hotspot-zoom-controls {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  gap: 2px;
+  background: var(--ci-hotspot-zoom-controls-bg);
+  border-radius: var(--ci-hotspot-zoom-controls-border-radius);
+  box-shadow: var(--ci-hotspot-zoom-controls-shadow);
+  z-index: 10;
+  overflow: hidden;
+}
+
+.ci-hotspot-zoom-controls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--ci-hotspot-zoom-controls-color);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0;
+  transition: background 150ms ease;
+}
+
+.ci-hotspot-zoom-controls button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.ci-hotspot-zoom-controls button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.ci-hotspot-zoom-controls button:disabled:hover {
+  background: transparent;
+}
+
+/* === Cluster Indicator === */
+.ci-hotspot-cluster {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  background: var(--ci-hotspot-marker-bg);
+  color: var(--ci-hotspot-marker-color);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(calc(1 / var(--zoom, 1)));
+  box-shadow: var(--ci-hotspot-marker-shadow);
+}
+
+/* === Loading State === */
+.ci-hotspot-loading .ci-hotspot-image {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.ci-hotspot-loading .ci-hotspot-markers {
+  display: none;
+}
+
+/* === Dark Theme === */
+.ci-hotspot-theme-dark {
+  --ci-hotspot-marker-bg: rgba(255, 255, 255, 0.8);
+  --ci-hotspot-marker-color: #1a1a1a;
+  --ci-hotspot-marker-border: 2px solid rgba(255, 255, 255, 0.4);
+  --ci-hotspot-pulse-color: rgba(255, 255, 255, 0.2);
+  --ci-hotspot-popover-bg: #1a1a1a;
+  --ci-hotspot-popover-color: #f0f0f0;
+  --ci-hotspot-popover-border: 1px solid rgba(255, 255, 255, 0.1);
+  --ci-hotspot-popover-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --ci-hotspot-description-color: #aaaaaa;
+  --ci-hotspot-zoom-controls-bg: rgba(30, 30, 30, 0.9);
+  --ci-hotspot-zoom-controls-color: #f0f0f0;
+}
+
+/* === Reduced Motion === */
+@media (prefers-reduced-motion: reduce) {
+  .ci-hotspot-marker,
+  .ci-hotspot-marker::before,
+  .ci-hotspot-popover {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .ci-hotspot-viewport {
+    transition-duration: 0.01ms !important;
+  }
+}

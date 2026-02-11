@@ -1,14 +1,80 @@
 {
   "name": "js-cloudimage-hotspot",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/index.js",
+  "description": "Interactive image hotspots with zoom, popovers, and accessibility",
+  "license": "MIT",
+  "main": "dist/js-cloudimage-hotspot.cjs.js",
+  "module": "dist/js-cloudimage-hotspot.esm.js",
+  "unpkg": "dist/js-cloudimage-hotspot.min.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/js-cloudimage-hotspot.esm.js",
+      "require": "./dist/js-cloudimage-hotspot.cjs.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.js",
+      "require": "./dist/react/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
   "scripts": {
-    "build": "tsc"
+    "dev": "vite --config config/vite.demo.config.ts",
+    "dev:react": "vite --config config/vite.demo.config.ts demo/react-demo",
+    "build": "npm run build:bundle && npm run build:react && npm run typecheck:emit",
+    "build:bundle": "vite build --config config/vite.config.ts",
+    "build:react": "vite build --config config/vite.react.config.ts",
+    "build:demo": "vite build --config config/vite.demo.config.ts",
+    "typecheck": "tsc --noEmit",
+    "typecheck:emit": "tsc --emitDeclarationOnly --declaration --outDir dist",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src/ tests/ --ext .ts,.tsx"
   },
-  "dependencies": {},
   "devDependencies": {
-    "typescript": "^5.5.3"
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.1",
+    "jsdom": "^25.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.5.3",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
   },
-  "private": true
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "keywords": [
+    "hotspot",
+    "image",
+    "zoom",
+    "pan",
+    "popover",
+    "interactive",
+    "accessibility",
+    "wcag",
+    "typescript",
+    "cloudimage",
+    "react"
+  ]
 }
