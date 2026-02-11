@@ -8,11 +8,11 @@ Built `js-cloudimage-hotspot` from scratch — a zero-dependency TypeScript libr
 
 | Metric | Value |
 |--------|-------|
-| Tests | 187+ across 17 test files, all passing |
+| Tests | 243 across 18 test files |
 | ESM bundle | 10.41 KB gzipped |
 | CJS bundle | 9.38 KB gzipped |
 | UMD bundle | 9.48 KB gzipped |
-| Total files | ~65: 37 source, 17 test, 9 demo, 7 config/meta |
+| Total files | ~65: 37 source, 18 test, 9 demo, 7 config/meta |
 | Runtime dependencies | Zero |
 
 ## Issues Encountered & Resolved

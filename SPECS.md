@@ -1159,6 +1159,7 @@ js-cloudimage-hotspot/
 │   ├── data-attr.test.ts           # HTML data-attribute init tests
 │   ├── react.test.tsx              # React wrapper tests
 │   ├── editor.test.ts              # Visual editor tests
+│   ├── scenes.test.ts              # Multi-image navigation tests
 │   ├── integration.test.ts         # End-to-end integration tests
 │   ├── edge-cases.test.ts          # Edge case tests (SSR, boundaries, rapid ops)
 │   ├── cloudimage.test.ts          # Cloudimage URL builder tests
@@ -1674,13 +1675,13 @@ The vanilla core gracefully handles server-side rendering environments:
 - **Vue wrapper** — `<CIHotspotViewer>` component for Vue 3 *(planned)*
 - **Svelte wrapper** — `<CIHotspotViewer>` component for Svelte *(planned)*
 
-### v1.3 — Multi-Image Navigation
+### v1.3 — Multi-Image Navigation *(DONE)*
 
-- **Scenes API** — multiple images with per-image hotspot sets
-- **`navigateTo` hotspots** — click a hotspot to switch scenes
-- **Scene transitions** — fade, slide, none
-- **Scene instance methods** — `goToScene()`, `getCurrentScene()`, `getScenes()`
-- **HTML data-attribute support for scenes** — `data-ci-hotspot-scenes` JSON attribute
+- **Scenes API** — multiple images with per-image hotspot sets (**implemented**)
+- **`navigateTo` hotspots** — click a hotspot to switch scenes (**implemented**)
+- **Scene transitions** — fade, slide, none (**implemented**)
+- **Scene instance methods** — `goToScene()`, `getCurrentScene()`, `getScenes()` (**implemented**)
+- **HTML data-attribute support for scenes** — `data-ci-hotspot-scenes` JSON attribute (**implemented**)
 
 ### v2.0 — Future Vision
 
