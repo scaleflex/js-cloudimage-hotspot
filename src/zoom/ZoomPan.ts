@@ -257,12 +257,14 @@ export class ZoomPan {
     const containerWidth = this.container.offsetWidth;
     const containerHeight = this.container.offsetHeight;
 
-    // Maximum pan in each direction so image edge stays at container edge
+    // Maximum pan so image edge stays at container edge.
+    // With transform-origin 0 0 and scale() before translate(), valid range is [-max, 0]:
+    //   pan=0 → top-left visible, pan=-max → bottom-right visible.
     const maxPanX = (containerWidth * (this.zoom - 1)) / this.zoom;
     const maxPanY = (containerHeight * (this.zoom - 1)) / this.zoom;
 
-    this.panX = Math.max(-maxPanX / 2, Math.min(maxPanX / 2, this.panX));
-    this.panY = Math.max(-maxPanY / 2, Math.min(maxPanY / 2, this.panY));
+    this.panX = Math.max(-maxPanX, Math.min(0, this.panX));
+    this.panY = Math.max(-maxPanY, Math.min(0, this.panY));
 
     if (this.zoom <= 1) {
       this.panX = 0;
