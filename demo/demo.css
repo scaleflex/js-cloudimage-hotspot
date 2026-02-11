@@ -285,7 +285,7 @@ body {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
-.demo-card h3 {
+.demo-card > h3 {
   font-size: 16px;
   font-weight: 600;
   margin-bottom: 14px;
