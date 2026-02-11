@@ -367,6 +367,11 @@
   background: transparent;
 }
 
+.ci-hotspot-zoom-controls button svg {
+  width: 18px;
+  height: 18px;
+}
+
 .ci-hotspot-zoom-controls button:focus-visible {
   outline: 3px solid var(--ci-hotspot-focus-ring, #4A90D9);
   outline-offset: -3px;
