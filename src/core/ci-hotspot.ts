@@ -753,6 +753,7 @@ export class CIHotspot implements CIHotspotInstance {
   private performSceneTransition(
     scene: Scene,
     transition: SceneTransition,
+    slideReverse: boolean,
     onComplete: () => void,
   ): void {
     if (transition === 'none') {
@@ -786,8 +787,9 @@ export class CIHotspot implements CIHotspotInstance {
         addClass(incomingImg, 'ci-hotspot-scene-fade-in');
         addClass(this.imgEl, 'ci-hotspot-scene-fade-out');
       } else if (transition === 'slide') {
-        addClass(incomingImg, 'ci-hotspot-scene-slide-in');
-        addClass(this.imgEl, 'ci-hotspot-scene-slide-out');
+        const suffix = slideReverse ? '-reverse' : '';
+        addClass(incomingImg, `ci-hotspot-scene-slide-in${suffix}`);
+        addClass(this.imgEl, `ci-hotspot-scene-slide-out${suffix}`);
       }
 
       this.viewportEl.insertBefore(incomingImg, this.markersEl);
@@ -803,6 +805,7 @@ export class CIHotspot implements CIHotspotInstance {
           incomingImg.remove();
           removeClass(this.imgEl, 'ci-hotspot-scene-fade-out');
           removeClass(this.imgEl, 'ci-hotspot-scene-slide-out');
+          removeClass(this.imgEl, 'ci-hotspot-scene-slide-out-reverse');
           removeClass(this.containerEl, 'ci-hotspot-scene-transitioning');
           onComplete();
         };
@@ -955,11 +958,25 @@ export class CIHotspot implements CIHotspotInstance {
       this.zoomPan.resetZoom();
     }
 
+    // Determine slide direction from the triggering hotspot's position
+    let slideReverse = false;
+    if (transition === 'slide') {
+      for (const hotspot of this.config.hotspots) {
+        if (hotspot.navigateTo === sceneId) {
+          const normalized = this.normalizedHotspots.get(hotspot.id);
+          if (normalized && normalized.x <= 50) {
+            slideReverse = true;
+          }
+          break;
+        }
+      }
+    }
+
     // Sync old scene's hotspots before updating currentSceneId
     this.syncCurrentSceneHotspots();
     this.currentSceneId = sceneId;
 
-    this.performSceneTransition(scene, transition, () => {
+    this.performSceneTransition(scene, transition, slideReverse, () => {
       this.isTransitioning = false;
 
       announceToScreenReader(`Navigated to ${scene.alt || sceneId}`);

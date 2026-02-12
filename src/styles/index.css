@@ -540,6 +540,25 @@
   to { transform: translateX(-100%); }
 }
 
+.ci-hotspot-scene-slide-in-reverse {
+  animation: ci-hotspot-scene-slide-in-reverse var(--ci-hotspot-scene-transition-duration) ease forwards;
+  z-index: 1;
+}
+
+.ci-hotspot-scene-slide-out-reverse {
+  animation: ci-hotspot-scene-slide-out-reverse var(--ci-hotspot-scene-transition-duration) ease forwards;
+}
+
+@keyframes ci-hotspot-scene-slide-in-reverse {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes ci-hotspot-scene-slide-out-reverse {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
 /* NavigateTo marker */
 .ci-hotspot-marker--navigate {
   --ci-hotspot-marker-bg: rgba(0, 88, 163, 0.7);
@@ -692,7 +711,9 @@
   .ci-hotspot-scene-fade-in,
   .ci-hotspot-scene-fade-out,
   .ci-hotspot-scene-slide-in,
-  .ci-hotspot-scene-slide-out {
+  .ci-hotspot-scene-slide-out,
+  .ci-hotspot-scene-slide-in-reverse,
+  .ci-hotspot-scene-slide-out-reverse {
     animation-duration: 0.01ms !important;
   }
 
