@@ -3,8 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "description": "Vanilla JS example for js-cloudimage-hotspot",
-  "source": "index.html",
+  "scripts": {
+    "dev": "vite",
+    "start": "vite"
+  },
   "dependencies": {
     "js-cloudimage-hotspot": "^1.0.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
   }
 }
