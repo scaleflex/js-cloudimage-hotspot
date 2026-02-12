@@ -541,6 +541,62 @@ Implemented the Scenes API for multi-image navigation with per-image hotspot set
 
 ---
 
+### Update 11: Zoom Controls Position, Directional Slides & Demo Fixes
+
+**Commits:** `85b706f`, `658ce8e`, `2dbea3a`
+
+**Goal:** Add configurable zoom controls positioning (6 positions), implement directional slide transitions based on hotspot position, fix demo page scroll jump on config change, and fix scene transition flicker.
+
+#### Zoom Controls Position
+
+Added `zoomControlsPosition` config option supporting 6 positions: `'top-left'`, `'top-center'`, `'top-right'`, `'bottom-left'`, `'bottom-center'`, `'bottom-right'`. Default: `'bottom-right'`.
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/core/types.ts` | Modified | Added `ZoomControlsPosition` type and `zoomControlsPosition?` property to `CIHotspotConfig` |
+| `src/core/config.ts` | Modified | Added `zoomControlsPosition: 'bottom-right'` default, added `data-ci-hotspot-zoom-controls-position` data attribute mapping |
+| `src/zoom/controls.ts` | Modified | Added `position` to `ZoomControlsOptions`, sets `data-position` attribute on controls element |
+| `src/core/ci-hotspot.ts` | Modified | Passes `position: this.config.zoomControlsPosition` to `createZoomControls` |
+| `src/styles/index.css` | Modified | Removed hardcoded `bottom: 16px; right: 16px`, added 6 `[data-position]` CSS rules. Center positions use `left: 50%; transform: translateX(-50%)` |
+| `src/react/types.ts` | Modified | Added `zoomControlsPosition?` to `CIHotspotViewerProps` |
+| `src/react/use-ci-hotspot.ts` | Modified | Passes `zoomControlsPosition` in config, update effect, and dependency array |
+| `README.md` | Modified | Added `zoomControlsPosition` to config options table |
+
+#### Directional Slide Transitions
+
+Slide transitions now respect hotspot position: if the triggering `navigateTo` hotspot is on the left side of the image (x ≤ 50%), the new scene slides in from the left; otherwise from the right.
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/core/ci-hotspot.ts` | Modified | `goToScene()` looks up triggering hotspot x-coordinate from `normalizedHotspots` map, passes `slideReverse` to `performSceneTransition()`. `performSceneTransition()` applies reverse animation classes when `slideReverse` is true |
+| `src/styles/index.css` | Modified | Added `ci-hotspot-scene-slide-in-reverse` and `ci-hotspot-scene-slide-out-reverse` keyframes and classes (slide from left / exit to right) |
+
+#### Scene Transition Flicker Fix
+
+Fixed a flicker visible when dev tools were open (cache disabled): the temporary incoming image was removed before the main `imgEl` had loaded the new src.
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/core/ci-hotspot.ts` | Modified | `performSceneTransition()` now defers `incomingImg.remove()` until `imgEl` fires `load` (or `error` as fallback), preventing flash of empty state |
+
+#### Demo Page Fixes
+
+| File | Action | Description |
+|------|--------|-------------|
+| `demo/demo.css` | Modified | Removed global `scroll-behavior: smooth` from `html` rule to prevent scroll jumps during DOM rebuilds |
+| `demo/demo.ts` | Modified | Added scoped `scrollIntoView({ behavior: 'smooth' })` only on nav link clicks. Added scene transition selector wired to `scenesViewer.update()` |
+| `demo/configurator.ts` | Modified | Switched from destroy+recreate to `instance.update()` with `minHeight` pinning during DOM rebuild. Added `zoomControlsPosition` selector. Added error event fallbacks for image load |
+| `demo/index.html` | Modified | Added "Zoom Controls Position" selector to configurator, added "Scene Transition" selector to Multi-Image Navigation section, renamed label to "Popover Placement" |
+
+#### Results
+- Zoom controls correctly position in all 6 corners/center positions
+- Directional slides create natural spatial navigation feel
+- No more scroll jumps when toggling configurator options
+- No more scene transition flicker with dev tools open
+- Build, typecheck, and all tests pass
+
+---
+
 ## Dependency Graph (Execution Order)
 
 ```

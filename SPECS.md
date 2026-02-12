@@ -149,6 +149,9 @@ interface CIHotspotConfig {
   /** Show zoom controls UI (default: true when zoom is enabled) */
   zoomControls?: boolean;
 
+  /** Position of zoom controls (default: 'bottom-right') */
+  zoomControlsPosition?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
+
   /** Popover placement preference */
   placement?: 'top' | 'bottom' | 'left' | 'right' | 'auto';
 
@@ -309,6 +312,7 @@ CIHotspot.autoInit(root?: HTMLElement): CIHotspotInstance[];
 | `data-ci-hotspot-placement` | `placement` | `'top' \| 'bottom' \| 'left' \| 'right' \| 'auto'` |
 | `data-ci-hotspot-lazy-load` | `lazyLoad` | `'true' \| 'false'` |
 | `data-ci-hotspot-zoom-controls` | `zoomControls` | `'true' \| 'false'` |
+| `data-ci-hotspot-zoom-controls-position` | `zoomControlsPosition` | `'top-left' \| 'top-center' \| 'top-right' \| 'bottom-left' \| 'bottom-center' \| 'bottom-right'` |
 | `data-ci-hotspot-scroll-hint` | `scrollHint` | `'true' \| 'false'` |
 | `data-ci-hotspot-ci-token` | `cloudimage.token` | `string` |
 | `data-ci-hotspot-ci-api-version` | `cloudimage.apiVersion` | `string` |
@@ -651,7 +655,7 @@ When a user scrolls without the modifier key over a zoom-enabled container, a **
 
 ### 6.6 Zoom Controls UI
 
-When `zoomControls` is enabled (default when `zoom: true`), a floating control bar appears at the bottom-right of the container:
+When `zoomControls` is enabled (default when `zoom: true`), a floating control bar appears in the container. Its position is configurable via `zoomControlsPosition` (default: `'bottom-right'`). Supported positions: `'top-left'`, `'top-center'`, `'top-right'`, `'bottom-left'`, `'bottom-center'`, `'bottom-right'`. The position is applied via a `data-position` attribute on the controls element with corresponding CSS rules.
 
 ```
 ┌─────────────────────────────────────────┐
@@ -804,6 +808,7 @@ interface CIHotspotViewerProps {
   pulse?: boolean;
   placement?: 'top' | 'bottom' | 'left' | 'right' | 'auto';
   zoomControls?: boolean;
+  zoomControlsPosition?: CIHotspotConfig['zoomControlsPosition'];
   scrollHint?: boolean;
   lazyLoad?: boolean;
   cloudimage?: CIHotspotConfig['cloudimage'];
@@ -1207,11 +1212,11 @@ The demo uses a **sticky navigation bar** with backdrop-filter blur effect and s
 
 A panel that lets visitors:
 
-- Toggle configuration options: trigger mode, zoom, pulse, theme, placement
-- Add/remove/reposition hotspots by clicking on the image
-- Edit hotspot data (title, price, description)
+- Toggle configuration options: trigger mode, zoom, pulse, invert marker theme, popover placement, zoom controls position
 - See the generated JavaScript and HTML code update in real-time
 - Copy the generated code to clipboard
+
+The configurator uses `instance.update()` to apply changes without recreating the viewer, with `minHeight` pinning to prevent layout shift during DOM updates.
 
 ### 12.3 Demo Images
 
@@ -1563,7 +1568,7 @@ interface Scene {
 | Transition | Effect |
 |---|---|
 | `'fade'` | Cross-fade between scenes (default) |
-| `'slide'` | Slide horizontally (old scene exits left, new enters right) |
+| `'slide'` | Directional slide based on hotspot position: if the triggering `navigateTo` hotspot is on the left side of the image (x ≤ 50%), the new scene slides in from the left (reverse); otherwise it slides in from the right (default). This creates a natural spatial navigation feel |
 | `'none'` | Instant switch, no animation |
 
 **Instance methods for scenes:**
@@ -1776,4 +1781,5 @@ All data attributes use the `data-ci-hotspot-` prefix.
 | `data-ci-hotspot-ci-domain` | `string` | `config.cloudimage.domain` |
 | `data-ci-hotspot-ci-limit-factor` | `number string` | `config.cloudimage.limitFactor` |
 | `data-ci-hotspot-ci-params` | `string` | `config.cloudimage.params` |
+| `data-ci-hotspot-zoom-controls-position` | `string` | `config.zoomControlsPosition` |
 | `data-ci-hotspot-scroll-hint` | `boolean string` | `config.scrollHint` |
