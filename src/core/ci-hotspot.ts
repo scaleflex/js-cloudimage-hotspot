@@ -1,4 +1,4 @@
-import type { CIHotspotConfig, CIHotspotInstance, HotspotItem, NormalizedHotspot, Scene, SceneTransition, TriggerMode } from './types';
+import type { CIHotspotConfig, CIHotspotInstance, HotspotItem, NormalizedHotspot, ResolvedCIHotspotConfig, Scene, SceneTransition, TriggerMode } from './types';
 import { mergeConfig, parseDataAttributes, validateConfig } from './config';
 import { getElement, createElement, addClass, removeClass, injectStyles } from '../utils/dom';
 import { normalizeToPercent } from '../utils/coordinates';
@@ -16,7 +16,7 @@ import { createFullscreenControl, type FullscreenControl } from '../fullscreen/f
 import cssText from '../styles/index.css?inline';
 
 export class CIHotspot implements CIHotspotInstance {
-  private config: CIHotspotConfig;
+  private config: ResolvedCIHotspotConfig;
   private rootEl: HTMLElement;
   private containerEl!: HTMLElement;
   private viewportEl!: HTMLElement;
@@ -286,8 +286,16 @@ export class CIHotspot implements CIHotspotInstance {
     };
   }
 
+  private static readonly NAVIGATE_ARROW_SVG =
+    '<svg class="ci-hotspot-navigate-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>';
+
   private bindNavigateTrigger(hotspot: HotspotItem, marker: HTMLButtonElement, popover?: Popover): void {
     addClass(marker, 'ci-hotspot-marker--navigate');
+    marker.innerHTML = CIHotspot.NAVIGATE_ARROW_SVG;
+    if (hotspot.arrowDirection != null) {
+      const svg = marker.querySelector('svg');
+      if (svg) svg.style.transform = `rotate(${hotspot.arrowDirection}deg)`;
+    }
     const sceneLabel = hotspot.label || hotspot.navigateTo!;
     marker.setAttribute('aria-label', `Navigate to ${sceneLabel}`);
     marker.setAttribute('aria-roledescription', 'navigation hotspot');

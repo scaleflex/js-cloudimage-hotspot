@@ -23,8 +23,8 @@ new CIHotspot('#hero-viewer', {
     },
     {
       id: 'sofa',
-      x: '28%',
-      y: '54%',
+      x: '24%',
+      y: '68%',
       label: 'Loveseat Sofa',
       data: {
         title: 'Loveseat Sofa',
@@ -33,8 +33,8 @@ new CIHotspot('#hero-viewer', {
     },
     {
       id: 'side-table',
-      x: '48%',
-      y: '64%',
+      x: '45%',
+      y: '72%',
       label: 'Tripod Side Table',
       data: {
         title: 'Tripod Side Table',
@@ -102,8 +102,8 @@ new CIHotspot('#theme-light', {
   hotspots: [
     {
       id: 'tl1',
-      x: '55%',
-      y: '46%',
+      x: '58%',
+      y: '66%',
       label: 'Pampas Vase',
       data: { title: 'Pampas Vase', description: 'Terracotta pitcher filled with dried pampas grass plumes in warm golden tones.' },
     },
@@ -118,8 +118,8 @@ new CIHotspot('#theme-dark', {
   hotspots: [
     {
       id: 'td1',
-      x: '55%',
-      y: '46%',
+      x: '58%',
+      y: '66%',
       label: 'Pampas Vase',
       data: { title: 'Pampas Vase', description: 'Terracotta pitcher filled with dried pampas grass plumes in warm golden tones.' },
     },
@@ -134,8 +134,8 @@ new CIHotspot('#theme-custom', {
   hotspots: [
     {
       id: 'tc1',
-      x: '55%',
-      y: '46%',
+      x: '58%',
+      y: '66%',
       label: 'Pampas Vase',
       data: { title: 'Pampas Vase', description: 'Terracotta pitcher filled with dried pampas grass plumes in warm golden tones.' },
     },
@@ -152,22 +152,38 @@ const scenesViewer = new CIHotspot('#scenes-viewer', {
       hotspots: [
         {
           id: 'mh-stairs',
-          x: '75%',
+          x: '40%',
           y: '40%',
           label: 'Go to Stairs',
           navigateTo: 'stairs',
         },
         {
           id: 'mh-kitchen',
-          x: '15%',
-          y: '55%',
+          x: '75%',
+          y: '82%',
           label: 'Go to Kitchen',
           navigateTo: 'kitchen',
         },
         {
-          id: 'mh-chandelier',
-          x: '50%',
+          id: 'kt-rest',
+          x: '10%',
+          y: '85%',
+          label: 'Go to Rest Zone',
+          navigateTo: 'rest-zone',
+          arrowDirection: 180
+        },
+        {
+          id: 'st-bedroom',
+          x: '60%',
           y: '15%',
+          label: 'Go to Bedroom',
+          navigateTo: 'bedroom',
+          arrowDirection: -90
+        },
+        {
+          id: 'mh-chandelier',
+          x: '55%',
+          y: '43%',
           label: 'Crystal Chandelier',
           data: {
             title: 'Crystal Chandelier',
@@ -183,22 +199,23 @@ const scenesViewer = new CIHotspot('#scenes-viewer', {
       hotspots: [
         {
           id: 'st-back',
-          x: '15%',
+          x: '10%',
           y: '90%',
           label: 'Back to Main Hall',
           navigateTo: 'main-hall',
+          arrowDirection: 180
         },
         {
           id: 'st-bedroom',
-          x: '70%',
-          y: '20%',
+          x: '50%',
+          y: '10%',
           label: 'Go to Bedroom',
           navigateTo: 'bedroom',
         },
         {
           id: 'st-banister',
-          x: '40%',
-          y: '60%',
+          x: '25%',
+          y: '25%',
           label: 'Oak Banister',
           data: {
             title: 'Oak Banister',
@@ -218,6 +235,7 @@ const scenesViewer = new CIHotspot('#scenes-viewer', {
           y: '90%',
           label: 'Back to Main Hall',
           navigateTo: 'main-hall',
+          arrowDirection: 180
         },
         {
           id: 'kt-rest',
@@ -228,8 +246,8 @@ const scenesViewer = new CIHotspot('#scenes-viewer', {
         },
         {
           id: 'kt-island',
-          x: '50%',
-          y: '70%',
+          x: '40%',
+          y: '56%',
           label: 'Kitchen Island',
           data: {
             title: 'Marble Kitchen Island',
@@ -245,10 +263,11 @@ const scenesViewer = new CIHotspot('#scenes-viewer', {
       hotspots: [
         {
           id: 'br-back',
-          x: '15%',
+          x: '10%',
           y: '90%',
           label: 'Back to Stairs',
           navigateTo: 'stairs',
+          arrowDirection: 180
         },
         {
           id: 'br-bed',
@@ -273,6 +292,7 @@ const scenesViewer = new CIHotspot('#scenes-viewer', {
           y: '90%',
           label: 'Back to Kitchen',
           navigateTo: 'kitchen',
+          arrowDirection: 180
         },
         {
           id: 'rz-main',
@@ -286,10 +306,7 @@ const scenesViewer = new CIHotspot('#scenes-viewer', {
           x: '50%',
           y: '55%',
           label: 'Reading Chair',
-          data: {
-            title: 'Wingback Reading Chair',
-            description: 'Boucle-upholstered wingback with solid ash legs and matching ottoman.',
-          },
+          content: '<div style="display:flex;gap:12px;align-items:center"><img src="https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/andrea-davis-1-chair.jpg?w=120" alt="Wingback Reading Chair" style="width:100px;height:100px;object-fit:cover;border-radius:8px;flex-shrink:0"><div><strong style="font-size:15px">Wingback Reading Chair</strong><p style="margin:4px 0 0;font-size:13px;opacity:0.7">Boucle-upholstered wingback with solid ash legs and matching ottoman.</p></div></div>',
         },
       ],
     },

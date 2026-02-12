@@ -564,15 +564,10 @@
   --ci-hotspot-marker-bg: rgba(0, 88, 163, 0.7);
 }
 
-.ci-hotspot-marker--navigate::after {
-  content: '';
+.ci-hotspot-navigate-icon {
+  width: 75%;
+  height: 75%;
   display: block;
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid var(--ci-hotspot-marker-color);
-  border-top: 2px solid var(--ci-hotspot-marker-color);
-  transform: rotate(45deg);
-  margin-left: -2px;
 }
 
 /* Hide markers during scene transition */

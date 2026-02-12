@@ -104,14 +104,14 @@ const instance = new CIHotspot(element, config);
 
 ```ts
 interface CIHotspotConfig {
-  /** Image source URL */
-  src: string;
+  /** Image source URL (required unless `scenes` is provided) */
+  src?: string;
 
   /** Alt text for the image */
   alt?: string;
 
-  /** Array of hotspot definitions */
-  hotspots: HotspotItem[];
+  /** Array of hotspot definitions (required unless `scenes` is provided) */
+  hotspots?: HotspotItem[];
 
   /** Popover trigger mode */
   trigger?: 'hover' | 'click' | 'load';
@@ -379,6 +379,9 @@ interface HotspotItem {
 
   /** Scene ID to navigate to on click (v1.3 multi-image) */
   navigateTo?: string;
+
+  /** Rotation angle in degrees for the navigate arrow (default: 0 = right). E.g. 180 = left, 90 = down, -90 = up */
+  arrowDirection?: number;
 }
 ```
 

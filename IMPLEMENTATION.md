@@ -597,6 +597,35 @@ Fixed a flicker visible when dev tools were open (cache disabled): the temporary
 
 ---
 
+### Update 12: Navigate Arrow Improvements & Config Type Fix
+
+**Goal:** Replace CSS border-based navigate chevron with a Lucide SVG icon for reliable centering at any rotation, add `arrowDirection` prop to hotspots, and fix `CIHotspotConfig` types for scenes-only usage.
+
+#### Navigate Arrow
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/core/types.ts` | Modified | Added `arrowDirection?: number` to `HotspotItem` — rotation in degrees (0 = right, 180 = left, 90 = down, -90 = up) |
+| `src/core/ci-hotspot.ts` | Modified | Injects Lucide `chevron-right` SVG into navigate markers; applies `arrowDirection` as inline `transform: rotate()` on the SVG |
+| `src/styles/index.css` | Modified | Replaced `::after` border-based chevron with `.ci-hotspot-navigate-icon` SVG sizing class (75% of marker). Removed all positioning hacks |
+
+#### Config Type Fix for Scenes Mode
+
+Made `src` and `hotspots` optional in `CIHotspotConfig` so scenes-only configs don't cause TS errors. Added `ResolvedCIHotspotConfig` internal type that guarantees both are present after `mergeConfig`.
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/core/types.ts` | Modified | Made `src` and `hotspots` optional in `CIHotspotConfig`. Added `ResolvedCIHotspotConfig` type alias |
+| `src/core/config.ts` | Modified | `mergeConfig` and `validateConfig` use `ResolvedCIHotspotConfig` |
+| `src/core/ci-hotspot.ts` | Modified | Internal `config` field typed as `ResolvedCIHotspotConfig` |
+
+#### Results
+- Navigate arrow centered correctly at all rotation angles
+- No TS errors when passing scenes-only config (without `src`/`hotspots`)
+- All 301 tests pass, build and typecheck clean
+
+---
+
 ## Dependency Graph (Execution Order)
 
 ```

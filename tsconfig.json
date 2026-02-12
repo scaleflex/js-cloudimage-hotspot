@@ -13,10 +13,9 @@
     "skipLibCheck": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "outDir": "dist",
-    "rootDir": "src",
     "resolveJsonModule": true,
     "isolatedModules": true
   },
-  "include": ["src"],
-  "exclude": ["src/react"]
+  "include": ["src", "demo"],
+  "exclude": ["src/react", "demo/react-demo"]
 }

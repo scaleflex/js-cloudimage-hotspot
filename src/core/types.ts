@@ -90,18 +90,20 @@ export interface HotspotItem {
   icon?: string;
   /** Scene ID to navigate to on click (v1.3 multi-image) */
   navigateTo?: string;
+  /** Rotation angle in degrees for the navigate arrow (default: 0 = right). E.g. 180 = left, 90 = down, -90 = up */
+  arrowDirection?: number;
   /** Responsive breakpoint configuration */
   responsive?: ResponsiveConfig;
 }
 
 /** Main library configuration */
 export interface CIHotspotConfig {
-  /** Image source URL */
-  src: string;
+  /** Image source URL (required unless `scenes` is provided) */
+  src?: string;
   /** Alt text for the image */
   alt?: string;
-  /** Array of hotspot definitions */
-  hotspots: HotspotItem[];
+  /** Array of hotspot definitions (required unless `scenes` is provided) */
+  hotspots?: HotspotItem[];
   /** Popover trigger mode (default: 'hover') */
   trigger?: TriggerMode;
   /** Enable zoom & pan (default: false) */
@@ -198,6 +200,9 @@ export interface CIHotspotInstance {
   /** Check if currently in fullscreen mode */
   isFullscreen(): boolean;
 }
+
+/** Internal resolved config — src and hotspots always defined after mergeConfig */
+export type ResolvedCIHotspotConfig = CIHotspotConfig & { src: string; hotspots: HotspotItem[] };
 
 // --- Internal types (not exported from main entry) ---
 
