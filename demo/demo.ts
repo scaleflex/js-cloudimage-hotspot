@@ -201,7 +201,7 @@ const scenesViewer = new CIHotspot('#scenes-viewer', {
           id: 'st-back',
           x: '10%',
           y: '90%',
-          label: 'Back to Main Hall',
+          label: 'Go to Main Hall',
           navigateTo: 'main-hall',
           arrowDirection: 180
         },
@@ -233,7 +233,7 @@ const scenesViewer = new CIHotspot('#scenes-viewer', {
           id: 'kt-back',
           x: '15%',
           y: '90%',
-          label: 'Back to Main Hall',
+          label: 'Go to Main Hall',
           navigateTo: 'main-hall',
           arrowDirection: 180
         },
@@ -265,7 +265,7 @@ const scenesViewer = new CIHotspot('#scenes-viewer', {
           id: 'br-back',
           x: '10%',
           y: '90%',
-          label: 'Back to Stairs',
+          label: 'Go to Stairs',
           navigateTo: 'stairs',
           arrowDirection: 180
         },
@@ -290,7 +290,7 @@ const scenesViewer = new CIHotspot('#scenes-viewer', {
           id: 'rz-back',
           x: '15%',
           y: '90%',
-          label: 'Back to Kitchen',
+          label: 'Go to Kitchen',
           navigateTo: 'kitchen',
           arrowDirection: 180
         },
