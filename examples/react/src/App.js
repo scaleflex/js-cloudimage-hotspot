@@ -4,8 +4,8 @@ import { CIHotspotViewer } from 'js-cloudimage-hotspot/react';
 const hotspots = [
   {
     id: 'lamp',
-    x: 22,
-    y: 30,
+    x: '22%',
+    y: '30%',
     label: 'Designer Lamp',
     trigger: 'click',
     placement: 'right',
@@ -19,8 +19,8 @@ const hotspots = [
   },
   {
     id: 'sofa',
-    x: 55,
-    y: 60,
+    x: '55%',
+    y: '60%',
     label: 'Comfort Sofa',
     trigger: 'hover',
     placement: 'top',
@@ -32,8 +32,8 @@ const hotspots = [
   },
   {
     id: 'plant',
-    x: 80,
-    y: 45,
+    x: '80%',
+    y: '45%',
     label: 'Indoor Plant',
     trigger: 'click',
     placement: 'left',
