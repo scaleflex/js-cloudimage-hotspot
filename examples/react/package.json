@@ -1,0 +1,12 @@
+{
+  "name": "js-cloudimage-hotspot-react-example",
+  "private": true,
+  "version": "0.0.0",
+  "description": "React example for js-cloudimage-hotspot",
+  "main": "src/index.jsx",
+  "dependencies": {
+    "js-cloudimage-hotspot": "^1.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

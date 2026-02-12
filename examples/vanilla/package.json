@@ -1,0 +1,10 @@
+{
+  "name": "js-cloudimage-hotspot-vanilla-example",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Vanilla JS example for js-cloudimage-hotspot",
+  "main": "index.js",
+  "dependencies": {
+    "js-cloudimage-hotspot": "^1.0.0"
+  }
+}
