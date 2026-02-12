@@ -18,7 +18,10 @@ new CIHotspot('#hero-viewer', {
       label: 'Canvas Print',
       data: {
         title: 'Typographic Canvas',
+        price: '$89',
         description: 'Hand-lettered print on natural birch plywood, 60 × 80 cm.',
+        url: '#',
+        ctaText: 'View Details',
       },
     },
     {
@@ -28,7 +31,10 @@ new CIHotspot('#hero-viewer', {
       label: 'Loveseat Sofa',
       data: {
         title: 'Loveseat Sofa',
+        price: '$1,249',
         description: 'Sage green linen blend with bolster armrests and a burnt-orange velvet accent cushion.',
+        url: '#',
+        ctaText: 'Shop Now',
       },
     },
     {
@@ -38,6 +44,7 @@ new CIHotspot('#hero-viewer', {
       label: 'Tripod Side Table',
       data: {
         title: 'Tripod Side Table',
+        price: '$179',
         description: 'Round white top with solid beechwood legs, styled with a rattan serving tray.',
       },
     },
