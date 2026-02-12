@@ -89,6 +89,8 @@ export class ZoomPan {
     // Double-click toggle
     const onDblClick = (e: MouseEvent) => {
       if (!this.enabled) return;
+      // Don't zoom when double-clicking on hotspot markers
+      if ((e.target as HTMLElement).closest('.ci-hotspot-marker')) return;
       const rect = this.container.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;

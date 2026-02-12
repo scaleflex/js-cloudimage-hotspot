@@ -421,7 +421,7 @@ export class CIHotspot implements CIHotspotInstance {
       }
     });
 
-    const outsideCleanup = addListener(document, 'click', (e) => {
+    const outsideCleanup = addListener(this.containerEl, 'click', (e) => {
       if (
         popover.isVisible() &&
         !hotspot.keepOpen &&

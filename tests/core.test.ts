@@ -257,7 +257,8 @@ describe('CIHotspot load trigger close mechanisms', () => {
   it('clicking outside closes the load popover', () => {
     const instance = createLoadInstance();
     expect(root.querySelectorAll('.ci-hotspot-popover--visible').length).toBe(1);
-    document.body.click();
+    const container = root.querySelector('.ci-hotspot-container') as HTMLElement;
+    container.click();
     expect(root.querySelectorAll('.ci-hotspot-popover--visible').length).toBe(0);
     instance.destroy();
   });
