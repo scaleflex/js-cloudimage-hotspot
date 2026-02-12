@@ -18,8 +18,8 @@
 <p align="center">
   <a href="https://scaleflex.github.io/js-cloudimage-hotspot/">Live Demo</a> |
   <a href="https://scaleflex.github.io/js-cloudimage-hotspot/editor.html">Visual Editor</a> |
-  <a href="https://codesandbox.io/p/sandbox/github/scaleflex/js-cloudimage-hotspot/tree/main/examples/vanilla">Vanilla Sandbox</a> |
-  <a href="https://codesandbox.io/p/sandbox/github/scaleflex/js-cloudimage-hotspot/tree/main/examples/react">React Sandbox</a>
+  <a href="https://codesandbox.io/p/devbox/github/scaleflex/js-cloudimage-hotspot/tree/main/examples/vanilla">Vanilla Sandbox</a> |
+  <a href="https://codesandbox.io/p/devbox/github/scaleflex/js-cloudimage-hotspot/tree/main/examples/react">React Sandbox</a>
 </p>
 
 ---
