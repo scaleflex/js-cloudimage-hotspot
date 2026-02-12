@@ -52,7 +52,7 @@ The existing ecosystem for image hotspots is fragmented and outdated:
 - **Two equal initialization methods** — JavaScript API and HTML data-attributes
 - **WCAG 2.1 AA** accessibility compliance out of the box
 - **CSS variable theming** for easy customization
-- A **React wrapper** with SSR support (v1.0), Vue/Svelte wrappers planned (v1.2+)
+- A **React wrapper** with SSR support, Vue/Svelte wrappers planned
 - **Modern build output** — ESM, CJS, and UMD in a single package
 - **< 15 KB gzipped** bundle size
 
@@ -73,13 +73,16 @@ The existing ecosystem for image hotspots is fragmented and outdated:
 | **Hotspot Markers** | Positioned via percentage or pixel coordinates; pulsing dot animation with radiating ring |
 | **Popovers** | Triggered on hover, click, or shown on load; built-in positioning with flip/shift; built-in templates and custom HTML content |
 | **Zoom & Pan** | CSS transform-based, GPU-accelerated; mouse wheel, pinch-to-zoom, programmatic API |
+| **Fullscreen** | Browser Fullscreen API toggle button; auto-injected into container; responsive layout in fullscreen mode |
 | **Accessibility** | WCAG 2.1 AA; full keyboard navigation; ARIA attributes; focus management; reduced motion support |
-| **Theming** | CSS variables as primary customization method; light (default) and dark themes |
+| **Theming** | CSS variables as primary customization method; light (default) and dark themes; inverted marker option |
 | **Two Init Methods** | JavaScript API (`new CIHotspot()`) and HTML data-attributes (`data-ci-hotspot-*`) — fully equivalent |
 | **React Wrapper** | Separate entry point with SSR support, hook API, ref-based instance access |
 | **TypeScript** | Full type definitions, exported interfaces and types |
 | **Cloudimage Integration** | Optional responsive image loading via Scaleflex Cloudimage CDN; auto-detects container width and device pixel ratio |
 | **Build Formats** | ESM + CJS + UMD; single CDN file; `window.CIHotspot` global |
+| **Multi-Image Navigation** | Scenes API for multiple images with per-image hotspots, configurable transitions (fade, 4-direction slide, none) |
+| **Visual Editor** | Separate opt-in module for click-to-place, drag-to-reposition, inline editing, undo/redo, JSON export/import |
 
 ---
 
@@ -113,10 +116,10 @@ interface CIHotspotConfig {
   /** Array of hotspot definitions (required unless `scenes` is provided) */
   hotspots?: HotspotItem[];
 
-  /** Popover trigger mode */
+  /** Popover trigger mode (default: 'hover') */
   trigger?: 'hover' | 'click' | 'load';
 
-  /** Enable zoom & pan */
+  /** Enable zoom & pan (default: false) */
   zoom?: boolean;
 
   /** Maximum zoom level (default: 4) */
@@ -125,8 +128,11 @@ interface CIHotspotConfig {
   /** Minimum zoom level (default: 1) */
   zoomMin?: number;
 
-  /** Theme — applies a preset of CSS variable values */
+  /** Theme — applies a preset of CSS variable values (default: 'light') */
   theme?: 'light' | 'dark';
+
+  /** Invert marker colors so they blend with the theme instead of contrasting (default: false) */
+  invertMarkerTheme?: boolean;
 
   /** Custom popover render function */
   renderPopover?: (hotspot: HotspotItem) => string | HTMLElement;
@@ -141,7 +147,7 @@ interface CIHotspotConfig {
   onZoom?: (level: number) => void;
 
   /** Called when a hotspot marker is clicked */
-  onClick?: (event: MouseEvent, hotspot: HotspotItem) => void;
+  onClick?: (event: MouseEvent | KeyboardEvent, hotspot: HotspotItem) => void;
 
   /** Enable/disable marker pulse animation (default: true) */
   pulse?: boolean;
@@ -152,7 +158,7 @@ interface CIHotspotConfig {
   /** Position of zoom controls (default: 'bottom-right') */
   zoomControlsPosition?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 
-  /** Popover placement preference */
+  /** Popover placement preference (default: 'top') */
   placement?: 'top' | 'bottom' | 'left' | 'right' | 'auto';
 
   /** Enable lazy loading of the image (default: true) */
@@ -161,29 +167,42 @@ interface CIHotspotConfig {
   /** Show scroll hint when user scrolls without Ctrl/Cmd over zoomed container (default: true when zoom enabled) */
   scrollHint?: boolean;
 
+  /** Show fullscreen toggle button (default: true) */
+  fullscreenButton?: boolean;
+
   /** Optional Cloudimage integration for responsive image loading */
   cloudimage?: {
     /** Cloudimage customer token (e.g. 'demo'). Enables Cloudimage when set. */
     token: string;
-
     /** API version (default: 'v7') */
     apiVersion?: string;
-
     /** Custom Cloudimage domain (default: 'cloudimg.io') */
     domain?: string;
-
-    /**
-     * Round requested width to nearest N pixels for better CDN caching.
-     * Default: 100. E.g. container=373px → requests 400px.
-     */
+    /** Round requested width to nearest N pixels for better CDN caching. Default: 100 */
     limitFactor?: number;
-
-    /** Custom URL transformation params appended to the Cloudimage URL (e.g. 'q=80&org_if_sml=1') */
+    /** Custom URL transformation params (e.g. 'q=80&org_if_sml=1') */
     params?: string;
-
     /** Supported device pixel ratios (default: [1, 1.5, 2]) */
     devicePixelRatioList?: number[];
   };
+
+  /** Array of scenes for multi-image navigation */
+  scenes?: Scene[];
+
+  /** Initial scene ID to display (defaults to first scene) */
+  initialScene?: string;
+
+  /** Scene transition animation type (default: 'fade') */
+  sceneTransition?: 'fade' | 'slide' | 'none';
+
+  /** Fixed aspect ratio for the scene container (e.g. '16/9'). Prevents layout jumps between scenes with different image dimensions. Images use object-fit: contain. */
+  sceneAspectRatio?: string;
+
+  /** Called when the active scene changes */
+  onSceneChange?: (sceneId: string, scene: Scene) => void;
+
+  /** Called when fullscreen state changes */
+  onFullscreenChange?: (isFullscreen: boolean) => void;
 }
 ```
 
@@ -191,6 +210,14 @@ interface CIHotspotConfig {
 
 ```ts
 interface CIHotspotInstance {
+  /** Get references to internal DOM elements */
+  getElements(): {
+    container: HTMLElement;
+    viewport: HTMLElement;
+    image: HTMLImageElement;
+    markers: HTMLElement;
+  };
+
   /** Open a specific hotspot popover by ID */
   open(id: string): void;
 
@@ -223,6 +250,24 @@ interface CIHotspotInstance {
 
   /** Update the entire configuration */
   update(config: Partial<CIHotspotConfig>): void;
+
+  /** Navigate to a scene by ID */
+  goToScene(sceneId: string): void;
+
+  /** Get the current scene ID (returns undefined if not in scenes mode) */
+  getCurrentScene(): string | undefined;
+
+  /** Get all scene IDs (returns empty array if not in scenes mode) */
+  getScenes(): string[];
+
+  /** Enter browser fullscreen mode */
+  enterFullscreen(): void;
+
+  /** Exit browser fullscreen mode */
+  exitFullscreen(): void;
+
+  /** Check if currently in fullscreen mode */
+  isFullscreen(): boolean;
 }
 ```
 
@@ -274,6 +319,7 @@ All configuration is expressed via `data-ci-hotspot-*` attributes on the contain
   data-ci-hotspot-pulse="true"
   data-ci-hotspot-placement="top"
   data-ci-hotspot-lazy-load="true"
+  data-ci-hotspot-fullscreen-button="true"
   data-ci-hotspot-ci-token="demo"
   data-ci-hotspot-ci-params="q=80"
   data-ci-hotspot-items='[
@@ -286,11 +332,11 @@ All configuration is expressed via `data-ci-hotspot-*` attributes on the contain
 **Auto-initialization (CDN usage):**
 
 ```html
-<script src="https://cdn.scaleflex.it/plugins/js-cloudimage-hotspot/latest/js-cloudimage-hotspot.min.js"></script>
+<script src="https://cdn.scaleflex.it/plugins/js-cloudimage-hotspot/1.0.1/js-cloudimage-hotspot.min.js"></script>
 <script>CIHotspot.autoInit();</script>
 ```
 
-`CIHotspot.autoInit()` scans the DOM for all elements with `data-ci-hotspot-src` and initializes each one. It returns an array of `CIHotspotInstance` objects.
+`CIHotspot.autoInit()` scans the DOM for all elements with `data-ci-hotspot-src` or `data-ci-hotspot-scenes` and initializes each one. It returns an array of `CIHotspotInstance` objects.
 
 ```ts
 CIHotspot.autoInit(root?: HTMLElement): CIHotspotInstance[];
@@ -302,25 +348,31 @@ CIHotspot.autoInit(root?: HTMLElement): CIHotspotInstance[];
 |---|---|---|
 | `data-ci-hotspot-src` | `src` | `string` |
 | `data-ci-hotspot-alt` | `alt` | `string` |
-| `data-ci-hotspot-items` | `hotspots` | `JSON string → HotspotItem[]` |
+| `data-ci-hotspot-items` | `hotspots` | `JSON string -> HotspotItem[]` |
 | `data-ci-hotspot-trigger` | `trigger` | `'hover' \| 'click' \| 'load'` |
 | `data-ci-hotspot-zoom` | `zoom` | `'true' \| 'false'` |
-| `data-ci-hotspot-zoom-max` | `zoomMax` | `string → number` |
-| `data-ci-hotspot-zoom-min` | `zoomMin` | `string → number` |
+| `data-ci-hotspot-zoom-max` | `zoomMax` | `string -> number` |
+| `data-ci-hotspot-zoom-min` | `zoomMin` | `string -> number` |
 | `data-ci-hotspot-theme` | `theme` | `'light' \| 'dark'` |
 | `data-ci-hotspot-pulse` | `pulse` | `'true' \| 'false'` |
 | `data-ci-hotspot-placement` | `placement` | `'top' \| 'bottom' \| 'left' \| 'right' \| 'auto'` |
 | `data-ci-hotspot-lazy-load` | `lazyLoad` | `'true' \| 'false'` |
 | `data-ci-hotspot-zoom-controls` | `zoomControls` | `'true' \| 'false'` |
-| `data-ci-hotspot-zoom-controls-position` | `zoomControlsPosition` | `'top-left' \| 'top-center' \| 'top-right' \| 'bottom-left' \| 'bottom-center' \| 'bottom-right'` |
+| `data-ci-hotspot-zoom-controls-position` | `zoomControlsPosition` | `'top-left' \| 'top-center' \| ... \| 'bottom-right'` |
 | `data-ci-hotspot-scroll-hint` | `scrollHint` | `'true' \| 'false'` |
+| `data-ci-hotspot-fullscreen-button` | `fullscreenButton` | `'true' \| 'false'` |
+| `data-ci-hotspot-invert-marker-theme` | `invertMarkerTheme` | `'true' \| 'false'` |
+| `data-ci-hotspot-scenes` | `scenes` | `JSON string -> Scene[]` |
+| `data-ci-hotspot-initial-scene` | `initialScene` | `string` |
+| `data-ci-hotspot-scene-transition` | `sceneTransition` | `'fade' \| 'slide' \| 'none'` |
+| `data-ci-hotspot-scene-aspect-ratio` | `sceneAspectRatio` | `string` |
 | `data-ci-hotspot-ci-token` | `cloudimage.token` | `string` |
 | `data-ci-hotspot-ci-api-version` | `cloudimage.apiVersion` | `string` |
 | `data-ci-hotspot-ci-domain` | `cloudimage.domain` | `string` |
-| `data-ci-hotspot-ci-limit-factor` | `cloudimage.limitFactor` | `string → number` |
+| `data-ci-hotspot-ci-limit-factor` | `cloudimage.limitFactor` | `string -> number` |
 | `data-ci-hotspot-ci-params` | `cloudimage.params` | `string` |
 
-> **Note:** Callback options (`onOpen`, `onClose`, `onClick`, `onZoom`, `renderPopover`) are only available via the JavaScript API, as functions cannot be expressed as HTML attributes. To attach callbacks to HTML-initialized instances, retrieve the instance from `autoInit()` return value and call methods on it.
+> **Note:** Callback options (`onOpen`, `onClose`, `onClick`, `onZoom`, `onSceneChange`, `onFullscreenChange`, `renderPopover`) are only available via the JavaScript API, as functions cannot be expressed as HTML attributes. To attach callbacks to HTML-initialized instances, retrieve the instance from `autoInit()` return value and call methods on it.
 
 ---
 
@@ -369,7 +421,7 @@ interface HotspotItem {
   placement?: 'top' | 'bottom' | 'left' | 'right' | 'auto';
 
   /** Custom click handler for this hotspot */
-  onClick?: (event: MouseEvent, hotspot: HotspotItem) => void;
+  onClick?: (event: MouseEvent | KeyboardEvent, hotspot: HotspotItem) => void;
 
   /** Whether this hotspot marker is initially hidden (default: false) */
   hidden?: boolean;
@@ -377,11 +429,14 @@ interface HotspotItem {
   /** Custom icon — CSS class name, SVG string, or image URL */
   icon?: string;
 
-  /** Scene ID to navigate to on click (v1.3 multi-image) */
+  /** Scene ID to navigate to on click (multi-image scenes) */
   navigateTo?: string;
 
   /** Rotation angle in degrees for the navigate arrow (default: 0 = right). E.g. 180 = left, 90 = down, -90 = up */
   arrowDirection?: number;
+
+  /** Responsive breakpoint configuration */
+  responsive?: ResponsiveConfig;
 }
 ```
 
@@ -466,6 +521,9 @@ All visual customization is done via CSS custom properties. Consumers override c
 --ci-hotspot-hover-transition: 200ms ease;
 --ci-hotspot-popover-transition: 300ms ease;
 
+/* === Scene Transitions === */
+--ci-hotspot-scene-transition-duration: 400ms;
+
 /* === Zoom Controls === */
 --ci-hotspot-zoom-controls-bg: rgba(255, 255, 255, 0.9);
 --ci-hotspot-zoom-controls-color: #333333;
@@ -506,6 +564,10 @@ Themes are implemented as sets of CSS variable overrides. Setting `theme: 'dark'
   --ci-hotspot-zoom-controls-color: #f0f0f0;
 }
 ```
+
+**Inverted marker theme:**
+
+Setting `invertMarkerTheme: true` applies the `ci-hotspot-marker-inverted` class to markers, swapping their foreground and background colors so they blend with the theme instead of contrasting.
 
 ### 5.3 Marker Animations (IKEA-Style)
 
@@ -578,10 +640,10 @@ All animations respect the `prefers-reduced-motion` media query:
 Zoom and pan use CSS transforms on an inner wrapper element for GPU-accelerated rendering:
 
 ```
-<div class="ci-hotspot-container">          ← outer container (overflow: hidden)
-  <div class="ci-hotspot-viewport">         ← receives transform: scale() translate()
+<div class="ci-hotspot-container">          <- outer container (overflow: hidden)
+  <div class="ci-hotspot-viewport">         <- receives transform: scale() translate()
     <img class="ci-hotspot-image" />
-    <div class="ci-hotspot-markers">        ← marker layer
+    <div class="ci-hotspot-markers">        <- marker layer
       <button class="ci-hotspot-marker" />
       <button class="ci-hotspot-marker" />
     </div>
@@ -603,11 +665,11 @@ The viewport element receives:
 
 | Input | Behavior |
 |---|---|
-| **Mouse wheel** | Zoom in/out centered on cursor position |
+| **Mouse wheel** | Zoom in/out centered on cursor position (requires Ctrl/Cmd modifier key) |
 | **Pinch gesture** | Zoom in/out centered between two touch points |
-| **Double-click / Double-tap** | Toggle between 1x and 2x zoom |
+| **Double-click / Double-tap** | Toggle between 1x and 2x zoom (blocked on markers to prevent accidental zoom) |
 | **Click-drag / Touch-drag** | Pan when zoomed in (zoom level > 1) |
-| **Zoom controls UI** | `+` and `−` buttons, reset button |
+| **Zoom controls UI** | `+` and `-` buttons, reset button |
 | **Programmatic** | `instance.setZoom(level)`, `instance.resetZoom()` |
 
 ### 6.3 Zoom Constraints
@@ -640,19 +702,19 @@ To prevent accidental zoom when users intend to scroll the page, the library gat
 When a user scrolls without the modifier key over a zoom-enabled container, a **scroll hint toast** appears at the bottom-center of the container:
 
 ```
-┌─────────────────────────────────────────┐
-│                                         │
-│              [image]                    │
-│                                         │
-│       ┌───────────────────────┐         │
-│       │ Use ⌘ + scroll to zoom│         │
-│       └───────────────────────┘         │
-└─────────────────────────────────────────┘
++-----------------------------------------+
+|                                         |
+|              [image]                    |
+|                                         |
+|       +---------------------------+     |
+|       | Ctrl + scroll or pinch    |     |
+|       | to zoom                   |     |
+|       +---------------------------+     |
++-----------------------------------------+
 ```
 
+- The hint text is "Ctrl + scroll or pinch to zoom" on all platforms
 - The hint auto-hides after 1.5 seconds
-- Platform-aware: shows "⌘" on macOS, "Ctrl" elsewhere
-- Respects `prefers-reduced-motion` (no slide animation)
 - `aria-hidden="true"` — decorative hint, not for screen readers
 - Disable with `scrollHint: false` in config (or `data-ci-hotspot-scroll-hint="false"`)
 
@@ -661,17 +723,31 @@ When a user scrolls without the modifier key over a zoom-enabled container, a **
 When `zoomControls` is enabled (default when `zoom: true`), a floating control bar appears in the container. Its position is configurable via `zoomControlsPosition` (default: `'bottom-right'`). Supported positions: `'top-left'`, `'top-center'`, `'top-right'`, `'bottom-left'`, `'bottom-center'`, `'bottom-right'`. The position is applied via a `data-position` attribute on the controls element with corresponding CSS rules.
 
 ```
-┌─────────────────────────────────────────┐
-│                                         │
-│              [image]                    │
-│                                         │
-│                            ┌───────┐    │
-│                            │ + − ⟲ │    │
-│                            └───────┘    │
-└─────────────────────────────────────────┘
++-----------------------------------------+
+|                                         |
+|              [image]                    |
+|                                         |
+|                            +-------+    |
+|                            | + - R |    |
+|                            +-------+    |
++-----------------------------------------+
 ```
 
-Buttons: zoom in (`+`), zoom out (`−`), reset (`⟲`). Styled via `--ci-hotspot-zoom-controls-*` CSS variables.
+Buttons: zoom in (`+`), zoom out (`-`), reset (`R`). Styled via `--ci-hotspot-zoom-controls-*` CSS variables. Uses Lucide SVG icons (magnifying glass with +/-, refresh icon).
+
+When zoom controls are positioned at `top-right`, the fullscreen button is automatically offset to avoid overlap.
+
+### 6.7 Fullscreen Button
+
+When `fullscreenButton` is enabled (default: `true`), a toggle button appears at the top-right corner of the container. It uses the browser's Fullscreen API with webkit prefixed fallbacks for Safari.
+
+- **Enter fullscreen:** Container expands to fill the viewport with a black background; image uses `object-fit: contain` and `max-height: 100vh`
+- **Exit fullscreen:** Returns to normal layout
+- **Icons:** Lucide `Maximize2` (enter) / `Minimize2` (exit) SVG icons
+- **ARIA:** `aria-label="Enter fullscreen"` / `"Exit fullscreen"`, `aria-pressed` tracks state
+- **Programmatic:** `instance.enterFullscreen()`, `instance.exitFullscreen()`, `instance.isFullscreen()`
+- **Callback:** `onFullscreenChange(isFullscreen)` fires when state changes
+- **Graceful degradation:** If the Fullscreen API is not supported by the browser, the button is not rendered
 
 ---
 
@@ -688,6 +764,8 @@ Buttons: zoom in (`+`), zoom out (`−`), reset (`⟲`). Styled via `--ci-hotspo
 **Keyboard behavior is always active** regardless of trigger mode — `focus` shows the popover, `blur` hides it. This ensures accessibility.
 
 **Hide delay:** Popovers have a configurable hide delay (default `200ms`) to prevent flickering when moving between the marker and popover content. The delay is cleared if the cursor enters the popover.
+
+**Click/load popover closing:** Popovers opened via `click` or `load` triggers are closed when the user clicks on the container (not the document), preventing unintended closures from clicks outside the viewer.
 
 ### 7.2 Positioning Algorithm
 
@@ -777,7 +855,7 @@ new CIHotspot(el, {
 
 All user-provided HTML content (`content` field, `data` values rendered in the built-in template) is sanitized before DOM insertion:
 
-- HTML tags are restricted to a safe allowlist: `<a>`, `<b>`, `<br>`, `<div>`, `<em>`, `<h1>`–`<h6>`, `<i>`, `<img>`, `<li>`, `<ol>`, `<p>`, `<span>`, `<strong>`, `<ul>`
+- HTML tags are restricted to a safe allowlist: `<a>`, `<b>`, `<br>`, `<div>`, `<em>`, `<h1>`-`<h6>`, `<i>`, `<img>`, `<li>`, `<ol>`, `<p>`, `<span>`, `<strong>`, `<ul>`
 - Attributes are restricted: `class`, `href`, `src`, `alt`, `title`, `target`, `rel`
 - `href` values must use `http:`, `https:`, or `mailto:` protocols — `javascript:` is blocked
 - Event handler attributes (`onclick`, `onerror`, etc.) are stripped
@@ -800,26 +878,34 @@ The React wrapper is a **separate entry point** to avoid bundling React for vani
 
 ```tsx
 interface CIHotspotViewerProps {
-  src: string;
+  src?: string;
   alt?: string;
-  hotspots: HotspotItem[];
+  hotspots?: HotspotItem[];
   trigger?: 'hover' | 'click' | 'load';
   zoom?: boolean;
   zoomMax?: number;
   zoomMin?: number;
   theme?: 'light' | 'dark';
+  invertMarkerTheme?: boolean;
   pulse?: boolean;
   placement?: 'top' | 'bottom' | 'left' | 'right' | 'auto';
   zoomControls?: boolean;
   zoomControlsPosition?: CIHotspotConfig['zoomControlsPosition'];
   scrollHint?: boolean;
+  fullscreenButton?: boolean;
   lazyLoad?: boolean;
   cloudimage?: CIHotspotConfig['cloudimage'];
+  scenes?: Scene[];
+  initialScene?: string;
+  sceneTransition?: 'fade' | 'slide' | 'none';
+  sceneAspectRatio?: string;
   renderPopover?: (hotspot: HotspotItem) => React.ReactNode;
   onOpen?: (hotspot: HotspotItem) => void;
   onClose?: (hotspot: HotspotItem) => void;
   onZoom?: (level: number) => void;
   onClick?: (event: React.MouseEvent, hotspot: HotspotItem) => void;
+  onSceneChange?: (sceneId: string, scene: Scene) => void;
+  onFullscreenChange?: (isFullscreen: boolean) => void;
   className?: string;
   style?: React.CSSProperties;
 }
@@ -894,6 +980,8 @@ function ProductImage() {
       <CIHotspotViewer ref={viewerRef} src="/room.jpg" hotspots={[...]} zoom />
       <button onClick={() => viewerRef.current?.open('sofa')}>Show Sofa</button>
       <button onClick={() => viewerRef.current?.setZoom(3)}>Zoom 3x</button>
+      <button onClick={() => viewerRef.current?.goToScene('kitchen')}>Go to Kitchen</button>
+      <button onClick={() => viewerRef.current?.enterFullscreen()}>Fullscreen</button>
     </>
   );
 }
@@ -975,6 +1063,7 @@ When a popover is open:
 - The container has `role="img"` with an `aria-label` matching the `alt` text
 - Hidden decorative elements use `aria-hidden="true"`
 - Dynamic state changes (popover open/close) use `aria-expanded` and `aria-hidden` toggles, announced by screen readers
+- Scene navigation announces the new scene to screen readers
 
 ### 9.6 Reduced Motion
 
@@ -983,6 +1072,7 @@ All animations and transitions respect the `prefers-reduced-motion: reduce` medi
 - Pulse and breathe animations are disabled
 - Popover transitions are instant
 - Zoom transitions are instant
+- Scene transitions are instant
 
 ---
 
@@ -1013,9 +1103,10 @@ All animations and transitions respect the `prefers-reduced-motion: reduce` medi
 ```json
 {
   "name": "js-cloudimage-hotspot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Interactive image hotspots with zoom, popovers, and accessibility",
   "license": "MIT",
+  "author": "Scaleflex",
   "main": "dist/js-cloudimage-hotspot.cjs.js",
   "module": "dist/js-cloudimage-hotspot.esm.js",
   "unpkg": "dist/js-cloudimage-hotspot.min.js",
@@ -1058,16 +1149,17 @@ All animations and transitions respect the `prefers-reduced-motion: reduce` medi
 |---|---|
 | `dev` | Start Vite dev server with demo page |
 | `dev:react` | Start Vite dev server with React demo |
-| `build` | Build all formats (main bundle + React wrapper + editor) |
+| `build` | Build all formats (main bundle + React wrapper + editor + type declarations) |
 | `build:bundle` | Build main bundle only (ESM + CJS + UMD) |
 | `build:react` | Build React wrapper only |
 | `build:editor` | Build visual editor only (ESM + CJS + UMD) |
 | `build:demo` | Build GitHub Pages demo site |
-| `deploy:demo` | Deploy demo to `gh-pages` branch |
+| `typecheck` | Run TypeScript type checking |
+| `typecheck:emit` | Emit type declarations to `dist/` |
 | `test` | Run tests with Vitest |
 | `test:watch` | Run tests in watch mode |
+| `test:coverage` | Run tests with coverage report |
 | `lint` | Run ESLint |
-| `typecheck` | Run TypeScript type checking |
 
 ### 10.5 Bundle Size Targets
 
@@ -1082,18 +1174,18 @@ All animations and transitions respect the `prefers-reduced-motion: reduce` medi
 The UMD bundle is available via Scaleflex CDN:
 
 ```
-https://cdn.scaleflex.it/plugins/js-cloudimage-hotspot/latest/js-cloudimage-hotspot.min.js
+https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/1.0.1/js-cloudimage-hotspot.min.js
 ```
 
 Version-specific URLs:
 
 ```
-https://cdn.scaleflex.it/plugins/js-cloudimage-hotspot/1.0.0/js-cloudimage-hotspot.min.js
+https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/1.0.1/js-cloudimage-hotspot.min.js
 ```
 
 ### 10.7 Zero Runtime Dependencies
 
-The library has **zero runtime dependencies**. All functionality — popover positioning, zoom/pan, animations, sanitization — is implemented within the library itself.
+The library has **zero runtime dependencies**. All functionality — popover positioning, zoom/pan, animations, sanitization, fullscreen — is implemented within the library itself.
 
 ---
 
@@ -1108,8 +1200,7 @@ js-cloudimage-hotspot/
 │   │   ├── config.ts               # Config parsing, defaults, data-attr mapping
 │   │   └── types.ts                # TypeScript interfaces and types
 │   ├── markers/
-│   │   ├── marker.ts               # Marker element creation and positioning
-│   │   └── pulse.ts                # Pulse animation logic
+│   │   └── marker.ts               # Marker element creation and positioning
 │   ├── popover/
 │   │   ├── popover.ts              # Popover creation and lifecycle
 │   │   ├── position.ts             # Built-in flip/shift positioning engine
@@ -1120,6 +1211,8 @@ js-cloudimage-hotspot/
 │   │   ├── controls.ts             # Zoom controls UI
 │   │   ├── gestures.ts             # Touch gesture handling (pinch, drag)
 │   │   └── scroll-hint.ts          # Scroll-to-zoom hint toast UI
+│   ├── fullscreen/
+│   │   └── fullscreen.ts           # Fullscreen API wrapper and toggle button
 │   ├── a11y/
 │   │   ├── keyboard.ts             # Keyboard navigation handler
 │   │   ├── focus.ts                # Focus management and focus trap
@@ -1144,10 +1237,10 @@ js-cloudimage-hotspot/
 │   └── react/
 │       ├── index.ts                # React entry point
 │       ├── ci-hotspot-viewer.tsx    # React component
-│       ├── use-ci-hotspot.ts        # React hook
+│       ├── use-ci-hotspot.ts       # React hook
 │       └── types.ts                # React-specific types
 ├── demo/
-│   ├── index.html                  # Vanilla JS demo page
+│   ├── index.html                  # Vanilla JS demo page (GitHub Pages)
 │   ├── demo.css                    # Demo-specific layout styles
 │   ├── demo.ts                     # Demo initialization
 │   ├── configurator.ts             # Interactive playground with code generation
@@ -1157,6 +1250,21 @@ js-cloudimage-hotspot/
 │       ├── index.html              # React demo entry
 │       ├── app.tsx                  # React demo application
 │       └── main.tsx                # React demo mount
+├── examples/
+│   ├── vanilla/
+│   │   ├── index.html              # Vanilla JS CodeSandbox example
+│   │   ├── index.js                # Vanilla JS example code
+│   │   ├── package.json            # Example dependencies
+│   │   ├── vite.config.js          # Vite config for sandbox
+│   │   └── sandbox.config.json     # CodeSandbox config
+│   └── react/
+│       ├── index.html              # React CodeSandbox example
+│       ├── package.json            # Example dependencies
+│       ├── vite.config.js          # Vite config for sandbox
+│       ├── sandbox.config.json     # CodeSandbox config
+│       └── src/
+│           ├── App.jsx             # React example app
+│           └── index.jsx           # React example mount
 ├── tests/
 │   ├── core.test.ts                # Core functionality tests
 │   ├── popover.test.ts             # Popover system tests
@@ -1181,12 +1289,24 @@ js-cloudimage-hotspot/
 │   ├── vite.react.config.ts        # React wrapper build config
 │   ├── vite.editor.config.ts       # Visual editor build config
 │   └── vite.demo.config.ts         # Demo build config
+├── dist/                           # Built output (CDN bundles committed)
+│   ├── js-cloudimage-hotspot.min.js
+│   ├── js-cloudimage-hotspot.min.js.map
+│   └── editor/
+│       ├── js-cloudimage-hotspot-editor.min.js
+│       └── js-cloudimage-hotspot-editor.min.js.map
+├── .github/
+│   └── workflows/
+│       ├── deploy-demo.yml         # GitHub Pages deployment workflow
+│       └── deploy-pages.yml        # GitHub Pages build workflow
 ├── package.json
 ├── tsconfig.json
+├── tsconfig.build.json
 ├── .eslintrc.cjs
 ├── .gitignore
 ├── LICENSE
 ├── README.md
+├── CHANGELOG.md
 ├── IMPLEMENTATION.md               # Implementation record
 └── SPECS.md                        # This file
 ```
@@ -1195,42 +1315,43 @@ js-cloudimage-hotspot/
 
 ## 12. GitHub Pages Demo
 
-The demo site is hosted at `https://scaleflex.github.io/js-cloudimage-hotspot/` and deployed via the `gh-pages` npm package.
+The demo site is hosted at `https://scaleflex.github.io/js-cloudimage-hotspot/` and deployed via GitHub Actions.
 
 ### 12.1 Demo Sections
 
 | Section | Description |
 |---|---|
-| **Hero** | Gradient background with animated gradient heading text, feature pills, and dual CTA buttons (Get Started / GitHub). Immediately communicates the library's value proposition |
+| **Hero** | Gradient background with "Open Source Library" badge, animated heading, feature pills (Zoom & Pan, Hover/Click/Load, WCAG 2.1 AA, Dark Mode, React Ready), dual CTA buttons (Get Started / GitHub), sandbox links, and a live hotspot viewer with prices and CTA buttons |
 | **Getting Started** | Side-by-side npm and CDN installation cards with dark-themed code blocks and copy-to-clipboard |
 | **Trigger Modes** | 3-column responsive grid comparing hover, click, and load triggers with live examples |
-| **Themes** | Light and dark theme demonstrations side-by-side |
-| **Interactive Configurator** | Full-width configurator with preview panel above and options panel below (trigger, zoom, theme, pulse, placement toggles). Real-time generated code with copy button |
+| **Themes** | Light, dark, and custom green theme demonstrations |
+| **Multi-Image Navigation** | 5-scene real estate tour (Main Hall, Stairs, Kitchen, Bedroom, Rest Zone) with scene navigation buttons and scene transition selector (fade/slide/none) |
+| **Interactive Configurator** | Two-panel layout (controls + preview) with toggles (zoom, pulse, fullscreen button, invert marker theme) and selects (trigger, theme, placement, zoom controls position). Real-time generated code with copy button |
 | **Visual Editor** | Link to dedicated editor page (`editor.html`) with click-to-place, drag-to-reposition, inline property editing, undo/redo, and live JSON export |
-| **Footer** | Modern footer with links to documentation, GitHub, and npm |
+| **Footer** | Modern footer with Scaleflex logo, links to documentation, GitHub, npm, and buy-me-a-coffee |
 
-The demo uses a **sticky navigation bar** with backdrop-filter blur effect and scroll-aware active link highlighting. The layout is fully responsive, collapsing to single-column on screens below 768px.
+The demo uses a **sticky navigation bar** with Scaleflex SVG logo, backdrop-filter blur effect, scroll-aware active link highlighting, and a **responsive burger menu** that collapses the nav links into a toggleable dropdown on screens below 868px.
 
 ### 12.2 Interactive Configurator
 
 A panel that lets visitors:
 
-- Toggle configuration options: trigger mode, zoom, pulse, invert marker theme, popover placement, zoom controls position
-- See the generated JavaScript and HTML code update in real-time
+- Toggle configuration options: zoom, pulse, fullscreen button, invert marker theme
+- Select values: trigger mode, theme, popover placement, zoom controls position
+- See the generated JavaScript code update in real-time
 - Copy the generated code to clipboard
 
 The configurator uses `instance.update()` to apply changes without recreating the viewer, with `minHeight` pinning to prevent layout shift during DOM updates.
 
 ### 12.3 Demo Images
 
-Demo images should be high-quality, royalty-free photographs:
+Demo images are high-quality, royalty-free photographs served via Scaleflex CDN:
 
-- **Living room** — primary showcase (IKEA-style furniture scene)
-- **Product close-up** — demonstrates zoom capability
-- **Kitchen** — multi-hotspot scene
-- **Automobile** — future multi-image navigation demo (v1.3)
+- **Bohemian living nook** (`spacejoy-unsplash.jpg`) — hero section and configurator
+- **Real estate interiors** (`andrea-davis-0.jpg` through `andrea-davis-4.jpg`) — 5-scene multi-image navigation
+- **Living room variants** — trigger mode and theme demos
 
-All demo images should be served via Scaleflex CDN with responsive sizing.
+All demo images are served via `https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/`.
 
 ---
 
@@ -1261,7 +1382,7 @@ When a `cloudimage` configuration is provided with a valid `token`, the library 
 
 1. **Detect container width:** Read `container.offsetWidth` to determine the displayed image width
 2. **Multiply by device pixel ratio:** `requestedWidth = containerWidth * window.devicePixelRatio`
-3. **Round to `limitFactor`:** Round `requestedWidth` up to the nearest `limitFactor` (default: 100px) for better CDN cache hit rates. E.g. container=373px, DPR=2 → raw=746px → rounded=800px
+3. **Round to `limitFactor`:** Round `requestedWidth` up to the nearest `limitFactor` (default: 100px) for better CDN cache hit rates. E.g. container=373px, DPR=2 -> raw=746px -> rounded=800px
 4. **Build Cloudimage URL:** Construct the optimized image URL
 5. **Set as `<img>` src:** The built URL replaces the raw `src` on the image element
 
@@ -1291,11 +1412,6 @@ If `cloudimage` is not provided in the config, or `cloudimage.token` is falsy (e
 
 A `ResizeObserver` monitors the container element. When the container width changes such that the rounded requested width crosses a `limitFactor` boundary, a new Cloudimage URL is built and the image `src` is updated. This is debounced (default: 100ms) to avoid excessive requests during window resizing.
 
-```
-Container: 400px → 500px (same limitFactor bucket at DPR=1) → no new request
-Container: 400px → 550px (crosses to next bucket at DPR=2: 800→1100→1200) → new request
-```
-
 #### Interaction with zoom
 
 When zoom level > 1, the requested image width accounts for the zoom level to maintain sharpness:
@@ -1306,42 +1422,9 @@ requestedWidth = containerWidth * zoomLevel * devicePixelRatio
 
 This is rounded to `limitFactor` and capped at the image's natural dimensions if known (to avoid upscaling beyond the original resolution). As the user zooms in, a higher-resolution image is requested from Cloudimage.
 
-#### Interaction with scenes (v1.3)
+#### Interaction with scenes
 
 When multi-image navigation is enabled, each scene's `src` is independently processed through the Cloudimage URL builder. Navigating to a new scene triggers a fresh width calculation and Cloudimage URL construction for that scene's image.
-
-#### JavaScript example
-
-```js
-const viewer = new CIHotspot('#product-image', {
-  src: 'https://example.com/living-room.jpg',
-  alt: 'Modern living room',
-  zoom: true,
-  cloudimage: {
-    token: 'demo',
-    limitFactor: 100,
-    params: 'q=80&org_if_sml=1',
-  },
-  hotspots: [
-    { id: 'sofa', x: '40%', y: '60%', label: 'Modern Sofa', data: { title: 'Sofa', price: '$899' } },
-  ],
-});
-```
-
-#### HTML-only example
-
-```html
-<div
-  data-ci-hotspot-src="https://example.com/living-room.jpg"
-  data-ci-hotspot-alt="Modern living room"
-  data-ci-hotspot-zoom="true"
-  data-ci-hotspot-ci-token="demo"
-  data-ci-hotspot-ci-params="q=80&org_if_sml=1"
-  data-ci-hotspot-items='[
-    {"id":"sofa","x":"40%","y":"60%","label":"Sofa","data":{"title":"Sofa","price":"$899"}}
-  ]'
-></div>
-```
 
 ### 13.4 Analytics Hooks (v1.0)
 
@@ -1382,7 +1465,7 @@ Hotspot visibility can be controlled per breakpoint:
 
 The library listens to `ResizeObserver` on the container (not `window.resize`) for container-query-like behavior.
 
-### 13.6 Editor Mode (v1.2) — Implemented
+### 13.6 Editor Mode — Implemented
 
 A visual hotspot editor shipped as a separate opt-in entry point (`js-cloudimage-hotspot/editor`) to avoid increasing the core bundle size.
 
@@ -1477,7 +1560,7 @@ interface CIHotspotEditor {
 | `hotspot:update` | A hotspot's properties were updated |
 | `hotspot:select` | A hotspot was selected |
 | `hotspot:deselect` | Selection was cleared |
-| `mode:change` | Editor mode changed (select ↔ add) |
+| `mode:change` | Editor mode changed (select <-> add) |
 | `history:change` | Undo/redo stack changed |
 | `change` | Any hotspot data change (fired alongside specific events) |
 
@@ -1503,21 +1586,13 @@ console.log(editor.exportJSON());
 editor.destroy();
 ```
 
-**Build output:**
-
-| Format | File |
-|---|---|
-| ESM | `dist/editor/js-cloudimage-hotspot-editor.esm.js` |
-| CJS | `dist/editor/js-cloudimage-hotspot-editor.cjs.js` |
-| UMD | `dist/editor/js-cloudimage-hotspot-editor.min.js` (exposes `window.CIHotspotEditor`) |
-
-### 13.7 Multi-Image Navigation (v1.3)
+### 13.7 Multi-Image Navigation — Implemented
 
 Scenes allow navigation between multiple images, each with its own set of hotspots. This enables experiences like:
 
 - **Room exploration:** Navigate from living room to bedroom to kitchen
-- **Car configurator:** Exterior → open door → interior → dashboard close-up
-- **Product 360:** Front → side → back views with relevant hotspots per view
+- **Car configurator:** Exterior -> open door -> interior -> dashboard close-up
+- **Product 360:** Front -> side -> back views with relevant hotspots per view
 
 **Configuration:**
 
@@ -1536,13 +1611,13 @@ new CIHotspot(element, {
       id: 'interior',
       src: '/car-interior.jpg',
       hotspots: [
-        { id: 'back', x: '5%', y: '50%', label: 'Back to Exterior', navigateTo: 'exterior' },
+        { id: 'back', x: '5%', y: '50%', label: 'Go to Exterior', navigateTo: 'exterior', arrowDirection: 180 },
         { id: 'dash', x: '50%', y: '30%', label: 'Dashboard', data: { title: 'Digital Cockpit' } },
       ]
     }
   ],
   initialScene: 'exterior',
-  sceneTransition: 'fade', // 'fade' | 'slide' | 'none'
+  sceneTransition: 'slide',
 });
 ```
 
@@ -1552,27 +1627,26 @@ new CIHotspot(element, {
 interface Scene {
   /** Unique scene identifier */
   id: string;
-
   /** Image source URL for this scene */
   src: string;
-
   /** Alt text for this scene's image */
   alt?: string;
-
   /** Hotspots specific to this scene */
   hotspots: HotspotItem[];
 }
 ```
 
-**`navigateTo` behavior:** When a hotspot with `navigateTo` is activated, the viewer transitions to the target scene using the configured `sceneTransition` animation. The new scene's image loads (with a loading state), and the new hotspots are rendered.
+**`navigateTo` behavior:** When a hotspot with `navigateTo` is activated, the viewer transitions to the target scene using the configured `sceneTransition` animation. The new scene's image loads (with a loading state), and the new hotspots are rendered. Navigate markers display a Lucide `chevron-right` SVG icon rotated by `arrowDirection` degrees.
 
 **Scene transition types:**
 
 | Transition | Effect |
 |---|---|
 | `'fade'` | Cross-fade between scenes (default) |
-| `'slide'` | Directional slide based on hotspot position: if the triggering `navigateTo` hotspot is on the left side of the image (x ≤ 50%), the new scene slides in from the left (reverse); otherwise it slides in from the right (default). This creates a natural spatial navigation feel |
+| `'slide'` | 4-direction slide based on `arrowDirection`: 0 = slide from right, 90 = from bottom, 180 = from left, 270/-90 = from top. Falls back to position-based direction if `arrowDirection` is not set (left-side hotspots slide from left, right-side from right) |
 | `'none'` | Instant switch, no animation |
+
+**Scene aspect ratio:** Setting `sceneAspectRatio: '16/9'` applies a fixed aspect ratio to the container, preventing layout jumps when navigating between scenes with different image dimensions. Images use `object-fit: contain`.
 
 **Instance methods for scenes:**
 
@@ -1580,16 +1654,28 @@ interface Scene {
 interface CIHotspotInstance {
   /** Navigate to a scene by ID */
   goToScene(sceneId: string): void;
-
-  /** Get the current scene ID */
-  getCurrentScene(): string;
-
-  /** Get all scene IDs */
+  /** Get the current scene ID (returns undefined if not in scenes mode) */
+  getCurrentScene(): string | undefined;
+  /** Get all scene IDs (returns empty array if not in scenes mode) */
   getScenes(): string[];
 }
 ```
 
-### 13.8 SSR Compatibility (v1.0)
+### 13.8 Fullscreen Mode — Implemented
+
+The library includes a fullscreen toggle button powered by the browser's Fullscreen API.
+
+- **Enabled by default** (`fullscreenButton: true`)
+- **Button position:** Top-right corner of the container, offset when zoom controls are also at top-right
+- **Enter fullscreen:** Container fills the viewport; background turns black; image uses `object-fit: contain` with `max-height: 100vh`
+- **Exit fullscreen:** Returns to original layout
+- **Icons:** Lucide `Maximize2` / `Minimize2` SVGs
+- **Accessibility:** `aria-label` and `aria-pressed` attributes, keyboard-accessible button
+- **Browser support:** Standard Fullscreen API + webkit prefix fallback; button hidden when API not available
+- **Programmatic:** `enterFullscreen()`, `exitFullscreen()`, `isFullscreen()`
+- **Callback:** `onFullscreenChange(isFullscreen)` fires on state change
+
+### 13.9 SSR Compatibility (v1.0)
 
 The vanilla core gracefully handles server-side rendering environments:
 
@@ -1605,36 +1691,36 @@ The vanilla core gracefully handles server-side rendering environments:
 |---|---|---|---|---|---|---|---|---|---|
 | **TypeScript** | Yes (first-class) | No | No | No | No | Yes (v3) | No | Yes | No |
 | **Zoom & Pan** | Yes (CSS transforms) | No | No | No | Yes (basic) | No | Yes (advanced) | No | No |
+| **Fullscreen** | Yes (Fullscreen API) | No | No | No | No | No | Yes | No | No |
 | **Mobile Touch** | Yes (pinch, tap) | Limited | No | Yes | Basic | Yes | Yes | Yes | No |
 | **Accessibility (WCAG)** | AA compliant | None | None | None | None | Partial | None | None | None |
 | **Popover Triggers** | hover, click, load | click only | hover, click, none | callback | click | click | click | hover (desktop), drawer (mobile) | N/A |
 | **Theming** | CSS variables | Inline styles | CSS classes | CSS | Props | CSS | Skins | Tailwind | N/A |
 | **React Support** | Yes (wrapper) | No | No | No | Yes (native) | Plugin | No | Yes (native) | No |
-| **Vue Support** | v1.2+ | No | No | No | No | Plugin | No | No | No |
 | **Bundle Format** | ESM + CJS + UMD | CJS | jQuery plugin | UMD | ESM | ESM + UMD | Proprietary | ESM | UMD |
 | **Maintained** | Active | Last update 2019 | Last update 2018 | Active (Amplience) | Last update 2020 | Active | Active (commercial) | Active | Last update 2020 |
 | **Bundle Size** | < 15 KB gz | ~5 KB | ~8 KB + jQuery | ~3 KB | ~12 KB | ~45 KB | Large (commercial) | ~15 KB | ~2 KB |
 | **Coordinate System** | % + px | % (top/left) | px | % | px | W3C fragments | px + % | % | HTML map coords |
 | **HTML Init** | Yes (data-attrs) | No | jQuery init | No | No (JSX) | HTML annotations | HTML config | No (JSX) | HTML attributes |
-| **Multi-Image** | v1.3 (scenes) | No | No | No | No | No | Yes | No | No |
-| **Editor Mode** | Yes (v1.2) | No | Yes (admin mode) | No | No | Yes (annotation) | Yes (commercial) | No | No |
+| **Multi-Image** | Yes (scenes) | No | No | No | No | No | Yes | No | No |
+| **Editor Mode** | Yes (visual) | No | Yes (admin mode) | No | No | Yes (annotation) | Yes (commercial) | No | No |
 | **Clustering** | Yes (optional) | No | No | No | No | No | No | No | No |
 | **Zero Dependencies** | Yes | No (depends on libs) | jQuery required | No | React required | No | Many | React + Shadcn | jQuery recommended |
 
 ### Key Differentiators
 
-1. **Only library combining zoom/pan + hotspots + accessibility** in a zero-dependency package
+1. **Only library combining zoom/pan + hotspots + fullscreen + accessibility** in a zero-dependency package
 2. **Dual initialization** (JS API + HTML data-attributes) — no competitor offers both
 3. **CSS variable theming** — most competitors use inline styles or proprietary config
 4. **TypeScript-first** with full type definitions — only Annotorious offers comparable TS support
 5. **Mobile-first touch handling** — pinch-to-zoom, tap-to-open, drawer-friendly popovers
-6. **Multi-image scenes** (v1.3) — only AJAX-ZOOM offers this, and it's a heavy commercial product
+6. **Multi-image scenes** with 4-direction slide transitions — only AJAX-ZOOM offers similar, and it's a heavy commercial product
 
 ---
 
 ## 15. Roadmap
 
-### v1.0 — Core Release
+### v1.0 — Core Release (DONE)
 
 - Core viewer with image display and responsive container
 - Hotspot markers with percentage and pixel coordinate support
@@ -1645,11 +1731,13 @@ The vanilla core gracefully handles server-side rendering environments:
 - XSS sanitization
 - Zoom and pan (CSS transforms, GPU-accelerated)
 - Touch support (pinch-to-zoom, tap, drag-to-pan)
-- Zoom controls UI
+- Zoom controls UI with configurable positioning (6 positions)
+- Fullscreen toggle button with Fullscreen API
+- Scroll-to-zoom hint toast (Ctrl+scroll gating)
 - Full keyboard navigation
 - WCAG 2.1 AA accessibility (ARIA, focus management, screen reader)
 - Reduced motion support
-- CSS variable theming (light and dark themes)
+- CSS variable theming (light and dark themes, inverted markers)
 - JavaScript API initialization (`new CIHotspot()`)
 - HTML data-attribute initialization (`CIHotspot.autoInit()`)
 - React wrapper (`CIHotspotViewer` component, `useCIHotspot` hook, ref API)
@@ -1666,6 +1754,26 @@ The vanilla core gracefully handles server-side rendering environments:
 - Vitest test suite
 - < 15 KB gzipped bundle
 
+### v1.0.1 — Polish & Infrastructure (DONE)
+
+- Visual editor mode — click-to-place, drag-to-reposition, inline edit, undo/redo, image URL switching, Cloudimage support, export/import JSON
+- Multi-image navigation with Scenes API, `navigateTo` hotspots, scene transitions (fade, 4-direction slide, none)
+- Fullscreen mode with browser Fullscreen API
+- 4-direction slide transitions based on `arrowDirection` property
+- Configurable zoom controls positioning (6 positions)
+- Inverted marker theme option
+- Scene aspect ratio for layout stability
+- Responsive burger menu for mobile navigation in demo
+- Hero section with prices, CTA buttons, and feature pills
+- React and vanilla CodeSandbox examples
+- GitHub Pages deployment workflow
+- CDN bundle distribution via Scaleflex CDN
+- Scroll hint simplified to "Ctrl + scroll or pinch to zoom" on all platforms
+- Click/load popover close-on-container-click behavior
+- Double-click zoom blocked on markers
+- Scaleflex branding (SVG logo, favicon, LICENSE update)
+- v1.0.1 CDN URL updates
+
 ### v1.1 — Polish & Community Feedback
 
 - Performance optimizations based on real-world usage
@@ -1676,20 +1784,10 @@ The vanilla core gracefully handles server-side rendering environments:
 - Expanded test coverage
 - Documentation improvements
 
-### v1.2 — Editor Mode & Framework Wrappers *(Editor: DONE)*
+### v1.2 — Framework Wrappers
 
-- **Visual editor mode** — click-to-place, drag-to-reposition, inline edit, undo/redo, image URL switching, Cloudimage support, export/import JSON (**implemented**)
-- Editor mode ships as a separate opt-in import (`js-cloudimage-hotspot/editor`) keeping core bundle lean (**implemented**)
-- **Vue wrapper** — `<CIHotspotViewer>` component for Vue 3 *(planned)*
-- **Svelte wrapper** — `<CIHotspotViewer>` component for Svelte *(planned)*
-
-### v1.3 — Multi-Image Navigation *(DONE)*
-
-- **Scenes API** — multiple images with per-image hotspot sets (**implemented**)
-- **`navigateTo` hotspots** — click a hotspot to switch scenes (**implemented**)
-- **Scene transitions** — fade, slide, none (**implemented**)
-- **Scene instance methods** — `goToScene()`, `getCurrentScene()`, `getScenes()` (**implemented**)
-- **HTML data-attribute support for scenes** — `data-ci-hotspot-scenes` JSON attribute (**implemented**)
+- **Vue wrapper** — `<CIHotspotViewer>` component for Vue 3
+- **Svelte wrapper** — `<CIHotspotViewer>` component for Svelte
 
 ### v2.0 — Future Vision
 
@@ -1711,12 +1809,17 @@ All CSS classes use the `ci-hotspot` prefix.
 | Class | Element | Description |
 |---|---|---|
 | `.ci-hotspot-container` | Outer wrapper | Root container; `position: relative; overflow: hidden` |
+| `.ci-hotspot-container--fullscreen` | Outer wrapper | Applied when in fullscreen mode; `width: 100vw; height: 100vh; background: black` |
 | `.ci-hotspot-viewport` | Inner wrapper | Receives zoom/pan transforms |
 | `.ci-hotspot-image` | `<img>` | The displayed image |
 | `.ci-hotspot-markers` | Marker layer | `position: absolute; inset: 0` overlay for markers |
 | `.ci-hotspot-marker` | `<button>` | Individual hotspot marker |
 | `.ci-hotspot-marker--active` | `<button>` | Marker with open popover |
 | `.ci-hotspot-marker--hidden` | `<button>` | Hidden marker (responsive breakpoint) |
+| `.ci-hotspot-marker--navigate` | `<button>` | Navigate marker with arrow icon (for `navigateTo` hotspots) |
+| `.ci-hotspot-marker--pulse` | `<button>` | Marker with pulse animation enabled |
+| `.ci-hotspot-marker-inverted` | `<button>` | Inverted marker theme (blends with background) |
+| `.ci-hotspot-navigate-icon` | `<svg>` | SVG arrow icon inside navigate markers |
 | `.ci-hotspot-pulse` | `::before` pseudo | Pulse ring animation |
 | `.ci-hotspot-popover` | Popover wrapper | The popover container |
 | `.ci-hotspot-popover--visible` | Popover wrapper | Popover is currently shown |
@@ -1732,11 +1835,24 @@ All CSS classes use the `ci-hotspot` prefix.
 | `.ci-hotspot-zoom-in` | `<button>` | Zoom in button |
 | `.ci-hotspot-zoom-out` | `<button>` | Zoom out button |
 | `.ci-hotspot-zoom-reset` | `<button>` | Reset zoom button |
+| `.ci-hotspot-fullscreen-btn` | `<button>` | Fullscreen toggle button (top-right) |
 | `.ci-hotspot-cluster` | `<button>` | Cluster indicator when markers are grouped |
 | `.ci-hotspot-loading` | Container | Applied while image is loading |
 | `.ci-hotspot-theme-dark` | Container | Dark theme modifier class |
 | `.ci-hotspot-scroll-hint` | Toast element | Scroll-to-zoom hint displayed at bottom-center of container |
 | `.ci-hotspot-scroll-hint--visible` | Toast element | Applied when scroll hint is actively shown |
+| `.ci-hotspot-scene-incoming` | `<img>` | Temporary incoming image during scene transition |
+| `.ci-hotspot-scene-transitioning` | Container | Applied during scene transitions; hides markers |
+| `.ci-hotspot-scene-fade-in` | Incoming image | Fade-in animation for scene transition |
+| `.ci-hotspot-scene-fade-out` | Current image | Fade-out animation for scene transition |
+| `.ci-hotspot-scene-slide-in` | Incoming image | Slide-in from right (default direction) |
+| `.ci-hotspot-scene-slide-in-reverse` | Incoming image | Slide-in from left |
+| `.ci-hotspot-scene-slide-in-up` | Incoming image | Slide-in from top |
+| `.ci-hotspot-scene-slide-in-down` | Incoming image | Slide-in from bottom |
+| `.ci-hotspot-scene-slide-out` | Current image | Slide-out to left (default direction) |
+| `.ci-hotspot-scene-slide-out-reverse` | Current image | Slide-out to right |
+| `.ci-hotspot-scene-slide-out-up` | Current image | Slide-out to top |
+| `.ci-hotspot-scene-slide-out-down` | Current image | Slide-out to bottom |
 | `.ci-editor` | Editor root | Visual editor root container |
 | `.ci-editor-body` | Editor layout | Flex container for canvas + sidebar |
 | `.ci-editor-canvas` | Editor canvas | Area containing the hotspot viewer |
@@ -1756,9 +1872,11 @@ Events are delivered via callback functions in the configuration object. No cust
 |---|---|---|
 | `onOpen` | `(hotspot: HotspotItem) => void` | Popover opens (any trigger mode) |
 | `onClose` | `(hotspot: HotspotItem) => void` | Popover closes |
-| `onClick` | `(event: MouseEvent, hotspot: HotspotItem) => void` | Marker is clicked/tapped |
+| `onClick` | `(event: MouseEvent \| KeyboardEvent, hotspot: HotspotItem) => void` | Marker is clicked/tapped or activated via keyboard |
 | `onZoom` | `(level: number) => void` | Zoom level changes |
-| `hotspot.onClick` | `(event: MouseEvent, hotspot: HotspotItem) => void` | Per-hotspot click handler |
+| `onSceneChange` | `(sceneId: string, scene: Scene) => void` | Active scene changes |
+| `onFullscreenChange` | `(isFullscreen: boolean) => void` | Fullscreen state changes |
+| `hotspot.onClick` | `(event: MouseEvent \| KeyboardEvent, hotspot: HotspotItem) => void` | Per-hotspot click handler |
 
 ### C. Data Attribute Reference
 
@@ -1778,11 +1896,17 @@ All data attributes use the `data-ci-hotspot-` prefix.
 | `data-ci-hotspot-placement` | `string` | `config.placement` |
 | `data-ci-hotspot-lazy-load` | `boolean string` | `config.lazyLoad` |
 | `data-ci-hotspot-zoom-controls` | `boolean string` | `config.zoomControls` |
+| `data-ci-hotspot-zoom-controls-position` | `string` | `config.zoomControlsPosition` |
+| `data-ci-hotspot-scroll-hint` | `boolean string` | `config.scrollHint` |
+| `data-ci-hotspot-fullscreen-button` | `boolean string` | `config.fullscreenButton` |
+| `data-ci-hotspot-invert-marker-theme` | `boolean string` | `config.invertMarkerTheme` |
+| `data-ci-hotspot-scenes` | `JSON string` | `config.scenes` |
+| `data-ci-hotspot-initial-scene` | `string` | `config.initialScene` |
+| `data-ci-hotspot-scene-transition` | `string` | `config.sceneTransition` |
+| `data-ci-hotspot-scene-aspect-ratio` | `string` | `config.sceneAspectRatio` |
 | `data-ci-hotspot-clustering` | `boolean string` | `config.clustering` |
 | `data-ci-hotspot-ci-token` | `string` | `config.cloudimage.token` |
 | `data-ci-hotspot-ci-api-version` | `string` | `config.cloudimage.apiVersion` |
 | `data-ci-hotspot-ci-domain` | `string` | `config.cloudimage.domain` |
 | `data-ci-hotspot-ci-limit-factor` | `number string` | `config.cloudimage.limitFactor` |
 | `data-ci-hotspot-ci-params` | `string` | `config.cloudimage.params` |
-| `data-ci-hotspot-zoom-controls-position` | `string` | `config.zoomControlsPosition` |
-| `data-ci-hotspot-scroll-hint` | `boolean string` | `config.scrollHint` |

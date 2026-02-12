@@ -2,7 +2,7 @@
 
 ## Summary
 
-Built `js-cloudimage-hotspot` from scratch — a zero-dependency TypeScript library for interactive image hotspots with zoom, popovers, and WCAG 2.1 AA accessibility. All 10 phases completed successfully.
+Built `js-cloudimage-hotspot` from scratch — a zero-dependency TypeScript library for interactive image hotspots with zoom, popovers, and WCAG 2.1 AA accessibility. All 10 phases completed successfully, followed by 23 post-implementation updates through v1.0.1.
 
 ## Actual Metrics
 
@@ -12,8 +12,9 @@ Built `js-cloudimage-hotspot` from scratch — a zero-dependency TypeScript libr
 | ESM bundle | 10.41 KB gzipped |
 | CJS bundle | 9.38 KB gzipped |
 | UMD bundle | 9.48 KB gzipped |
-| Total files | ~65: 37 source, 18 test, 9 demo, 7 config/meta |
+| Total files | ~80: 40+ source, 18 test, 9 demo, 10 example, 7 config/meta |
 | Runtime dependencies | Zero |
+| Current version | 1.0.1 |
 
 ## Issues Encountered & Resolved
 
@@ -22,6 +23,10 @@ Built `js-cloudimage-hotspot` from scratch — a zero-dependency TypeScript libr
 | Floating-point precision in coordinate conversion | `coordinates.test.ts` | Used `toBeCloseTo(299.97)` instead of exact equality |
 | Pan-at-zoom-1 test asserting wrong condition | `zoom.test.ts` | Changed test to compare transform before/after pan attempt instead of checking for absence of `translate` |
 | Rollup named/default export warning | `vite.config.ts` | Added `rollupOptions.output.exports: 'named'` to suppress warning |
+| Platform-specific scroll hint text | `scroll-hint.ts` | Simplified to "Ctrl + scroll or pinch to zoom" on all platforms |
+| Click/load popovers closing on document click | `ci-hotspot.ts` | Changed to close on container click only, preventing unintended closures |
+| Fullscreen button overlapping zoom controls | `index.css` | Auto-offset fullscreen button when zoom controls positioned at top-right |
+| Scene transition flicker with cache disabled | `ci-hotspot.ts` | Deferred incoming image removal until main image fires `load` event |
 
 ---
 
@@ -493,17 +498,17 @@ After the initial 10-phase implementation, several refinements and fixes were ap
 
 ---
 
-## Update 10: Multi-Image Navigation — v1.3 Scenes API
+### Update 10: Multi-Image Navigation — Scenes API
 
 Implemented the Scenes API for multi-image navigation with per-image hotspot sets.
 
-### New Types (`src/core/types.ts`)
+#### New Types (`src/core/types.ts`)
 - `SceneTransition` type: `'fade' | 'slide' | 'none'`
 - `Scene` interface: `{ id, src, alt?, hotspots[] }`
 - Extended `CIHotspotConfig` with `scenes?`, `initialScene?`, `sceneTransition?`, `onSceneChange?`
 - Extended `CIHotspotInstance` with `goToScene()`, `getCurrentScene()`, `getScenes()`
 
-### Core Implementation (`src/core/ci-hotspot.ts`)
+#### Core Implementation (`src/core/ci-hotspot.ts`)
 - **Surgical scene switching**: Keeps container/viewport/zoom/keyboard intact, only swaps image + markers
 - **Cleanup separation**: Split `cleanups[]` into global `cleanups[]` and `hotspotCleanups[]` for per-hotspot listeners
 - `initScenes()` — Populates scenes map, sets initial scene's src/hotspots before DOM build
@@ -514,29 +519,29 @@ Implemented the Scenes API for multi-image navigation with per-image hotspot set
 - `bindNavigateTrigger()` — Handles `navigateTo` hotspots: adds navigate marker class, binds click/keyboard to `goToScene()`
 - `navigateTo` hotspots display hover popovers with auto-generated destination info, and navigate on click
 
-### Config (`src/core/config.ts`)
+#### Config (`src/core/config.ts`)
 - New data-attributes: `data-ci-hotspot-scenes`, `data-ci-hotspot-initial-scene`, `data-ci-hotspot-scene-transition`
 - Updated `validateConfig()`: scenes mode doesn't require top-level `src`, validates scene `id`/`src`, validates `initialScene`
 - Updated `autoInit()` selector: `[data-ci-hotspot-src], [data-ci-hotspot-scenes]`
 
-### CSS (`src/styles/index.css`)
+#### CSS (`src/styles/index.css`)
 - Scene transition animations: fade-in/fade-out, slide-in/slide-out keyframes
 - `.ci-hotspot-marker--navigate` styling with chevron arrow via `::after`
 - `.ci-hotspot-scene-transitioning` hides markers during transition
 - Reduced-motion overrides for scene transitions
 
-### React Wrapper
+#### React Wrapper
 - Updated `CIHotspotViewerProps` with `scenes?`, `initialScene?`, `sceneTransition?`, `onSceneChange?`
 - Made `src` and `hotspots` optional (not needed when scenes is provided)
 - Updated `CIHotspotViewerRef` with `goToScene()`, `getCurrentScene()`, `getScenes()`
 - Updated hook and component to pass through scene config and expose scene methods
 
-### Demo
+#### Demo
 - New "Multi-Image Navigation" section with 5-scene real estate tour (Main Hall, Stairs, Kitchen, Bedroom, Rest Zone)
 - `navigateTo` hotspots link rooms together; info hotspots show descriptions on hover
 - External scene navigation buttons wired to `goToScene()`
 
-### Tests (`tests/scenes.test.ts`)
+#### Tests (`tests/scenes.test.ts`)
 - 35+ tests covering: scene initialization, `goToScene()`, marker creation, `navigateTo` behavior, popovers, `initialScene` config, `onSceneChange` callback, backward compatibility, validation, data-attribute support, destroy cleanup, transitions, aspect ratio
 
 ---
@@ -564,7 +569,7 @@ Added `zoomControlsPosition` config option supporting 6 positions: `'top-left'`,
 
 #### Directional Slide Transitions
 
-Slide transitions now respect hotspot position: if the triggering `navigateTo` hotspot is on the left side of the image (x ≤ 50%), the new scene slides in from the left; otherwise from the right.
+Slide transitions now respect hotspot position: if the triggering `navigateTo` hotspot is on the left side of the image (x <= 50%), the new scene slides in from the left; otherwise from the right.
 
 | File | Action | Description |
 |------|--------|-------------|
@@ -626,26 +631,292 @@ Made `src` and `hotspots` optional in `CIHotspotConfig` so scenes-only configs d
 
 ---
 
+### Update 13: v1.0.0 Release Infrastructure
+
+**Commits:** `2946ae0`, `aa9bfb7`, `741fd51`, `66c9f1d`, `a004cd6`
+
+**Goal:** Set up release infrastructure: npm metadata, CI workflows, CodeSandbox examples, CDN bundles, and GitHub Pages deployment.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `examples/vanilla/index.html` | Created | Vanilla JS CodeSandbox example with Vite dev server |
+| `examples/vanilla/index.js` | Created | Vanilla example: imports CIHotspot, creates viewer with 3 hotspots |
+| `examples/vanilla/package.json` | Created | Dependencies: js-cloudimage-hotspot, vite |
+| `examples/vanilla/vite.config.js` | Created | Vite config with `allowedHosts` for CodeSandbox |
+| `examples/vanilla/sandbox.config.json` | Created | CodeSandbox configuration |
+| `examples/react/index.html` | Created | React CodeSandbox example entry |
+| `examples/react/src/App.jsx` | Created | React example: CIHotspotViewer with ref API |
+| `examples/react/src/index.jsx` | Created | React example mount |
+| `examples/react/package.json` | Created | Dependencies: js-cloudimage-hotspot, react, react-dom, vite |
+| `examples/react/vite.config.js` | Created | Vite config with `allowedHosts` for CodeSandbox |
+| `examples/react/sandbox.config.json` | Created | CodeSandbox configuration |
+| `CHANGELOG.md` | Created | v1.0.0 changelog |
+| `.github/workflows/deploy-demo.yml` | Created | GitHub Actions: build demo and deploy to gh-pages |
+| `.github/workflows/deploy-pages.yml` | Created | GitHub Pages build workflow |
+| `dist/js-cloudimage-hotspot.min.js` | Added | Committed UMD bundle for CDN distribution |
+| `dist/editor/js-cloudimage-hotspot-editor.min.js` | Added | Committed editor UMD bundle for CDN |
+| `.gitignore` | Modified | Excluded most dist/ files but kept committed UMD bundles |
+| `config/vite.demo.config.ts` | Modified | Added editor.html as multi-page entry |
+| `package.json` | Modified | Added repository, bugs, homepage, author, keywords fields |
+
+#### Results
+- Both CodeSandbox examples functional
+- CDN bundles committed to repo and available via `scaleflex.cloudimg.io`
+- GitHub Pages deployment workflow operational
+- Scaleflex favicon added to all demo pages
+
+---
+
+### Update 14: README & CodeSandbox Polish
+
+**Commits:** `b035d2a`, `9c9ef1d`, `16acc37`
+
+**Goal:** Beautify README with badges and sections, fix CodeSandbox example links and Vite configurations.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `README.md` | Modified | Added badges, improved formatting, CodeSandbox links, buy-me-a-coffee section |
+| `demo/index.html` | Modified | Added CodeSandbox sandbox links to hero section |
+| `demo/demo.css` | Modified | Added styles for footer support section |
+| `examples/react/package.json` | Modified | Fixed dependency versions |
+| `examples/vanilla/package.json` | Modified | Fixed dependency versions |
+
+#### Results
+- README has professional badges and clear section structure
+- CodeSandbox links use correct `/p/devbox/` URL format
+- Both examples use Vite dev server correctly
+
+---
+
+### Update 15: Scaleflex Branding
+
+**Commits:** `772730f`, `a5666c3`, `dcac958`
+
+**Goal:** Add Scaleflex branding throughout the project: logo, LICENSE update, SVG navigation logo.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `LICENSE` | Modified | Updated to SCALEFLEX SAS copyright, added publicity clause |
+| `README.md` | Modified | Added Scaleflex logo to header |
+| `demo/index.html` | Modified | Replaced text logo in nav with Scaleflex SVG logo; added Scaleflex logo to footer |
+| `demo/demo.css` | Modified | Updated logo and nav styles for SVG logo |
+
+#### Results
+- Consistent Scaleflex branding across demo, README, and legal
+- SVG logo renders cleanly at all sizes
+
+---
+
+### Update 16: Example Fixes & Sync
+
+**Commits:** `babf40d`, `bd63b4c`, `80bfff8`, `94bed4a`, `3998beb`, `b3c6a08`
+
+**Goal:** Fix hotspot coordinates to use percentage strings, sync React and vanilla examples, rename files for JSX support, and update scene navigation labels.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `examples/vanilla/index.js` | Modified | Changed coordinates from numbers to percentage strings (e.g. `69` → `'69%'`), set all triggers to hover |
+| `examples/react/src/App.jsx` | Modified | Synced hotspot coordinates and triggers with vanilla example |
+| `examples/react/index.html` | Modified | Updated script src from `.js` to `.jsx` |
+| `examples/react/src/App.js` | Renamed | → `App.jsx` for JSX syntax support |
+| `examples/react/src/index.js` | Renamed | → `index.jsx` |
+| `demo/demo.ts` | Modified | Changed "Back to" labels to "Go to" in scene navigation hotspots |
+
+#### Results
+- Both examples use consistent percentage string coordinates
+- Both examples use hover trigger for all hotspots
+- JSX files have correct extensions
+- Scene navigation labels are directional ("Go to Kitchen") rather than backwards-looking
+
+---
+
+### Update 17: Hero Section Hotspot Enhancements
+
+**Commit:** `54712fc`
+
+**Goal:** Add prices and CTA buttons to the hero section hotspots for a more compelling demo.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `demo/demo.ts` | Modified | Added `price` and `url`/`ctaText` data fields to hero section hotspots, showcasing the built-in template's full capabilities |
+
+#### Results
+- Hero section hotspots display prices (e.g. "$899") and "View details" CTA buttons
+- Demonstrates the full popover template in the first thing visitors see
+
+---
+
+### Update 18: Popover & Zoom Behavior Fixes
+
+**Commit:** `20f4db2`
+
+**Goal:** Fix click/load popover closing behavior and prevent accidental double-click zoom on markers.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/core/ci-hotspot.ts` | Modified | Changed click/load popover close listener from `document` to container element. Popovers now only close when clicking within the container, not anywhere on the page |
+| `src/zoom/zoom-pan.ts` | Modified | Added `e.stopPropagation()` check — double-click zoom is blocked when the click target is a marker button, preventing accidental zoom when rapidly clicking hotspots |
+| `tests/core.test.ts` | Modified | Updated test expectations for container-scoped close behavior |
+
+#### Results
+- Click/load popovers remain open when user clicks outside the container
+- Double-clicking a marker opens its popover instead of zooming
+- Better UX for click-trigger mode
+
+---
+
+### Update 19: Scroll Hint Simplification
+
+**Commit:** `b24f4cc`
+
+**Goal:** Simplify scroll hint text to be platform-agnostic instead of showing platform-specific modifier keys.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/zoom/scroll-hint.ts` | Modified | Removed platform detection logic (navigator.platform check for Mac). Changed hint text to static "Ctrl + scroll or pinch to zoom" on all platforms. Simplified from ~15 lines to ~7 lines |
+
+#### Results
+- Consistent hint text across all platforms
+- Simpler code with no platform sniffing
+- "pinch to zoom" provides guidance for trackpad/touch users regardless of OS
+
+---
+
+### Update 20: 4-Direction Slide Transitions
+
+**Commit:** `f4ed8a7`
+
+**Goal:** Extend slide transitions from 2 directions (left/right) to 4 directions based on the `arrowDirection` property of the triggering hotspot.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/core/ci-hotspot.ts` | Modified | `goToScene()` now reads `arrowDirection` from the triggering `navigateTo` hotspot and maps it to a slide suffix: 0=right, 90=down, 180=left, 270=up. Falls back to position-based direction if `arrowDirection` is not set |
+| `src/styles/index.css` | Modified | Added 4 new keyframes and classes: `slide-in-up`, `slide-in-down`, `slide-out-up`, `slide-out-down`. Updated reduced-motion rules to cover all 8 slide animations |
+| `tests/scenes.test.ts` | Modified | Added 150 lines of tests: arrowDirection-based direction selection, all 4 directions, fallback to position-based, normalized angle wrapping |
+
+#### arrowDirection Mapping
+
+| arrowDirection | Normalized Range | Slide Direction |
+|----------------|-----------------|-----------------|
+| 0 (right) | 315-45 | Default (slide from right) |
+| 90 (down) | 45-135 | Slide from bottom (`-down`) |
+| 180 (left) | 135-225 | Slide from left (`-reverse`) |
+| 270/-90 (up) | 225-315 | Slide from top (`-up`) |
+
+#### Results
+- Scene transitions now match the spatial direction of the navigate arrow
+- Going through a right-pointing arrow slides from right, up-pointing slides from top, etc.
+- Natural spatial navigation feel in multi-scene tours
+- All new tests passing
+
+---
+
+### Update 21: UI Polish — Zoom/Fullscreen Overlap, Configurator Toggles, Hero Pills
+
+**Commit:** `65beb1b`
+
+**Goal:** Fix visual overlap between zoom controls and fullscreen button, add new configurator toggles, and restyle the hero feature pills.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `src/styles/index.css` | Modified | Added CSS rule: when zoom controls are at `top-right`, fullscreen button shifts right by 136px to avoid overlap |
+| `demo/configurator.ts` | Modified | Added fullscreen button toggle and invert marker theme toggle to configurator options |
+| `demo/index.html` | Modified | Added checkbox inputs for fullscreen button and invert marker theme in configurator panel |
+| `demo/demo.css` | Modified | Restyled hero feature pills: separator dots between pills using `::before` pseudo-element, updated spacing and layout |
+| `dist/*.js` | Modified | Rebuilt CDN bundles with the overlap fix |
+
+#### Results
+- Fullscreen button and zoom controls no longer overlap at top-right position
+- Configurator now exposes fullscreen button and invert marker theme options
+- Hero pills have cleaner styling with dot separators
+
+---
+
+### Update 22: Responsive Burger Menu
+
+**Commit:** `ccae561`
+
+**Goal:** Add a responsive burger menu for the demo site navigation on mobile screens.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `demo/index.html` | Modified | Added burger button element (`#nav-burger`) with `aria-expanded` and `aria-label` attributes |
+| `demo/demo.ts` | Modified | Added burger menu toggle handler: clicks toggle `.open` class on nav, updates `aria-expanded`. Nav links close the menu on click |
+| `demo/demo.css` | Modified | Added 77 lines of responsive styles: burger button hidden on desktop, visible at `max-width: 868px`; nav links collapse to vertical dropdown when burger is toggled; smooth transition for menu open/close |
+
+#### Results
+- Navigation collapses to a burger menu on screens below 868px
+- Burger button is accessible with proper ARIA attributes
+- Clicking a nav link auto-closes the menu
+- Smooth animation for menu toggle
+
+---
+
+### Update 23: Version 1.0.1
+
+**Commits:** `069cf46`, `233008e`
+
+**Goal:** Bump version to 1.0.1 and update CDN URLs throughout the project.
+
+#### Files
+
+| File | Action | Description |
+|------|--------|-------------|
+| `package.json` | Modified | Version bumped from `1.0.0` to `1.0.1` |
+| `package-lock.json` | Modified | Version synced to `1.0.1` |
+| `README.md` | Modified | CDN URL updated to `1.0.1` |
+| `demo/index.html` | Modified | CDN URL updated to `1.0.1` |
+
+#### Results
+- All CDN references point to `https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/1.0.1/js-cloudimage-hotspot.min.js`
+- Package version is `1.0.1`
+
+---
+
 ## Dependency Graph (Execution Order)
 
 ```
-Phase 1:  Types + Build Pipeline              ✅
-    ↓
-Phase 2:  Utilities + CSS                     ✅
-    ↓
-Phase 3:  Markers + Sanitizer                 ✅
-    ↓
-Phase 4:  Popover System                      ✅
-    ↓
-Phase 5:  Zoom & Pan                          ✅
-    ↓
-Phase 6:  Core CIHotspot Class + Config       ✅
-    ↓
-Phase 7:  Accessibility Layer                 ✅
-    ↓
-Phase 8:  React Wrapper                       ✅
-    ↓
-Phase 9:  Demo Site                           ✅
-    ↓
-Phase 10: Testing + Docs + Release            ✅
+Phase 1:  Types + Build Pipeline              done
+    |
+Phase 2:  Utilities + CSS                     done
+    |
+Phase 3:  Markers + Sanitizer                 done
+    |
+Phase 4:  Popover System                      done
+    |
+Phase 5:  Zoom & Pan                          done
+    |
+Phase 6:  Core CIHotspot Class + Config       done
+    |
+Phase 7:  Accessibility Layer                 done
+    |
+Phase 8:  React Wrapper                       done
+    |
+Phase 9:  Demo Site                           done
+    |
+Phase 10: Testing + Docs + Release            done
+    |
+Updates 1-12: Post-implementation refinements  done
+    |
+Updates 13-23: Release infrastructure + v1.0.1 done
 ```
