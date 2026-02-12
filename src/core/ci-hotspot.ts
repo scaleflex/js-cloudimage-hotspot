@@ -798,13 +798,21 @@ export class CIHotspot implements CIHotspotInstance {
 
         this.clearHotspots();
         this.switchToScene(scene);
-        incomingImg.remove();
 
-        removeClass(this.imgEl, 'ci-hotspot-scene-fade-out');
-        removeClass(this.imgEl, 'ci-hotspot-scene-slide-out');
-        removeClass(this.containerEl, 'ci-hotspot-scene-transitioning');
+        const finish = () => {
+          incomingImg.remove();
+          removeClass(this.imgEl, 'ci-hotspot-scene-fade-out');
+          removeClass(this.imgEl, 'ci-hotspot-scene-slide-out');
+          removeClass(this.containerEl, 'ci-hotspot-scene-transitioning');
+          onComplete();
+        };
 
-        onComplete();
+        if (this.imgEl.complete && this.imgEl.naturalWidth > 0) {
+          finish();
+        } else {
+          this.imgEl.addEventListener('load', finish, { once: true });
+          this.imgEl.addEventListener('error', finish, { once: true });
+        }
       }, transitionDuration);
     };
 

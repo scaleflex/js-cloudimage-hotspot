@@ -67,11 +67,21 @@ export function initConfigurator(): void {
   }
 
   function rebuild(): void {
-    if (instance) {
-      (instance as { destroy(): void }).destroy();
-    }
     const config = getConfig();
-    instance = new CIHotspot(viewerEl!, config) as typeof instance;
+    if (instance) {
+      viewerEl!.style.minHeight = `${viewerEl!.offsetHeight}px`;
+      (instance as { update(c: Partial<CIHotspotConfig>): void }).update(config);
+      const img = viewerEl!.querySelector('img');
+      const release = () => { viewerEl!.style.minHeight = ''; };
+      if (img && !img.complete) {
+        img.addEventListener('load', release, { once: true });
+        img.addEventListener('error', release, { once: true });
+      } else {
+        requestAnimationFrame(release);
+      }
+    } else {
+      instance = new CIHotspot(viewerEl!, config);
+    }
     cfgCode.textContent = generateCode(config);
   }
 

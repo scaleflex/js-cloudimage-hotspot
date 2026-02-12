@@ -342,5 +342,17 @@ function updateNav(): void {
   }
 }
 
+// Smooth scroll only for nav link clicks
+for (const link of navLinks) {
+  link.addEventListener('click', (e) => {
+    const href = link.getAttribute('href');
+    if (!href?.startsWith('#')) return;
+    const target = document.getElementById(href.slice(1));
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth' });
+  });
+}
+
 window.addEventListener('scroll', updateNav, { passive: true });
 updateNav();
