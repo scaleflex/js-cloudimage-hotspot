@@ -584,6 +584,76 @@
   to { transform: rotate(360deg); }
 }
 
+/* === Fullscreen Button === */
+.ci-hotspot-fullscreen-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: var(--ci-hotspot-zoom-controls-border-radius);
+  background: var(--ci-hotspot-zoom-controls-bg);
+  color: var(--ci-hotspot-zoom-controls-color);
+  box-shadow: var(--ci-hotspot-zoom-controls-shadow);
+  cursor: pointer;
+  padding: 0;
+  z-index: 10;
+  transition: background 150ms ease;
+}
+
+.ci-hotspot-fullscreen-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.ci-hotspot-fullscreen-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ci-hotspot-fullscreen-btn:focus-visible {
+  outline: 3px solid var(--ci-hotspot-focus-ring, #4A90D9);
+  outline-offset: 2px;
+}
+
+/* === Fullscreen Container === */
+.ci-hotspot-container--fullscreen {
+  background: #000;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ci-hotspot-container--fullscreen .ci-hotspot-viewport {
+  width: fit-content;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.ci-hotspot-container--fullscreen .ci-hotspot-image {
+  max-height: 100vh;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* Fullscreen button on dark backgrounds (dark theme or fullscreen mode) */
+.ci-hotspot-theme-dark .ci-hotspot-fullscreen-btn,
+.ci-hotspot-container--fullscreen .ci-hotspot-fullscreen-btn {
+  background: rgba(30, 30, 30, 0.9);
+  color: #f0f0f0;
+}
+
+.ci-hotspot-theme-dark .ci-hotspot-fullscreen-btn:hover,
+.ci-hotspot-container--fullscreen .ci-hotspot-fullscreen-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 /* === Reduced Motion === */
 @media (prefers-reduced-motion: reduce) {
   .ci-hotspot-marker,
@@ -614,5 +684,9 @@
 
   .ci-hotspot-scene-loading::after {
     animation-duration: 0.01ms !important;
+  }
+
+  .ci-hotspot-fullscreen-btn {
+    transition-duration: 0.01ms !important;
   }
 }

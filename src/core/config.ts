@@ -1,6 +1,6 @@
 import type { CIHotspotConfig, CloudimageConfig } from './types';
 
-export const DEFAULT_CONFIG: Omit<Required<CIHotspotConfig>, 'src' | 'hotspots' | 'cloudimage' | 'renderPopover' | 'onOpen' | 'onClose' | 'onZoom' | 'onClick' | 'scenes' | 'initialScene' | 'onSceneChange' | 'sceneAspectRatio'> = {
+export const DEFAULT_CONFIG: Omit<Required<CIHotspotConfig>, 'src' | 'hotspots' | 'cloudimage' | 'renderPopover' | 'onOpen' | 'onClose' | 'onZoom' | 'onClick' | 'scenes' | 'initialScene' | 'onSceneChange' | 'sceneAspectRatio' | 'onFullscreenChange'> = {
   alt: '',
   trigger: 'hover',
   zoom: false,
@@ -14,6 +14,7 @@ export const DEFAULT_CONFIG: Omit<Required<CIHotspotConfig>, 'src' | 'hotspots' 
   sceneTransition: 'fade',
   scrollHint: true,
   invertMarkerTheme: false,
+  fullscreenButton: true,
 };
 
 /** Data attribute to config property mapping */
@@ -41,6 +42,7 @@ export const DATA_ATTR_MAP: Record<string, { key: string; type: 'string' | 'bool
   'data-ci-hotspot-scene-transition': { key: 'sceneTransition', type: 'string' },
   'data-ci-hotspot-scene-aspect-ratio': { key: 'sceneAspectRatio', type: 'string' },
   'data-ci-hotspot-invert-marker-theme': { key: 'invertMarkerTheme', type: 'boolean' },
+  'data-ci-hotspot-fullscreen-button': { key: 'fullscreenButton', type: 'boolean' },
 };
 
 /** Parse data attributes from an element into a config object */

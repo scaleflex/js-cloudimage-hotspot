@@ -5,6 +5,7 @@ export interface KeyboardHandlerOptions {
   container: HTMLElement;
   getZoomPan: () => ZoomPan | null;
   onEscape?: () => void;
+  onFullscreenToggle?: () => void;
 }
 
 const PAN_STEP = 50;
@@ -15,7 +16,7 @@ export class KeyboardHandler {
   private cleanups: (() => void)[] = [];
 
   constructor(options: KeyboardHandlerOptions) {
-    const { container, getZoomPan, onEscape } = options;
+    const { container, getZoomPan, onEscape, onFullscreenToggle } = options;
 
     const cleanup = addListener(container, 'keydown', (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
@@ -74,6 +75,13 @@ export class KeyboardHandler {
           if (zoomPan) {
             e.preventDefault();
             zoomPan.resetZoom();
+          }
+          break;
+
+        case 'f':
+          if (onFullscreenToggle) {
+            e.preventDefault();
+            onFullscreenToggle();
           }
           break;
       }

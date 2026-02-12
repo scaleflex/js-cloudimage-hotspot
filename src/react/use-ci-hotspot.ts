@@ -52,6 +52,8 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
       sceneTransition: optionsRef.current.sceneTransition,
       sceneAspectRatio: optionsRef.current.sceneAspectRatio,
       onSceneChange: optionsRef.current.onSceneChange,
+      fullscreenButton: optionsRef.current.fullscreenButton,
+      onFullscreenChange: optionsRef.current.onFullscreenChange,
     };
 
     // If renderPopover is provided, adapt ReactNode -> HTMLElement
@@ -110,6 +112,8 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
       sceneTransition: options.sceneTransition,
       sceneAspectRatio: options.sceneAspectRatio,
       onSceneChange: options.onSceneChange,
+      fullscreenButton: options.fullscreenButton,
+      onFullscreenChange: options.onFullscreenChange,
     });
   }, [
     options.src,
@@ -130,7 +134,8 @@ export function useCIHotspot(options: UseCIHotspotOptions): UseCIHotspotReturn {
     options.initialScene,
     options.sceneTransition,
     options.sceneAspectRatio,
-    // Note: Callback props (onOpen, onClose, onZoom, onClick, onSceneChange) are
+    options.fullscreenButton,
+    // Note: Callback props (onOpen, onClose, onZoom, onClick, onSceneChange, onFullscreenChange) are
     // intentionally excluded from this dependency array. They are read from optionsRef
     // at call time, so they always reflect the latest value without triggering re-init.
   ]);

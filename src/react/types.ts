@@ -26,6 +26,8 @@ export interface CIHotspotViewerProps {
   sceneTransition?: SceneTransition;
   sceneAspectRatio?: string;
   onSceneChange?: (sceneId: string, scene: Scene) => void;
+  fullscreenButton?: boolean;
+  onFullscreenChange?: (isFullscreen: boolean) => void;
   className?: string;
   style?: CSSProperties;
 }
@@ -43,6 +45,9 @@ export interface CIHotspotViewerRef {
   goToScene(sceneId: string): void;
   getCurrentScene(): string | undefined;
   getScenes(): string[];
+  enterFullscreen(): void;
+  exitFullscreen(): void;
+  isFullscreen(): boolean;
 }
 
 export interface UseCIHotspotOptions extends Omit<CIHotspotViewerProps, 'className' | 'style'> {}

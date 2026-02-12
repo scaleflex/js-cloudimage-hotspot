@@ -12,6 +12,7 @@ import { buildCloudimageUrl, createResizeHandler } from '../utils/cloudimage';
 import { KeyboardHandler } from '../a11y/keyboard';
 import { createFocusTrap } from '../a11y/focus';
 import { announceToScreenReader, acquireLiveRegion, releaseLiveRegion } from '../a11y/aria';
+import { createFullscreenControl, type FullscreenControl } from '../fullscreen/fullscreen';
 import cssText from '../styles/index.css?inline';
 
 export class CIHotspot implements CIHotspotInstance {
@@ -30,6 +31,7 @@ export class CIHotspot implements CIHotspotInstance {
   private cloudimageHandler: { observer: ResizeObserver; destroy: () => void } | null = null;
   private resizeObserver: ResizeObserver | null = null;
   private keyboardHandler: KeyboardHandler | null = null;
+  private fullscreenControl: FullscreenControl | null = null;
   private focusTraps = new Map<string, ReturnType<typeof createFocusTrap>>();
   private cleanups: (() => void)[] = [];
   private hotspotCleanups = new Map<string, (() => void)[]>();
@@ -63,6 +65,7 @@ export class CIHotspot implements CIHotspotInstance {
     }
 
     this.initKeyboard();
+    this.initFullscreen();
     this.setupResponsive();
   }
 
@@ -634,8 +637,33 @@ export class CIHotspot implements CIHotspotInstance {
       container: this.containerEl,
       getZoomPan: () => this.zoomPan,
       onEscape: () => {
-        // Close all popovers and return focus
+        // If in fullscreen, exit fullscreen first; otherwise close popovers
+        if (this.fullscreenControl?.isFullscreen()) {
+          this.fullscreenControl.exit();
+          return;
+        }
         this.closeAll();
+      },
+      onFullscreenToggle: () => {
+        this.fullscreenControl?.toggle();
+      },
+    });
+  }
+
+  private initFullscreen(): void {
+    if (this.config.fullscreenButton === false) return;
+
+    this.fullscreenControl = createFullscreenControl(this.containerEl, {
+      onChange: (isFullscreen) => {
+        // Reposition visible popovers after the layout shift
+        requestAnimationFrame(() => {
+          for (const [, popover] of this.popovers) {
+            if (popover.isVisible()) {
+              popover.updatePosition();
+            }
+          }
+        });
+        this.config.onFullscreenChange?.(isFullscreen);
       },
     });
   }
@@ -947,6 +975,20 @@ export class CIHotspot implements CIHotspotInstance {
     return Array.from(this.scenesMap.keys());
   }
 
+  enterFullscreen(): void {
+    if (this.destroyed) return;
+    this.fullscreenControl?.enter();
+  }
+
+  exitFullscreen(): void {
+    if (this.destroyed) return;
+    this.fullscreenControl?.exit();
+  }
+
+  isFullscreen(): boolean {
+    return this.fullscreenControl?.isFullscreen() ?? false;
+  }
+
   addHotspot(hotspot: HotspotItem): void {
     if (this.destroyed) return;
     this.config.hotspots.push(hotspot);
@@ -1031,6 +1073,7 @@ export class CIHotspot implements CIHotspotInstance {
       this.initZoom();
     }
     this.initKeyboard();
+    this.initFullscreen();
     this.setupResponsive();
   }
 
@@ -1085,6 +1128,10 @@ export class CIHotspot implements CIHotspotInstance {
       clearTimeout(this.transitionTimer);
       this.transitionTimer = undefined;
     }
+
+    // Destroy fullscreen control
+    this.fullscreenControl?.destroy();
+    this.fullscreenControl = null;
 
     // Destroy keyboard handler
     this.keyboardHandler?.destroy();

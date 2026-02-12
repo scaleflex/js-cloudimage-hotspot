@@ -22,6 +22,9 @@ export const CIHotspotViewer = forwardRef<CIHotspotViewerRef, CIHotspotViewerPro
       goToScene: (sceneId: string) => instance.current?.goToScene(sceneId),
       getCurrentScene: () => instance.current?.getCurrentScene(),
       getScenes: () => instance.current?.getScenes() ?? [],
+      enterFullscreen: () => instance.current?.enterFullscreen(),
+      exitFullscreen: () => instance.current?.exitFullscreen(),
+      isFullscreen: () => instance.current?.isFullscreen() ?? false,
     }));
 
     // Find portal targets for React rendering

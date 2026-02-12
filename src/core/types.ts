@@ -143,6 +143,10 @@ export interface CIHotspotConfig {
   sceneAspectRatio?: string;
   /** Called when the active scene changes */
   onSceneChange?: (sceneId: string, scene: Scene) => void;
+  /** Show fullscreen toggle button (default: true) */
+  fullscreenButton?: boolean;
+  /** Called when fullscreen state changes */
+  onFullscreenChange?: (isFullscreen: boolean) => void;
 }
 
 /** Instance methods returned by CIHotspot */
@@ -182,6 +186,12 @@ export interface CIHotspotInstance {
   getCurrentScene(): string | undefined;
   /** Get all scene IDs (returns empty array if not in scenes mode) */
   getScenes(): string[];
+  /** Enter browser fullscreen mode */
+  enterFullscreen(): void;
+  /** Exit browser fullscreen mode */
+  exitFullscreen(): void;
+  /** Check if currently in fullscreen mode */
+  isFullscreen(): boolean;
 }
 
 // --- Internal types (not exported from main entry) ---
