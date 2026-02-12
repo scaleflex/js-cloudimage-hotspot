@@ -32,6 +32,7 @@ export function initConfigurator(): void {
   const cfgTrigger = document.getElementById('cfg-trigger') as HTMLSelectElement;
   const cfgTheme = document.getElementById('cfg-theme') as HTMLSelectElement;
   const cfgPlacement = document.getElementById('cfg-placement') as HTMLSelectElement;
+  const cfgZoomControlsPosition = document.getElementById('cfg-zoom-controls-position') as HTMLSelectElement;
   const cfgCode = document.querySelector('#cfg-code code') as HTMLElement;
   const cfgCopy = document.getElementById('cfg-copy') as HTMLButtonElement;
 
@@ -45,6 +46,7 @@ export function initConfigurator(): void {
       trigger: cfgTrigger.value as CIHotspotConfig['trigger'],
       theme: cfgTheme.value as CIHotspotConfig['theme'],
       placement: cfgPlacement.value as CIHotspotConfig['placement'],
+      zoomControlsPosition: cfgZoomControlsPosition.value as CIHotspotConfig['zoomControlsPosition'],
       hotspots: defaultHotspots,
     };
   }
@@ -58,6 +60,7 @@ export function initConfigurator(): void {
     if (config.invertMarkerTheme) opts.push(`  invertMarkerTheme: true,`);
     if (config.theme !== 'light') opts.push(`  theme: '${config.theme}',`);
     if (config.placement !== 'top') opts.push(`  placement: '${config.placement}',`);
+    if (config.zoomControlsPosition !== 'bottom-right') opts.push(`  zoomControlsPosition: '${config.zoomControlsPosition}',`);
     opts.push(`  hotspots: ${JSON.stringify(config.hotspots, null, 4).split('\n').map((l, i) => i === 0 ? l : '  ' + l).join('\n')},`);
 
     return `const viewer = new CIHotspot('#my-image', {\n${opts.join('\n')}\n});`;
@@ -74,7 +77,7 @@ export function initConfigurator(): void {
 
   // Bind controls
   [cfgZoom, cfgPulse, cfgInvertMarker].forEach((el) => el.addEventListener('change', rebuild));
-  [cfgTrigger, cfgTheme, cfgPlacement].forEach((el) => el.addEventListener('change', rebuild));
+  [cfgTrigger, cfgTheme, cfgPlacement, cfgZoomControlsPosition].forEach((el) => el.addEventListener('change', rebuild));
 
   // Copy button
   cfgCopy.addEventListener('click', () => {

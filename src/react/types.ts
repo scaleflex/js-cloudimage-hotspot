@@ -13,6 +13,7 @@ export interface CIHotspotViewerProps {
   pulse?: boolean;
   placement?: CIHotspotConfig['placement'];
   zoomControls?: boolean;
+  zoomControlsPosition?: CIHotspotConfig['zoomControlsPosition'];
   lazyLoad?: boolean;
   scrollHint?: boolean;
   cloudimage?: CIHotspotConfig['cloudimage'];

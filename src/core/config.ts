@@ -15,6 +15,7 @@ export const DEFAULT_CONFIG: Omit<Required<CIHotspotConfig>, 'src' | 'hotspots' 
   scrollHint: true,
   invertMarkerTheme: false,
   fullscreenButton: true,
+  zoomControlsPosition: 'bottom-right',
 };
 
 /** Data attribute to config property mapping */
@@ -43,6 +44,7 @@ export const DATA_ATTR_MAP: Record<string, { key: string; type: 'string' | 'bool
   'data-ci-hotspot-scene-aspect-ratio': { key: 'sceneAspectRatio', type: 'string' },
   'data-ci-hotspot-invert-marker-theme': { key: 'invertMarkerTheme', type: 'boolean' },
   'data-ci-hotspot-fullscreen-button': { key: 'fullscreenButton', type: 'boolean' },
+  'data-ci-hotspot-zoom-controls-position': { key: 'zoomControlsPosition', type: 'string' },
 };
 
 /** Parse data attributes from an element into a config object */

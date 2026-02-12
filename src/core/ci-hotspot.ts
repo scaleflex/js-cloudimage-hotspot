@@ -544,6 +544,7 @@ export class CIHotspot implements CIHotspotInstance {
       this.zoomControls = createZoomControls(this.containerEl, this.zoomPan, {
         zoomMin: this.config.zoomMin || 1,
         zoomMax: this.config.zoomMax || 4,
+        position: this.config.zoomControlsPosition,
       });
     }
   }

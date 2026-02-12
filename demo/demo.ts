@@ -308,6 +308,12 @@ document.querySelectorAll<HTMLButtonElement>('[data-scene]').forEach((btn) => {
   });
 });
 
+// Wire up scene transition selector
+const sceneTransitionSelect = document.getElementById('cfg-scene-transition') as HTMLSelectElement | null;
+sceneTransitionSelect?.addEventListener('change', () => {
+  scenesViewer.update({ sceneTransition: sceneTransitionSelect.value as 'fade' | 'slide' | 'none' });
+});
+
 // Configurator
 initConfigurator();
 

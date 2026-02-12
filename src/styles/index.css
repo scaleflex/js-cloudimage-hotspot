@@ -327,8 +327,6 @@
 /* === Zoom Controls === */
 .ci-hotspot-zoom-controls {
   position: absolute;
-  bottom: 16px;
-  right: 16px;
   display: flex;
   gap: 2px;
   background: var(--ci-hotspot-zoom-controls-bg);
@@ -376,6 +374,14 @@
   outline: 3px solid var(--ci-hotspot-focus-ring, #4A90D9);
   outline-offset: -3px;
 }
+
+/* === Zoom Controls Positions === */
+.ci-hotspot-zoom-controls[data-position="bottom-right"] { bottom: 16px; right: 16px; }
+.ci-hotspot-zoom-controls[data-position="bottom-left"]  { bottom: 16px; left: 16px; }
+.ci-hotspot-zoom-controls[data-position="bottom-center"] { bottom: 16px; left: 50%; transform: translateX(-50%); }
+.ci-hotspot-zoom-controls[data-position="top-right"]    { top: 16px; right: 16px; }
+.ci-hotspot-zoom-controls[data-position="top-left"]     { top: 16px; left: 16px; }
+.ci-hotspot-zoom-controls[data-position="top-center"]   { top: 16px; left: 50%; transform: translateX(-50%); }
 
 /* === Cluster Indicator === */
 .ci-hotspot-cluster {

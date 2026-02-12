@@ -5,6 +5,7 @@ export interface ZoomControlsOptions {
   zoomMin: number;
   zoomMax: number;
   zoomStep?: number;
+  position?: string;
 }
 
 /** Create zoom controls UI (+/−/reset) */
@@ -15,6 +16,7 @@ export function createZoomControls(
 ): { element: HTMLElement; update: () => void; destroy: () => void } {
   const step = options.zoomStep || 0.5;
   const controls = createElement('div', 'ci-hotspot-zoom-controls');
+  controls.dataset.position = options.position || 'bottom-right';
 
   const btnIn = createElement('button', 'ci-hotspot-zoom-in', {
     'aria-label': 'Zoom in',

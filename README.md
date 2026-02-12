@@ -102,6 +102,7 @@ new CIHotspot(element: HTMLElement | string, config: CIHotspotConfig)
 | `placement` | `'top' \| 'bottom' \| 'left' \| 'right' \| 'auto'` | `'top'` | Popover placement |
 | `lazyLoad` | `boolean` | `true` | Lazy load image |
 | `zoomControls` | `boolean` | `true` | Show zoom control buttons |
+| `zoomControlsPosition` | `'top-left' \| 'top-center' \| 'top-right' \| 'bottom-left' \| 'bottom-center' \| 'bottom-right'` | `'bottom-right'` | Zoom controls position |
 | `renderPopover` | `(hotspot) => string \| HTMLElement` | — | Custom popover render |
 | `onOpen` | `(hotspot) => void` | — | Popover open callback |
 | `onClose` | `(hotspot) => void` | — | Popover close callback |

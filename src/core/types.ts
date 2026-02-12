@@ -10,6 +10,9 @@ export type Theme = 'light' | 'dark';
 /** Scene transition animation type */
 export type SceneTransition = 'fade' | 'slide' | 'none';
 
+/** Zoom controls position */
+export type ZoomControlsPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
+
 /** A scene in multi-image navigation */
 export interface Scene {
   /** Unique scene identifier */
@@ -145,6 +148,8 @@ export interface CIHotspotConfig {
   onSceneChange?: (sceneId: string, scene: Scene) => void;
   /** Show fullscreen toggle button (default: true) */
   fullscreenButton?: boolean;
+  /** Position of zoom controls (default: 'bottom-right') */
+  zoomControlsPosition?: ZoomControlsPosition;
   /** Called when fullscreen state changes */
   onFullscreenChange?: (isFullscreen: boolean) => void;
 }
