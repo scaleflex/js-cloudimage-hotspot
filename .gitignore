@@ -3,8 +3,14 @@
 /.pnp
 .pnp.js
 
-# build output
-/dist
+# build output — only CDN bundles are tracked
+/dist/*
+!/dist/js-cloudimage-hotspot.min.js
+!/dist/js-cloudimage-hotspot.min.js.map
+!/dist/editor/
+/dist/editor/*
+!/dist/editor/js-cloudimage-hotspot-editor.min.js
+!/dist/editor/js-cloudimage-hotspot-editor.min.js.map
 /dist-demo
 
 # testing

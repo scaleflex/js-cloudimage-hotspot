@@ -7,6 +7,12 @@ export default defineConfig(({ mode }) => ({
   build: {
     outDir: resolve(__dirname, '../dist-demo'),
     emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, '../demo/index.html'),
+        editor: resolve(__dirname, '../demo/editor.html'),
+      },
+    },
   },
   resolve: {
     alias: {
