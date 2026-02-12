@@ -9,7 +9,7 @@ var viewer = new CIHotspot('#viewer', {
       x: '69%',
       y: '32%',
       label: 'Designer Lamp',
-      trigger: 'click',
+      trigger: 'hover',
       placement: 'right',
       data: {
         title: 'Designer Lamp',
@@ -37,7 +37,7 @@ var viewer = new CIHotspot('#viewer', {
       x: '20%',
       y: '45%',
       label: 'Indoor Plant',
-      trigger: 'click',
+      trigger: 'hover',
       placement: 'left',
       data: {
         title: 'Indoor Plant',
