@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://scaleflex.cloudimg.io/v7/assets/cloudimage-logo-dark.svg" alt="Scaleflex" height="40">
+  <img src="https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-360-view/logo_scaleflex_on_white_bg.jpg?vh=91b12d&w=700" alt="Scaleflex" width="350">
 </p>
 
 <h1 align="center">js-cloudimage-hotspot</h1>

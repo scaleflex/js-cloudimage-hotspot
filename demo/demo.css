@@ -591,6 +591,12 @@ kbd {
   height: 32px;
 }
 
+.demo-footer-logo {
+  display: block;
+  width: 200px;
+  margin: 0 auto 12px;
+}
+
 .demo-footer-copy {
   max-width: 1200px;
   margin: 0 auto;
