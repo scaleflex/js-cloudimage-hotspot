@@ -28,13 +28,19 @@ export function initConfigurator(): void {
 
   const cfgZoom = document.getElementById('cfg-zoom') as HTMLInputElement;
   const cfgPulse = document.getElementById('cfg-pulse') as HTMLInputElement;
+  const cfgFullscreen = document.getElementById('cfg-fullscreen') as HTMLInputElement;
   const cfgInvertMarker = document.getElementById('cfg-invert-marker') as HTMLInputElement;
   const cfgTrigger = document.getElementById('cfg-trigger') as HTMLSelectElement;
   const cfgTheme = document.getElementById('cfg-theme') as HTMLSelectElement;
   const cfgPlacement = document.getElementById('cfg-placement') as HTMLSelectElement;
   const cfgZoomControlsPosition = document.getElementById('cfg-zoom-controls-position') as HTMLSelectElement;
+  const cfgZoomControlsPositionLabel = cfgZoomControlsPosition.closest('label') as HTMLElement;
   const cfgCode = document.querySelector('#cfg-code code') as HTMLElement;
   const cfgCopy = document.getElementById('cfg-copy') as HTMLButtonElement;
+
+  function syncZoomVisibility(): void {
+    cfgZoomControlsPositionLabel.style.display = cfgZoom.checked ? '' : 'none';
+  }
 
   function getConfig(): CIHotspotConfig {
     return {
@@ -42,6 +48,7 @@ export function initConfigurator(): void {
       alt: 'Luxury high-rise bedroom with channel-tufted bed and city skyline view',
       zoom: cfgZoom.checked,
       pulse: cfgPulse.checked,
+      fullscreenButton: cfgFullscreen.checked,
       invertMarkerTheme: cfgInvertMarker.checked,
       trigger: cfgTrigger.value as CIHotspotConfig['trigger'],
       theme: cfgTheme.value as CIHotspotConfig['theme'],
@@ -57,16 +64,18 @@ export function initConfigurator(): void {
     if (config.trigger !== 'hover') opts.push(`  trigger: '${config.trigger}',`);
     if (config.zoom) opts.push(`  zoom: true,`);
     if (!config.pulse) opts.push(`  pulse: false,`);
+    if (!config.fullscreenButton) opts.push(`  fullscreenButton: false,`);
     if (config.invertMarkerTheme) opts.push(`  invertMarkerTheme: true,`);
     if (config.theme !== 'light') opts.push(`  theme: '${config.theme}',`);
     if (config.placement !== 'top') opts.push(`  placement: '${config.placement}',`);
-    if (config.zoomControlsPosition !== 'bottom-right') opts.push(`  zoomControlsPosition: '${config.zoomControlsPosition}',`);
+    if (config.zoom && config.zoomControlsPosition !== 'bottom-right') opts.push(`  zoomControlsPosition: '${config.zoomControlsPosition}',`);
     opts.push(`  hotspots: ${JSON.stringify(config.hotspots, null, 4).split('\n').map((l, i) => i === 0 ? l : '  ' + l).join('\n')},`);
 
     return `const viewer = new CIHotspot('#my-image', {\n${opts.join('\n')}\n});`;
   }
 
   function rebuild(): void {
+    syncZoomVisibility();
     const config = getConfig();
     if (instance) {
       viewerEl!.style.minHeight = `${viewerEl!.offsetHeight}px`;
@@ -86,7 +95,7 @@ export function initConfigurator(): void {
   }
 
   // Bind controls
-  [cfgZoom, cfgPulse, cfgInvertMarker].forEach((el) => el.addEventListener('change', rebuild));
+  [cfgZoom, cfgPulse, cfgFullscreen, cfgInvertMarker].forEach((el) => el.addEventListener('change', rebuild));
   [cfgTrigger, cfgTheme, cfgPlacement, cfgZoomControlsPosition].forEach((el) => el.addEventListener('change', rebuild));
 
   // Copy button

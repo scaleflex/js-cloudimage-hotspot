@@ -383,6 +383,11 @@
 .ci-hotspot-zoom-controls[data-position="top-left"]     { top: 16px; left: 16px; }
 .ci-hotspot-zoom-controls[data-position="top-center"]   { top: 16px; left: 50%; transform: translateX(-50%); }
 
+/* Avoid overlap: shift fullscreen button when zoom controls are at top-right */
+.ci-hotspot-zoom-controls[data-position="top-right"] ~ .ci-hotspot-fullscreen-btn {
+  right: 136px; /* 16px margin + 112px controls (3×36px + 2×2px gap) + 8px spacing */
+}
+
 /* === Cluster Indicator === */
 .ci-hotspot-cluster {
   position: absolute;

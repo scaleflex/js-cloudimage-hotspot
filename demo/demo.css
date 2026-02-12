@@ -160,10 +160,9 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #0058a3;
-  background: rgba(0, 88, 163, 0.08);
-  padding: 6px 16px;
-  border-radius: 100px;
+  color: #64748b;
+  background: none;
+  padding: 0;
   margin-bottom: 24px;
 }
 
@@ -214,14 +213,19 @@ body {
 }
 
 .demo-pill {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  color: #475569;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  padding: 5px 14px;
-  border-radius: 100px;
+  color: #64748b;
+  background: none;
+  border: none;
+  padding: 0;
   white-space: nowrap;
+}
+
+.demo-pill + .demo-pill::before {
+  content: '·';
+  margin-right: 8px;
+  color: #cbd5e1;
 }
 
 /* ── Buttons ─────────────────────────────────────── */
