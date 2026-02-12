@@ -6,8 +6,8 @@ var viewer = new CIHotspot('#viewer', {
   hotspots: [
     {
       id: 'lamp',
-      x: '22%',
-      y: '30%',
+      x: '69%',
+      y: '32%',
       label: 'Designer Lamp',
       trigger: 'click',
       placement: 'right',
@@ -21,7 +21,7 @@ var viewer = new CIHotspot('#viewer', {
     },
     {
       id: 'sofa',
-      x: '55%',
+      x: '50%',
       y: '60%',
       label: 'Comfort Sofa',
       trigger: 'hover',
@@ -34,7 +34,7 @@ var viewer = new CIHotspot('#viewer', {
     },
     {
       id: 'plant',
-      x: '80%',
+      x: '20%',
       y: '45%',
       label: 'Indoor Plant',
       trigger: 'click',
