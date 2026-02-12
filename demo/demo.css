@@ -445,7 +445,7 @@ kbd {
 .demo-configurator-panel #cfg-code {
   flex: 1;
   margin-bottom: 12px;
-  max-height: 480px;
+  max-height: 448px;
   overflow-y: auto;
 }
 

@@ -642,6 +642,18 @@
   object-fit: contain;
 }
 
+/* Fixed-ratio (scenes) in fullscreen: viewport fills the screen, image stays absolute */
+.ci-hotspot-container--fullscreen.ci-hotspot-container--fixed-ratio .ci-hotspot-viewport {
+  width: 100%;
+  height: 100%;
+}
+
+.ci-hotspot-container--fullscreen.ci-hotspot-container--fixed-ratio .ci-hotspot-image {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+}
+
 /* Fullscreen button on dark backgrounds (dark theme or fullscreen mode) */
 .ci-hotspot-theme-dark .ci-hotspot-fullscreen-btn,
 .ci-hotspot-container--fullscreen .ci-hotspot-fullscreen-btn {
