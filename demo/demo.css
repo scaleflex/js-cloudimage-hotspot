@@ -56,8 +56,9 @@ body {
   flex-shrink: 0;
 }
 
-.demo-logo-icon {
-  font-size: 20px;
+.demo-logo-img {
+  height: 30px;
+  width: auto;
 }
 
 .demo-nav-links {
