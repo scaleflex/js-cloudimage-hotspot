@@ -761,7 +761,7 @@ export class CIHotspot implements CIHotspotInstance {
   private performSceneTransition(
     scene: Scene,
     transition: SceneTransition,
-    slideReverse: boolean,
+    slideSuffix: string,
     onComplete: () => void,
   ): void {
     if (transition === 'none') {
@@ -795,9 +795,8 @@ export class CIHotspot implements CIHotspotInstance {
         addClass(incomingImg, 'ci-hotspot-scene-fade-in');
         addClass(this.imgEl, 'ci-hotspot-scene-fade-out');
       } else if (transition === 'slide') {
-        const suffix = slideReverse ? '-reverse' : '';
-        addClass(incomingImg, `ci-hotspot-scene-slide-in${suffix}`);
-        addClass(this.imgEl, `ci-hotspot-scene-slide-out${suffix}`);
+        addClass(incomingImg, `ci-hotspot-scene-slide-in${slideSuffix}`);
+        addClass(this.imgEl, `ci-hotspot-scene-slide-out${slideSuffix}`);
       }
 
       this.viewportEl.insertBefore(incomingImg, this.markersEl);
@@ -812,8 +811,7 @@ export class CIHotspot implements CIHotspotInstance {
         const finish = () => {
           incomingImg.remove();
           removeClass(this.imgEl, 'ci-hotspot-scene-fade-out');
-          removeClass(this.imgEl, 'ci-hotspot-scene-slide-out');
-          removeClass(this.imgEl, 'ci-hotspot-scene-slide-out-reverse');
+          removeClass(this.imgEl, `ci-hotspot-scene-slide-out${slideSuffix}`);
           removeClass(this.containerEl, 'ci-hotspot-scene-transitioning');
           onComplete();
         };
@@ -966,14 +964,22 @@ export class CIHotspot implements CIHotspotInstance {
       this.zoomPan.resetZoom();
     }
 
-    // Determine slide direction from the triggering hotspot's position
-    let slideReverse = false;
+    // Determine slide direction from the triggering hotspot's arrowDirection (or position fallback)
+    let slideSuffix = '';
     if (transition === 'slide') {
       for (const hotspot of this.config.hotspots) {
         if (hotspot.navigateTo === sceneId) {
-          const normalized = this.normalizedHotspots.get(hotspot.id);
-          if (normalized && normalized.x <= 50) {
-            slideReverse = true;
+          if (hotspot.arrowDirection != null) {
+            const deg = ((hotspot.arrowDirection % 360) + 360) % 360;
+            if (deg >= 45 && deg < 135) slideSuffix = '-down';
+            else if (deg >= 135 && deg < 225) slideSuffix = '-reverse';
+            else if (deg >= 225 && deg < 315) slideSuffix = '-up';
+            // else 315–360 or 0–45 → '' (normal, right)
+          } else {
+            const normalized = this.normalizedHotspots.get(hotspot.id);
+            if (normalized && normalized.x <= 50) {
+              slideSuffix = '-reverse';
+            }
           }
           break;
         }
@@ -984,7 +990,7 @@ export class CIHotspot implements CIHotspotInstance {
     this.syncCurrentSceneHotspots();
     this.currentSceneId = sceneId;
 
-    this.performSceneTransition(scene, transition, slideReverse, () => {
+    this.performSceneTransition(scene, transition, slideSuffix, () => {
       this.isTransitioning = false;
 
       announceToScreenReader(`Navigated to ${scene.alt || sceneId}`);

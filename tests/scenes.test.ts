@@ -524,3 +524,153 @@ describe('Scenes data attributes', () => {
     instances[0].destroy();
   });
 });
+
+describe('Slide direction from arrowDirection', () => {
+  let root: HTMLElement;
+
+  beforeEach(() => {
+    vi.useFakeTimers();
+    root = document.createElement('div');
+    root.id = 'test-root';
+    document.body.appendChild(root);
+
+    // Make incoming transition images appear as already loaded so doTransition() runs synchronously
+    const origCreate = document.createElement.bind(document);
+    vi.spyOn(document, 'createElement').mockImplementation((tag: string, options?: ElementCreationOptions) => {
+      const el = origCreate(tag, options);
+      if (tag === 'img') {
+        Object.defineProperty(el, 'complete', { value: true, writable: true, configurable: true });
+        Object.defineProperty(el, 'naturalWidth', { value: 800, writable: true, configurable: true });
+      }
+      return el;
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.useRealTimers();
+    root.remove();
+  });
+
+  function makeSlideScenes(arrowDirection?: number): Scene[] {
+    return [
+      {
+        id: 'origin',
+        src: 'https://example.com/origin.jpg',
+        hotspots: [
+          { id: 'nav', x: '50%', y: '50%', label: 'Go', navigateTo: 'target', arrowDirection },
+        ],
+      },
+      {
+        id: 'target',
+        src: 'https://example.com/target.jpg',
+        hotspots: [],
+      },
+    ];
+  }
+
+  function slideAndGetClasses(arrowDirection?: number, scenes?: Scene[]) {
+    const s = scenes || makeSlideScenes(arrowDirection);
+    const instance = new CIHotspot(root, {
+      src: '', hotspots: [], scenes: s, sceneTransition: 'slide',
+    } as CIHotspotConfig);
+    instance.goToScene('target');
+    const incoming = root.querySelector('.ci-hotspot-scene-incoming') as HTMLElement;
+    const img = root.querySelector('.ci-hotspot-image') as HTMLElement;
+    const inClasses = incoming ? Array.from(incoming.classList).filter((c) => c.startsWith('ci-hotspot-scene-slide-')) : [];
+    const outClasses = img ? Array.from(img.classList).filter((c) => c.startsWith('ci-hotspot-scene-slide-')) : [];
+    instance.destroy();
+    return { inClasses, outClasses };
+  }
+
+  it('arrowDirection 0 (right) applies normal slide classes', () => {
+    const { inClasses, outClasses } = slideAndGetClasses(0);
+    expect(inClasses).toEqual(['ci-hotspot-scene-slide-in']);
+    expect(outClasses).toEqual(['ci-hotspot-scene-slide-out']);
+  });
+
+  it('arrowDirection 180 (left) applies reverse slide classes', () => {
+    const { inClasses, outClasses } = slideAndGetClasses(180);
+    expect(inClasses).toEqual(['ci-hotspot-scene-slide-in-reverse']);
+    expect(outClasses).toEqual(['ci-hotspot-scene-slide-out-reverse']);
+  });
+
+  it('arrowDirection -90 (up) applies slide-up classes', () => {
+    const { inClasses, outClasses } = slideAndGetClasses(-90);
+    expect(inClasses).toEqual(['ci-hotspot-scene-slide-in-up']);
+    expect(outClasses).toEqual(['ci-hotspot-scene-slide-out-up']);
+  });
+
+  it('arrowDirection 90 (down) applies slide-down classes', () => {
+    const { inClasses, outClasses } = slideAndGetClasses(90);
+    expect(inClasses).toEqual(['ci-hotspot-scene-slide-in-down']);
+    expect(outClasses).toEqual(['ci-hotspot-scene-slide-out-down']);
+  });
+
+  it('arrowDirection 270 (up via positive) applies slide-up classes', () => {
+    const { inClasses } = slideAndGetClasses(270);
+    expect(inClasses).toEqual(['ci-hotspot-scene-slide-in-up']);
+  });
+
+  it('negative angle -180 normalizes to left (reverse)', () => {
+    const { inClasses } = slideAndGetClasses(-180);
+    expect(inClasses).toEqual(['ci-hotspot-scene-slide-in-reverse']);
+  });
+
+  it('angle > 360 normalizes correctly (450 = 90 = down)', () => {
+    const { inClasses } = slideAndGetClasses(450);
+    expect(inClasses).toEqual(['ci-hotspot-scene-slide-in-down']);
+  });
+
+  it('boundary 45 maps to down quadrant', () => {
+    const { inClasses } = slideAndGetClasses(45);
+    expect(inClasses).toEqual(['ci-hotspot-scene-slide-in-down']);
+  });
+
+  it('boundary 135 maps to left (reverse) quadrant', () => {
+    const { inClasses } = slideAndGetClasses(135);
+    expect(inClasses).toEqual(['ci-hotspot-scene-slide-in-reverse']);
+  });
+
+  it('boundary 225 maps to up quadrant', () => {
+    const { inClasses } = slideAndGetClasses(225);
+    expect(inClasses).toEqual(['ci-hotspot-scene-slide-in-up']);
+  });
+
+  it('boundary 315 maps to right (normal) quadrant', () => {
+    const { inClasses } = slideAndGetClasses(315);
+    expect(inClasses).toEqual(['ci-hotspot-scene-slide-in']);
+  });
+
+  it('falls back to x-position heuristic when no arrowDirection', () => {
+    const scenes: Scene[] = [
+      {
+        id: 'origin',
+        src: 'https://example.com/origin.jpg',
+        hotspots: [
+          { id: 'nav-left', x: '20%', y: '50%', label: 'Go', navigateTo: 'target' },
+        ],
+      },
+      { id: 'target', src: 'https://example.com/target.jpg', hotspots: [] },
+    ];
+    const { inClasses } = slideAndGetClasses(undefined, scenes);
+    expect(inClasses).toEqual(['ci-hotspot-scene-slide-in-reverse']);
+  });
+
+  it('arrowDirection takes priority over x-position', () => {
+    const scenes: Scene[] = [
+      {
+        id: 'origin',
+        src: 'https://example.com/origin.jpg',
+        hotspots: [
+          // Hotspot on left side (x=20%) but arrow points right (0)
+          { id: 'nav', x: '20%', y: '50%', label: 'Go', navigateTo: 'target', arrowDirection: 0 },
+        ],
+      },
+      { id: 'target', src: 'https://example.com/target.jpg', hotspots: [] },
+    ];
+    const { inClasses } = slideAndGetClasses(undefined, scenes);
+    // Should use arrowDirection (right/normal), not x-position (which would give reverse)
+    expect(inClasses).toEqual(['ci-hotspot-scene-slide-in']);
+  });
+});
