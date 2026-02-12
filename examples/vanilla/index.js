@@ -1,8 +1,7 @@
-var CIHotspotLib = window.CIHotspot;
-var Viewer = CIHotspotLib.CIHotspot || CIHotspotLib.default;
+import CIHotspot from 'js-cloudimage-hotspot';
 
-var viewer = new Viewer('#viewer', {
-  src: 'https://scaleflex.cloudimg.io/v7/demo/room.jpg',
+var viewer = new CIHotspot('#viewer', {
+  src: 'https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/spacejoy-unsplash.jpg',
   theme: 'light',
   hotspots: [
     {

@@ -64,7 +64,7 @@ export default function App() {
 
       <CIHotspotViewer
         ref={viewerRef}
-        src="https://scaleflex.cloudimg.io/v7/demo/room.jpg"
+        src="https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/spacejoy-unsplash.jpg"
         theme="light"
         zoom
         hotspots={hotspots}

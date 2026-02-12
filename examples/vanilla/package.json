@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "description": "Vanilla JS example for js-cloudimage-hotspot",
-  "main": "index.js",
+  "source": "index.html",
   "dependencies": {
     "js-cloudimage-hotspot": "^1.0.0"
   }

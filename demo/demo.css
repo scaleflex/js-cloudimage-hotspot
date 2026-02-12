@@ -574,11 +574,29 @@ kbd {
   color: #0058a3;
 }
 
+.demo-footer-support {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.demo-footer-support p {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.demo-footer-support img {
+  height: 32px;
+}
+
 .demo-footer-copy {
   max-width: 1200px;
   margin: 0 auto;
   padding: 16px 0;
   border-top: 1px solid #f1f5f9;
+  text-align: center;
 }
 
 .demo-footer-copy p {

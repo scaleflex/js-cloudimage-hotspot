@@ -1,6 +1,41 @@
-# js-cloudimage-hotspot
+<p align="center">
+  <img src="https://scaleflex.cloudimg.io/v7/assets/cloudimage-logo-dark.svg" alt="Scaleflex" height="40">
+</p>
 
-Interactive image hotspots with zoom, popovers, and accessibility. Zero dependencies.
+<h1 align="center">js-cloudimage-hotspot</h1>
+
+<p align="center">
+  Interactive image hotspots with zoom, popovers, and accessibility. Zero dependencies.
+</p>
+
+<p align="center">
+  <a href="https://www.npmjs.com/package/js-cloudimage-hotspot"><img src="https://img.shields.io/npm/v/js-cloudimage-hotspot.svg?style=flat-square" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/js-cloudimage-hotspot"><img src="https://img.shields.io/npm/dm/js-cloudimage-hotspot.svg?style=flat-square" alt="npm downloads"></a>
+  <a href="https://github.com/scaleflex/js-cloudimage-hotspot/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/js-cloudimage-hotspot.svg?style=flat-square" alt="license"></a>
+  <a href="https://bundlephobia.com/package/js-cloudimage-hotspot"><img src="https://img.shields.io/bundlephobia/minzip/js-cloudimage-hotspot?style=flat-square" alt="bundle size"></a>
+</p>
+
+<p align="center">
+  <a href="https://scaleflex.github.io/js-cloudimage-hotspot/">Live Demo</a> |
+  <a href="https://scaleflex.github.io/js-cloudimage-hotspot/editor.html">Visual Editor</a> |
+  <a href="https://codesandbox.io/p/sandbox/github/scaleflex/js-cloudimage-hotspot/tree/main/examples/vanilla">Vanilla Sandbox</a> |
+  <a href="https://codesandbox.io/p/sandbox/github/scaleflex/js-cloudimage-hotspot/tree/main/examples/react">React Sandbox</a>
+</p>
+
+---
+
+## Why js-cloudimage-hotspot?
+
+Existing hotspot libraries are often heavy, inaccessible, or locked behind paid services. This library was built to fill the gap:
+
+- **Lightweight** — under 15 KB gzipped with zero runtime dependencies
+- **Accessible by default** — WCAG 2.1 AA compliant out of the box
+- **Framework-agnostic** — works with vanilla JS, React, or any framework
+- **Built-in zoom & pan** — no need for a separate zoom library
+- **Multi-image scenes** — create virtual tours without extra tooling
+- **Optional Cloudimage CDN** — serve optimally-sized images automatically
+
+---
 
 ## Features
 
@@ -14,7 +49,6 @@ Interactive image hotspots with zoom, popovers, and accessibility. Zero dependen
 - **TypeScript** — Full type definitions
 - **Cloudimage CDN** — Optional responsive image loading
 - **Multi-image scenes** — Navigate between images with animated transitions
-- **< 15 KB gzipped** — Zero runtime dependencies
 
 ## Installation
 
@@ -284,11 +318,29 @@ new CIHotspot('#el', {
 
 ## Browser Support
 
-- Chrome 80+
-- Firefox 80+
-- Safari 14+
-- Edge 80+
+| Browser | Version |
+|---------|---------|
+| Chrome  | 80+     |
+| Firefox | 80+     |
+| Safari  | 14+     |
+| Edge    | 80+     |
 
 ## License
 
-MIT
+[MIT](./LICENSE)
+
+---
+
+## Support
+
+If this library helped your project, consider buying me a coffee!
+
+<a href="https://buymeacoffee.com/dzmitry.stramavus">
+  <img src="https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me A Coffee">
+</a>
+
+---
+
+<p align="center">
+  Made with care by the <a href="https://www.scaleflex.com">Scaleflex</a> team
+</p>
