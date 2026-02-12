@@ -380,3 +380,20 @@ for (const link of navLinks) {
 
 window.addEventListener('scroll', updateNav, { passive: true });
 updateNav();
+
+// ── Mobile burger menu ──
+const burger = document.getElementById('nav-burger');
+if (nav && burger) {
+  burger.addEventListener('click', () => {
+    const open = nav.classList.toggle('open');
+    burger.setAttribute('aria-expanded', String(open));
+  });
+
+  // Close menu when a nav link is clicked
+  for (const link of navLinks) {
+    link.addEventListener('click', () => {
+      nav.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+    });
+  }
+}

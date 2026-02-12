@@ -42,7 +42,7 @@ body {
   height: 56px;
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap-x: 24px;
 }
 
 .demo-logo {
@@ -110,6 +110,26 @@ body {
 }
 
 .demo-nav-github:hover {
+  color: #1a1a2e;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* ── Burger (hidden on desktop) ─────────────────── */
+.demo-nav-burger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  transition: color 0.2s, background 0.2s;
+}
+
+.demo-nav-burger:hover {
   color: #1a1a2e;
   background: rgba(0, 0, 0, 0.05);
 }
@@ -633,6 +653,61 @@ kbd {
   --ci-hotspot-title-color: #166534;
   --ci-hotspot-description-color: #4d7c0f;
   --ci-hotspot-arrow-color: #f0fdf4;
+}
+
+/* ── Mobile nav (burger menu) ───────────────────── */
+@media (max-width: 868px) {
+  .demo-nav {
+    position: relative;
+    background: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .demo-nav-inner {
+    height: auto;
+    flex-wrap: wrap;
+  }
+
+  .demo-nav .demo-logo,
+  .demo-nav .demo-nav-github,
+  .demo-nav .demo-nav-burger {
+    height: 56px;
+    display: flex;
+    align-items: center;
+  }
+
+  .demo-nav-burger {
+    display: flex;
+  }
+
+  .demo-nav-github {
+    margin-left: auto;
+  }
+
+  .demo-nav-links {
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    flex-grow: 0;
+    order: 1;
+    gap: 0;
+    padding: 8px 0 4px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    mask-image: none;
+    -webkit-mask-image: none;
+    overflow: visible;
+  }
+
+  .demo-nav.open .demo-nav-links {
+    display: flex;
+  }
+
+  .demo-nav-links a {
+    padding: 10px 12px;
+    border-radius: 8px;
+  }
 }
 
 /* ── Responsive tweaks ───────────────────────────── */
