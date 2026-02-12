@@ -1,9 +1,4 @@
-const isMac =
-  typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-const HINT_TEXT = isMac
-  ? '\u2318 Scroll or pinch to zoom'
-  : 'Ctrl + scroll to zoom';
+const HINT_TEXT = 'Ctrl + scroll or pinch to zoom';
 
 const HIDE_DELAY = 1500;
 
