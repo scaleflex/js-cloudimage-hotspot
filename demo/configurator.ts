@@ -92,6 +92,10 @@ export function initConfigurator(): void {
       instance = new CIHotspot(viewerEl!, config);
     }
     cfgCode.textContent = generateCode(config);
+    cfgCode.classList.add('language-javascript');
+    if (typeof (window as any).Prism !== 'undefined') {
+      (window as any).Prism.highlightElement(cfgCode);
+    }
   }
 
   // Bind controls

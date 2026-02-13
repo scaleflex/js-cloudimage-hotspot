@@ -11,91 +11,110 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      background: #f8f9fa;
+      background: var(--sf-light-bg, #f5f7fb);
     }
 
     .editor-page-container {
       max-width: 1200px;
-      margin: 24px auto;
-      padding: 0 24px;
+      margin: 32px auto;
+      padding: 0 32px;
     }
 
     #editor-root {
       background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      border-radius: var(--sf-radius, 16px);
+      box-shadow: var(--sf-shadow-md, 0 4px 20px rgba(0,0,0,0.06));
       overflow: hidden;
     }
 
     .editor-page-footer {
       text-align: center;
-      padding: 24px;
-      font-size: 12px;
-      color: #999;
+      padding: 32px;
+      font-size: 13px;
+      color: var(--sf-text-muted, #94a3b8);
+    }
+
+    .editor-page-footer a {
+      color: var(--sf-primary, #155bcd);
+      text-decoration: none;
     }
 
     .editor-page-shortcuts {
-      margin-top: 16px;
-      padding: 16px 24px;
+      margin-top: 20px;
+      padding: 24px 28px;
       background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      border-radius: var(--sf-radius, 16px);
+      border: 1px solid var(--sf-light-border, #e2e8f0);
+      box-shadow: var(--sf-shadow-sm, 0 1px 3px rgba(0,0,0,0.04));
     }
 
     .editor-page-shortcuts h3 {
-      margin: 0 0 12px;
+      margin: 0 0 16px;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
+      color: var(--sf-text-primary, #0f172a);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .editor-page-shortcuts-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 8px;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 10px;
     }
 
     .editor-page-shortcut {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: #666;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--sf-text-secondary, #64748b);
     }
 
     .editor-page-shortcut kbd {
-      display: inline-block;
-      padding: 2px 6px;
-      background: #f0f0f0;
-      border: 1px solid #d0d0d0;
-      border-radius: 4px;
-      font-family: 'SF Mono', Consolas, monospace;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      padding: 3px 8px;
+      background: var(--sf-light-bg, #f5f7fb);
+      border: 1px solid var(--sf-light-border, #e2e8f0);
+      border-radius: 6px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
       font-size: 11px;
-      color: #333;
+      font-weight: 500;
+      color: var(--sf-text-primary, #0f172a);
+      box-shadow: 0 1px 0 var(--sf-light-border, #e2e8f0);
     }
 
     .editor-page-json {
-      margin-top: 16px;
-      padding: 16px 24px;
+      margin-top: 20px;
+      padding: 24px 28px;
       background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      border-radius: var(--sf-radius, 16px);
+      border: 1px solid var(--sf-light-border, #e2e8f0);
+      box-shadow: var(--sf-shadow-sm, 0 1px 3px rgba(0,0,0,0.04));
     }
 
     .editor-page-json h3 {
-      margin: 0 0 12px;
+      margin: 0 0 16px;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
+      color: var(--sf-text-primary, #0f172a);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .editor-page-json pre {
       margin: 0;
-      padding: 16px;
-      background: #1e1e1e;
-      color: #d4d4d4;
-      border-radius: 8px;
-      font-family: 'SF Mono', Consolas, monospace;
+      padding: 20px 24px;
+      background: var(--sf-dark, #0a0e27);
+      color: #cbd5e1;
+      border-radius: var(--sf-radius-sm, 10px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
       font-size: 12px;
-      line-height: 1.5;
+      line-height: 1.6;
       overflow-x: auto;
       max-height: 400px;
       overflow-y: auto;
@@ -106,7 +125,7 @@
   <nav class="demo-nav" id="demo-nav">
     <div class="demo-nav-inner">
       <a href="https://www.scaleflex.com" class="demo-logo" target="_blank" rel="noopener">
-        <img src="https://scaleflex.cloudimg.io/v7/demo/cloudimage-responsive-demo/Logo.svg?vh=6276cc" alt="Scaleflex" class="demo-logo-img">
+        <img src="https://assets.scaleflex.com/Marketing/Logos/Scaleflex%20Logos/Logo%20Horizontal/scaleflex%20logo%20without%20tagline%20white%20text%20%28horizontal%29%20.png?vh=85bc00" alt="Scaleflex" class="demo-logo-img">
       </a>
       <div class="demo-nav-links">
         <a href="./index.html">Demo</a>
@@ -148,7 +167,7 @@
   </div>
 
   <footer class="editor-page-footer">
-    js-cloudimage-hotspot Visual Editor &mdash; MIT License
+    js-cloudimage-hotspot Visual Editor &mdash; MIT License &mdash; <a href="https://www.scaleflex.com" target="_blank" rel="noopener">Scaleflex</a>
   </footer>
 
   <script type="module" src="./editor-demo.ts"></script>

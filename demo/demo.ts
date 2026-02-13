@@ -366,7 +366,7 @@ function updateNav(): void {
   }
 }
 
-// Smooth scroll only for nav link clicks
+// Smooth scroll only for nav link clicks (manual offset to respect sticky nav)
 for (const link of navLinks) {
   link.addEventListener('click', (e) => {
     const href = link.getAttribute('href');
@@ -374,7 +374,9 @@ for (const link of navLinks) {
     const target = document.getElementById(href.slice(1));
     if (!target) return;
     e.preventDefault();
-    target.scrollIntoView({ behavior: 'smooth' });
+    const navHeight = nav ? nav.offsetHeight : 0;
+    const top = target.getBoundingClientRect().top + window.scrollY - navHeight - 12;
+    window.scrollTo({ top, behavior: 'smooth' });
   });
 }
 
