@@ -69,6 +69,7 @@ body {
   -ms-overflow-style: none;
   scrollbar-width: none;
   flex: 1;
+  margin-left: 32px;
   mask-image: linear-gradient(to right, transparent 0%, black 8px, black calc(100% - 24px), transparent 100%);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8px, black calc(100% - 24px), transparent 100%);
   padding: 0 4px;
