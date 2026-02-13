@@ -227,7 +227,7 @@ body {
 /* ── Hero ────────────────────────────────────────── */
 .demo-hero {
   text-align: center;
-  padding: 140px 32px 0;
+  padding: 80px 32px 0;
   background: var(--sf-dark);
   position: relative;
   overflow: hidden;
@@ -602,9 +602,7 @@ body {
 
 .demo-viewer--hero {
   max-width: 940px;
-  margin: 0 auto -40px;
-  position: relative;
-  z-index: 2;
+  margin: 0 auto;
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.3),
     0 0 0 1px rgba(255, 255, 255, 0.06),
@@ -1005,7 +1003,7 @@ kbd {
   display: flex;
   gap: 48px;
   justify-content: center;
-  padding: 72px 32px 48px;
+  padding: 48px 32px;
   background: var(--sf-dark);
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
   position: relative;
@@ -1276,7 +1274,7 @@ kbd {
   }
 
   .demo-hero {
-    padding: 100px 16px 0;
+    padding: 100px 16px 56px;
   }
 
   .demo-hero-actions {
