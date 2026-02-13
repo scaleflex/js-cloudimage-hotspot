@@ -641,11 +641,6 @@ body {
   flex-direction: column;
 }
 
-.demo-columns > .demo-card > pre:last-of-type {
-  flex: 1;
-  margin-bottom: 0;
-}
-
 @media (max-width: 768px) {
   .demo-columns {
     grid-template-columns: 1fr;
@@ -711,6 +706,66 @@ p code {
   border-radius: 5px;
   font-size: 13px;
   border: 1px solid rgba(21, 91, 205, 0.1);
+}
+
+/* ── Code wrap with copy button ──────────────────── */
+.demo-code-wrap {
+  position: relative;
+}
+
+.demo-code-wrap pre {
+  margin-bottom: 12px;
+}
+
+.demo-code-wrap--fill {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.demo-code-wrap--fill pre {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.demo-copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all var(--sf-transition);
+  backdrop-filter: blur(4px);
+}
+
+.demo-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.demo-copy-btn .demo-check-icon {
+  display: none;
+}
+
+.demo-copy-btn.copied {
+  color: var(--sf-accent);
+  background: rgba(0, 212, 170, 0.1);
+}
+
+.demo-copy-btn.copied .demo-copy-icon {
+  display: none;
+}
+
+.demo-copy-btn.copied .demo-check-icon {
+  display: block;
 }
 
 /* ── Keyboard hints ──────────────────────────────── */

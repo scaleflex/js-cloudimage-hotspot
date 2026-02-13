@@ -111,8 +111,15 @@
               </div>
               <div class="demo-feature-title">Install via npm</div>
             </div>
-            <pre><code class="language-bash">npm install js-cloudimage-hotspot</code></pre>
-            <pre><code class="language-javascript">import CIHotspot from 'js-cloudimage-hotspot';
+            <div class="demo-code-wrap">
+              <pre><code class="language-bash">npm install js-cloudimage-hotspot</code></pre>
+              <button class="demo-copy-btn" aria-label="Copy to clipboard">
+                <svg class="demo-copy-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                <svg class="demo-check-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </button>
+            </div>
+            <div class="demo-code-wrap">
+              <pre><code class="language-javascript">import CIHotspot from 'js-cloudimage-hotspot';
 
 const viewer = new CIHotspot('#my-image', {
   src: 'https://example.com/room.jpg',
@@ -125,6 +132,11 @@ const viewer = new CIHotspot('#my-image', {
     }
   ]
 });</code></pre>
+              <button class="demo-copy-btn" aria-label="Copy to clipboard">
+                <svg class="demo-copy-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                <svg class="demo-check-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </button>
+            </div>
           </div>
           <div class="demo-column demo-card">
             <div class="demo-feature-header">
@@ -133,7 +145,8 @@ const viewer = new CIHotspot('#my-image', {
               </div>
               <div class="demo-feature-title">Use via CDN</div>
             </div>
-            <pre><code class="language-html">&lt;script src="https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/1.0.1/js-cloudimage-hotspot.min.js?vh=6bdf1b&amp;func=proxy"&gt;&lt;/script&gt;
+            <div class="demo-code-wrap demo-code-wrap--fill">
+              <pre><code class="language-html">&lt;script src="https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/1.0.1/js-cloudimage-hotspot.min.js?vh=6bdf1b&amp;func=proxy"&gt;&lt;/script&gt;
 
 &lt;div
   data-ci-hotspot-src="/room.jpg"
@@ -141,6 +154,11 @@ const viewer = new CIHotspot('#my-image', {
 &gt;&lt;/div&gt;
 
 &lt;script&gt;CIHotspot.autoInit();&lt;/script&gt;</code></pre>
+              <button class="demo-copy-btn" aria-label="Copy to clipboard">
+                <svg class="demo-copy-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                <svg class="demo-check-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -372,10 +390,11 @@ const viewer = new CIHotspot('#my-image', {
           Buy Me a Coffee
         </a>
         <a href="https://github.com/scaleflex/js-cloudimage-hotspot/issues" target="_blank" rel="noopener">Report an Issue</a>
+        <a href="mailto:hello@cloudimage.io">Contact Us</a>
       </div>
     </div>
     <div class="demo-footer-bottom">
-      <p>MIT License &mdash; Made with care by the <a href="https://www.scaleflex.com" target="_blank" rel="noopener">Scaleflex</a> team</p>
+      <p>MIT License &mdash; Made with care by the <a href="https://www.scaleflex.com" target="_blank" rel="noopener">Scaleflex</a> team &mdash; Powered by <a href="https://www.cloudimage.io" target="_blank" rel="noopener">Cloudimage.io</a></p>
     </div>
   </footer>
 
@@ -396,6 +415,18 @@ const viewer = new CIHotspot('#my-image', {
     }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
     document.querySelectorAll('.demo-reveal').forEach(el => revealObserver.observe(el));
+
+    // Copy-to-clipboard buttons
+    document.querySelectorAll('.demo-copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const code = btn.closest('.demo-code-wrap').querySelector('code');
+        if (!code) return;
+        navigator.clipboard.writeText(code.textContent || '').then(() => {
+          btn.classList.add('copied');
+          setTimeout(() => btn.classList.remove('copied'), 2000);
+        });
+      });
+    });
   </script>
 </body>
 </html>
