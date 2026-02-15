@@ -1,7 +1,7 @@
 import CIHotspot from '../src/index';
 import { initConfigurator } from './configurator';
 
-const DEMO_IMAGE = 'https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/yehleen-gaffney-unsplash.jpg?vh=cfb8d7';
+const DEMO_IMAGE = 'https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/yehleen-gaffney-unsplash.jpg?vh=cfb8d7&gravity=south&func=crop&w=1600&h=900';
 const DEMO_IMAGE_2 = 'https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/alexandra-gorn-unsplash.jpg';
 
 // Hero viewer
@@ -14,7 +14,7 @@ new CIHotspot('#hero-viewer', {
     {
       id: 'wall-art',
       x: '18%',
-      y: '26%',
+      y: '10%',
       label: 'Canvas Print',
       data: {
         title: 'Typographic Canvas',
@@ -27,7 +27,7 @@ new CIHotspot('#hero-viewer', {
     {
       id: 'sofa',
       x: '24%',
-      y: '68%',
+      y: '57%',
       label: 'Loveseat Sofa',
       data: {
         title: 'Loveseat Sofa',
@@ -40,7 +40,7 @@ new CIHotspot('#hero-viewer', {
     {
       id: 'side-table',
       x: '45%',
-      y: '72%',
+      y: '62%',
       label: 'Tripod Side Table',
       data: {
         title: 'Tripod Side Table',
@@ -51,7 +51,7 @@ new CIHotspot('#hero-viewer', {
     {
       id: 'fiddle-leaf',
       x: '62%',
-      y: '52%',
+      y: '36%',
       label: 'Fiddle-Leaf Fig',
       data: {
         title: 'Fiddle-Leaf Fig',
