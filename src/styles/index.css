@@ -669,7 +669,7 @@
 }
 
 .ci-hotspot-fullscreen-btn:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(230, 230, 230, 0.95);
 }
 
 .ci-hotspot-fullscreen-btn svg {
@@ -726,7 +726,7 @@
 
 .ci-hotspot-theme-dark .ci-hotspot-fullscreen-btn:hover,
 .ci-hotspot-container--fullscreen .ci-hotspot-fullscreen-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(60, 60, 60, 0.95);
 }
 
 /* === Reduced Motion === */
