@@ -270,8 +270,8 @@ body {
   gap: 8px;
   font-size: 13px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  text-transform: none;
+  letter-spacing: 0.04em;
   color: var(--sf-accent);
   padding: 8px 20px;
   border-radius: 100px;
@@ -294,6 +294,11 @@ body {
 @keyframes demo-pulse-dot {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.demo-hero-badge-sep {
+  margin: 0 4px;
+  opacity: 0.4;
 }
 
 .demo-hero h1 {
@@ -367,7 +372,6 @@ body {
 .demo-hero h1,
 .demo-subtitle,
 .demo-hero-actions,
-.demo-hero-sandboxes,
 .demo-viewer--hero,
 .demo-hero-meta {
   animation: demo-hero-enter 0.7s cubic-bezier(0.4, 0, 0.2, 1) backwards;
@@ -377,16 +381,14 @@ body {
 .demo-hero h1           { animation-delay: 0.1s; }
 .demo-subtitle          { animation-delay: 0.2s; }
 .demo-hero-actions      { animation-delay: 0.3s; }
-.demo-hero-sandboxes    { animation-delay: 0.35s; }
-.demo-viewer--hero      { animation-delay: 0.45s; }
-.demo-hero-meta         { animation-delay: 0.55s; }
+.demo-viewer--hero      { animation-delay: 0.4s; }
+.demo-hero-meta         { animation-delay: 0.5s; }
 
 @media (prefers-reduced-motion: reduce) {
   .demo-hero-badge,
   .demo-hero h1,
   .demo-subtitle,
   .demo-hero-actions,
-  .demo-hero-sandboxes,
   .demo-viewer--hero,
   .demo-hero-meta {
     animation: none;
@@ -524,7 +526,7 @@ body {
   align-items: center;
   gap: 10px;
   justify-content: center;
-  margin-bottom: 36px;
+  margin-top: 24px;
 }
 
 .demo-hero-sandboxes-label {
@@ -534,6 +536,25 @@ body {
   letter-spacing: 0.08em;
   color: rgba(255, 255, 255, 0.5);
   margin-right: 4px;
+}
+
+/* Sandboxes in light sections */
+.demo-section--alt .demo-hero-sandboxes-label {
+  color: var(--sf-text-secondary);
+}
+
+.demo-section--alt .demo-btn--chip {
+  background: #fff;
+  color: var(--sf-text-primary);
+  border-color: var(--sf-light-border);
+  backdrop-filter: none;
+}
+
+.demo-section--alt .demo-btn--chip:hover {
+  background: var(--sf-light-bg);
+  border-color: #cbd5e1;
+  color: var(--sf-text-primary);
+  box-shadow: var(--sf-shadow-sm);
 }
 
 .demo-btn--outline {
@@ -1214,16 +1235,6 @@ kbd {
 }
 
 /* ── Also by Scaleflex – stars badge ─────────────── */
-.demo-also-stars {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #fbbf24;
-  margin-bottom: 28px;
-}
-
 /* ── Also by Scaleflex ───────────────────────────── */
 .demo-also {
   background: var(--sf-dark);
@@ -1242,6 +1253,64 @@ kbd {
   pointer-events: none;
 }
 
+/* Slider */
+.demo-also-slides {
+  position: relative;
+  overflow: hidden;
+}
+
+.demo-also-slide {
+  display: none;
+}
+
+.demo-also-slide--active {
+  display: block;
+}
+
+.demo-also-slide--enter-right {
+  display: block;
+  animation: demo-also-slideInRight 500ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.demo-also-slide--enter-left {
+  display: block;
+  animation: demo-also-slideInLeft 500ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.demo-also-slide--leave-left {
+  display: block;
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  animation: demo-also-slideOutLeft 500ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.demo-also-slide--leave-right {
+  display: block;
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  animation: demo-also-slideOutRight 500ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes demo-also-slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes demo-also-slideOutLeft {
+  from { transform: translateX(0);    opacity: 1; }
+  to   { transform: translateX(-100%); opacity: 0; }
+}
+
+@keyframes demo-also-slideInLeft {
+  from { transform: translateX(-100%); opacity: 0; }
+  to   { transform: translateX(0);     opacity: 1; }
+}
+
+@keyframes demo-also-slideOutRight {
+  from { transform: translateX(0);    opacity: 1; }
+  to   { transform: translateX(100%); opacity: 0; }
+}
+
 .demo-also-inner {
   max-width: 1200px;
   margin: 0 auto;
@@ -1249,26 +1318,30 @@ kbd {
   align-items: center;
   gap: 60px;
   position: relative;
+  z-index: 1;
 }
 
 .demo-also-content {
   flex: 1;
+  min-width: 0;
 }
 
-.demo-also .demo-section-label {
+.demo-also-content .demo-section-label {
   color: var(--sf-accent);
+  margin-bottom: 20px;
 }
 
-.demo-also .demo-section-label::before {
+.demo-also-content .demo-section-label::before {
   background: var(--sf-accent);
 }
 
 .demo-also-title {
   font-size: clamp(24px, 3vw, 32px);
   font-weight: 800;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   color: #fff;
   margin-bottom: 12px;
+  line-height: 1.2;
 }
 
 .demo-also-desc {
@@ -1282,6 +1355,7 @@ kbd {
 .demo-also-actions {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .demo-also-visual {
@@ -1294,6 +1368,9 @@ kbd {
 .demo-also-icon {
   width: 160px;
   height: 160px;
+}
+
+.demo-also-icon--spin {
   animation: demo-spin-slow 20s linear infinite;
 }
 
@@ -1302,11 +1379,56 @@ kbd {
   to { transform: rotate(360deg); }
 }
 
+/* Dot navigation */
+.demo-also-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+.demo-also-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: background 300ms ease, transform 300ms ease;
+}
+
+.demo-also-dot:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.demo-also-dot--active {
+  background: var(--sf-primary-light);
+  transform: scale(1.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-also-slide--enter-right,
+  .demo-also-slide--enter-left,
+  .demo-also-slide--leave-left,
+  .demo-also-slide--leave-right {
+    animation: none;
+  }
+}
+
 @media (max-width: 768px) {
+  .demo-also { padding: 60px 24px; }
+
   .demo-also-inner {
     flex-direction: column;
     text-align: center;
     gap: 32px;
+  }
+
+  .demo-also-content .demo-section-label {
+    justify-content: center;
   }
 
   .demo-also-desc {
@@ -1319,8 +1441,8 @@ kbd {
   }
 
   .demo-also-icon {
-    width: 120px;
-    height: 120px;
+    width: 130px;
+    height: 130px;
   }
 }
 
