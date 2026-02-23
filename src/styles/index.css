@@ -296,14 +296,20 @@
   border-radius: var(--ci-hotspot-popover-border-radius);
 }
 
-.ci-hotspot-popover-image {
-  display: block;
-  width: 100%;
-  height: auto;
+.ci-hotspot-popover-image-wrapper {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
   border-radius: calc(var(--ci-hotspot-popover-border-radius) - 4px) calc(var(--ci-hotspot-popover-border-radius) - 4px) 0 0;
   margin: calc(var(--ci-hotspot-popover-padding) * -1);
   margin-bottom: 12px;
   width: calc(100% + var(--ci-hotspot-popover-padding) * 2);
+}
+
+.ci-hotspot-popover-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .ci-hotspot-popover-body {

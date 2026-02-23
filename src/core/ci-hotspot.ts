@@ -107,7 +107,8 @@ export class CIHotspot implements CIHotspotInstance {
     // Fixed aspect-ratio for scenes mode
     if (this.config.sceneAspectRatio) {
       addClass(this.containerEl, 'ci-hotspot-container--fixed-ratio');
-      this.viewportEl.style.aspectRatio = this.config.sceneAspectRatio;
+      // CSS aspect-ratio uses "/" separator (e.g. "4 / 3"), config may use ":" (e.g. "4:3")
+      this.viewportEl.style.aspectRatio = this.config.sceneAspectRatio.replace(':', ' / ');
     }
 
     // Replace root element content

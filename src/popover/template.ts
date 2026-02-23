@@ -6,7 +6,7 @@ export function renderBuiltInTemplate(data: PopoverData): string {
   const parts: string[] = [];
 
   if (data.image) {
-    parts.push(`<img class="ci-hotspot-popover-image" src="${escapeAttr(data.image)}" alt="${escapeAttr(data.title || '')}">`);
+    parts.push(`<div class="ci-hotspot-popover-image-wrapper"><img class="ci-hotspot-popover-image" src="${escapeAttr(data.image)}" alt="${escapeAttr(data.title || '')}"></div>`);
   }
 
   const bodyParts: string[] = [];
