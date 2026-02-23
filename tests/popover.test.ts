@@ -57,6 +57,33 @@ describe('renderBuiltInTemplate', () => {
     const html = renderBuiltInTemplate({});
     expect(html).toBe('');
   });
+
+  it('renders original price with line-through class', () => {
+    const html = renderBuiltInTemplate({ originalPrice: '$1,499', price: '$1,249' });
+    expect(html).toContain('ci-hotspot-popover-original-price');
+    expect(html).toContain('$1,499');
+    expect(html).toContain('ci-hotspot-popover-price');
+    expect(html).toContain('$1,249');
+  });
+
+  it('wraps prices in a price-row div', () => {
+    const html = renderBuiltInTemplate({ originalPrice: '$229', price: '$179' });
+    expect(html).toContain('ci-hotspot-popover-price-row');
+  });
+
+  it('renders only original price when no current price', () => {
+    const html = renderBuiltInTemplate({ originalPrice: '$500' });
+    expect(html).toContain('ci-hotspot-popover-original-price');
+    expect(html).toContain('$500');
+    expect(html).toContain('ci-hotspot-popover-price-row');
+    expect(html).not.toContain('ci-hotspot-popover-price"');
+  });
+
+  it('does not render price-row when no prices provided', () => {
+    const html = renderBuiltInTemplate({ title: 'Test' });
+    expect(html).not.toContain('ci-hotspot-popover-price-row');
+    expect(html).not.toContain('ci-hotspot-popover-original-price');
+  });
 });
 
 describe('renderPopoverContent', () => {

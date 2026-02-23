@@ -30,6 +30,13 @@ export function createMarker(hotspot: NormalizedHotspot, pulse: boolean): HTMLBu
     setMarkerIcon(marker, hotspot.icon);
   }
 
+  if (hotspot.markerStyle === 'dot-label' && hotspot.label) {
+    addClass(marker, 'ci-hotspot-marker--dot-label');
+    const labelSpan = createElement('span', 'ci-hotspot-marker-label');
+    labelSpan.textContent = hotspot.label;
+    marker.appendChild(labelSpan);
+  }
+
   return marker;
 }
 

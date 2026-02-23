@@ -9,6 +9,7 @@ import type {
   Theme,
   Scene,
   SceneTransition,
+  MarkerStyle,
 } from './core/types';
 
 export type {
@@ -22,6 +23,7 @@ export type {
   Theme,
   Scene,
   SceneTransition,
+  MarkerStyle,
 };
 
 export { CIHotspot } from './core/ci-hotspot';

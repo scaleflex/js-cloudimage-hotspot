@@ -80,13 +80,14 @@ const viewer = new CIHotspot('#product-image', {
       x: '40%',
       y: '60%',
       label: 'Modern Sofa',
-      data: { title: 'Modern Sofa', price: '$899', description: 'Comfortable 3-seat sofa' },
+      data: { title: 'Modern Sofa', originalPrice: '$1,099', price: '$899', description: 'Comfortable 3-seat sofa' },
     },
     {
       id: 'lamp',
       x: '75%',
       y: '25%',
       label: 'Floor Lamp',
+      markerStyle: 'dot-label',
       data: { title: 'Arc Floor Lamp', price: '$249' },
     },
   ],
@@ -157,6 +158,7 @@ new CIHotspot(element: HTMLElement | string, config: CIHotspotConfig)
 | `x` | `string \| number` | X coordinate: `'65%'` or `650` (px) |
 | `y` | `string \| number` | Y coordinate: `'40%'` or `400` (px) |
 | `label` | `string` | Accessible label (required) |
+| `markerStyle` | `'dot' \| 'dot-label'` | Marker style — `'dot-label'` shows a text pill next to the dot |
 | `data` | `PopoverData` | Data for built-in template |
 | `content` | `string` | HTML content (sanitized) |
 | `trigger` | `'hover' \| 'click' \| 'load'` | Override global trigger |
@@ -165,6 +167,18 @@ new CIHotspot(element: HTMLElement | string, config: CIHotspotConfig)
 | `hidden` | `boolean` | Initially hidden |
 | `icon` | `string` | Custom icon |
 | `navigateTo` | `string` | Scene ID to navigate to on click |
+
+### PopoverData
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `title` | `string` | Popover heading |
+| `originalPrice` | `string` | Strikethrough price shown before current price (e.g. `'$1,499'`) |
+| `price` | `string` | Current price |
+| `description` | `string` | Description text |
+| `image` | `string` | Image URL displayed at top of popover |
+| `url` | `string` | Link URL for the CTA button |
+| `ctaText` | `string` | CTA button label (default: `'View details'`) |
 
 ### Instance Methods
 
@@ -286,6 +300,7 @@ All visuals are customizable via CSS variables:
   --ci-hotspot-pulse-color: rgba(0, 88, 163, 0.3);
   --ci-hotspot-cta-bg: #e63946;
   --ci-hotspot-popover-border-radius: 4px;
+  --ci-hotspot-popover-text-align: center; /* left (default) | center | right */
 }
 ```
 

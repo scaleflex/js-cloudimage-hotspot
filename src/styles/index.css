@@ -46,6 +46,8 @@
   --ci-hotspot-cta-color: #ffffff;
   --ci-hotspot-cta-border-radius: 8px;
   --ci-hotspot-cta-padding: 8px 16px;
+  --ci-hotspot-original-price-color: #999999;
+  --ci-hotspot-popover-text-align: left;
 
   /* === Transitions === */
   --ci-hotspot-hover-transition: 200ms ease;
@@ -148,6 +150,31 @@
 
 .ci-hotspot-marker--hidden {
   display: none;
+}
+
+/* === Dot-label marker === */
+.ci-hotspot-marker--dot-label { overflow: visible; }
+
+.ci-hotspot-marker-label {
+  position: absolute;
+  left: calc(50% + var(--ci-hotspot-marker-size) / 2 + 4px);
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--ci-hotspot-marker-color);
+  background: var(--ci-hotspot-marker-bg);
+  border: var(--ci-hotspot-marker-border);
+  border-radius: 100px;
+  box-shadow: var(--ci-hotspot-marker-shadow);
+}
+
+/* Disable breathe (scale) animation on dot-label markers so the label stays fixed.
+   The ::before pulse ring still provides the attention-grab effect. */
+.ci-hotspot-marker--dot-label.ci-hotspot-marker--pulse {
+  animation: none;
 }
 
 /* === Pulse animation === */
@@ -281,6 +308,7 @@
 
 .ci-hotspot-popover-body {
   line-height: 1.5;
+  text-align: var(--ci-hotspot-popover-text-align);
 }
 
 .ci-hotspot-popover-title {
@@ -296,6 +324,22 @@
   font-size: var(--ci-hotspot-price-font-size);
   font-weight: var(--ci-hotspot-price-font-weight);
   color: var(--ci-hotspot-price-color);
+}
+
+.ci-hotspot-popover-price-row {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.ci-hotspot-popover-price-row .ci-hotspot-popover-price { margin-bottom: 0; }
+
+.ci-hotspot-popover-original-price {
+  font-size: calc(var(--ci-hotspot-price-font-size) - 2px);
+  font-weight: 500;
+  color: var(--ci-hotspot-original-price-color);
+  text-decoration: line-through;
 }
 
 .ci-hotspot-popover-description {
@@ -431,6 +475,7 @@
   --ci-hotspot-popover-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   --ci-hotspot-title-color: #f0f0f0;
   --ci-hotspot-description-color: #aaaaaa;
+  --ci-hotspot-original-price-color: #777777;
   --ci-hotspot-zoom-controls-bg: rgba(30, 30, 30, 0.9);
   --ci-hotspot-zoom-controls-color: #f0f0f0;
 }

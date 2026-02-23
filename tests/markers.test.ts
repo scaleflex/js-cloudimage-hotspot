@@ -63,6 +63,26 @@ describe('createMarker', () => {
     const marker = createMarker(makeHotspot(), true);
     expect(marker.getAttribute('tabindex')).toBe('0');
   });
+
+  it('adds dot-label class and label span for markerStyle dot-label', () => {
+    const marker = createMarker(makeHotspot({ markerStyle: 'dot-label', label: 'Side Table' }), true);
+    expect(marker.classList.contains('ci-hotspot-marker--dot-label')).toBe(true);
+    const labelSpan = marker.querySelector('.ci-hotspot-marker-label');
+    expect(labelSpan).toBeTruthy();
+    expect(labelSpan!.textContent).toBe('Side Table');
+  });
+
+  it('does not add dot-label class for default marker style', () => {
+    const marker = createMarker(makeHotspot(), true);
+    expect(marker.classList.contains('ci-hotspot-marker--dot-label')).toBe(false);
+    expect(marker.querySelector('.ci-hotspot-marker-label')).toBeNull();
+  });
+
+  it('does not add dot-label class when markerStyle is dot', () => {
+    const marker = createMarker(makeHotspot({ markerStyle: 'dot' }), true);
+    expect(marker.classList.contains('ci-hotspot-marker--dot-label')).toBe(false);
+    expect(marker.querySelector('.ci-hotspot-marker-label')).toBeNull();
+  });
 });
 
 describe('setMarkerActive', () => {

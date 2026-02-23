@@ -309,13 +309,19 @@ export class CIHotspot implements CIHotspotInstance {
         setMarkerActive(marker, true);
       });
 
+      const deactivateAfterHide = () => {
+        this.trackedTimeout(() => {
+          if (!popover.isVisible()) setMarkerActive(marker, false);
+        }, 250);
+      };
+
       const leaveCleanup = addListener(marker, 'mouseleave', () => {
         popover.scheduleHide(200);
-        this.trackedTimeout(() => {
-          if (!popover.isVisible()) {
-            setMarkerActive(marker, false);
-          }
-        }, 250);
+        deactivateAfterHide();
+      });
+
+      const popoverLeaveCleanup = addListener(popover.element, 'mouseleave', () => {
+        deactivateAfterHide();
       });
 
       const focusCleanup = addListener(marker, 'focus', () => {
@@ -327,12 +333,10 @@ export class CIHotspot implements CIHotspotInstance {
 
       const blurCleanup = addListener(marker, 'blur', () => {
         popover.scheduleHide(200);
-        this.trackedTimeout(() => {
-          if (!popover.isVisible()) setMarkerActive(marker, false);
-        }, 250);
+        deactivateAfterHide();
       });
 
-      this.addHotspotCleanups(hotspot.id, enterCleanup, leaveCleanup, focusCleanup, blurCleanup);
+      this.addHotspotCleanups(hotspot.id, enterCleanup, leaveCleanup, popoverLeaveCleanup, focusCleanup, blurCleanup);
     } else {
       // No popover — still preload on hover/focus
       const preloadEnter = addListener(marker, 'mouseenter', () => {
@@ -390,14 +394,23 @@ export class CIHotspot implements CIHotspotInstance {
       setMarkerActive(marker, true);
     });
 
-    const leaveCleanup = addListener(marker, 'mouseleave', () => {
-      popover.scheduleHide(200);
+    const deactivateAfterHide = () => {
       this.trackedTimeout(() => {
         if (!popover.isVisible()) setMarkerActive(marker, false);
       }, 250);
+    };
+
+    const leaveCleanup = addListener(marker, 'mouseleave', () => {
+      popover.scheduleHide(200);
+      deactivateAfterHide();
     });
 
-    this.addHotspotCleanups(hotspot.id, enterCleanup, leaveCleanup);
+    // Also deactivate marker when cursor leaves the popover itself
+    const popoverLeaveCleanup = addListener(popover.element, 'mouseleave', () => {
+      deactivateAfterHide();
+    });
+
+    this.addHotspotCleanups(hotspot.id, enterCleanup, leaveCleanup, popoverLeaveCleanup);
   }
 
   private bindClickTrigger(hotspot: HotspotItem, marker: HTMLButtonElement, popover: Popover): void {

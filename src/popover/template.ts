@@ -15,8 +15,15 @@ export function renderBuiltInTemplate(data: PopoverData): string {
     bodyParts.push(`<h3 class="ci-hotspot-popover-title">${escapeHtml(data.title)}</h3>`);
   }
 
-  if (data.price) {
-    bodyParts.push(`<span class="ci-hotspot-popover-price">${escapeHtml(data.price)}</span>`);
+  if (data.originalPrice || data.price) {
+    let priceHtml = '';
+    if (data.originalPrice) {
+      priceHtml += `<span class="ci-hotspot-popover-original-price">${escapeHtml(data.originalPrice)}</span>`;
+    }
+    if (data.price) {
+      priceHtml += `<span class="ci-hotspot-popover-price">${escapeHtml(data.price)}</span>`;
+    }
+    bodyParts.push(`<div class="ci-hotspot-popover-price-row">${priceHtml}</div>`);
   }
 
   if (data.description) {

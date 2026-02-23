@@ -10,6 +10,9 @@ export type Theme = 'light' | 'dark';
 /** Scene transition animation type */
 export type SceneTransition = 'fade' | 'slide' | 'none';
 
+/** Marker visual style */
+export type MarkerStyle = 'dot' | 'dot-label';
+
 /** Zoom controls position */
 export type ZoomControlsPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 
@@ -28,6 +31,7 @@ export interface Scene {
 /** Data fields for the built-in popover template */
 export interface PopoverData {
   title?: string;
+  originalPrice?: string;
   price?: string;
   description?: string;
   image?: string;
@@ -70,6 +74,8 @@ export interface HotspotItem {
   y: string | number;
   /** Accessible label displayed as marker tooltip and used by screen readers */
   label: string;
+  /** Marker visual style: 'dot' (default) or 'dot-label' (dot with text label) */
+  markerStyle?: MarkerStyle;
   /** Arbitrary data passed to the popover template */
   data?: PopoverData;
   /** Raw HTML content for the popover (sanitized before rendering) */

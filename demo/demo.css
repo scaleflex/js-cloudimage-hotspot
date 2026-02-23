@@ -669,6 +669,7 @@ body {
 
 .demo-viewer--hero .ci-hotspot-container {
   border-radius: inherit;
+  --ci-hotspot-popover-text-align: center;
 }
 
 

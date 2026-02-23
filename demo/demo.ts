@@ -31,6 +31,7 @@ new CIHotspot('#hero-viewer', {
       label: 'Loveseat Sofa',
       data: {
         title: 'Loveseat Sofa',
+        originalPrice: '$1,499',
         price: '$1,249',
         description: 'Sage green linen blend with bolster armrests and a burnt-orange velvet accent cushion.',
         url: '#',
@@ -42,10 +43,14 @@ new CIHotspot('#hero-viewer', {
       x: '45%',
       y: '62%',
       label: 'Tripod Side Table',
+      markerStyle: 'dot-label',
       data: {
         title: 'Tripod Side Table',
+        originalPrice: '$229',
         price: '$179',
         description: 'Round white top with solid beechwood legs, styled with a rattan serving tray.',
+        url: '#',
+        ctaText: 'See Details',
       },
     },
     {
@@ -53,9 +58,12 @@ new CIHotspot('#hero-viewer', {
       x: '62%',
       y: '36%',
       label: 'Fiddle-Leaf Fig',
+      markerStyle: 'dot-label',
       data: {
         title: 'Fiddle-Leaf Fig',
         description: 'Mature indoor tree in a woven seagrass basket, approximately 140 cm tall.',
+        url: '#',
+        ctaText: 'Shop Now',
       },
     },
   ],

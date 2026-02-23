@@ -132,6 +132,18 @@ export class PropertyPanel {
       ),
     );
 
+    // Marker Style
+    this.panelEl.appendChild(
+      this.createSelect(
+        'Marker Style',
+        hotspot.markerStyle || 'dot',
+        ['dot', 'dot-label'],
+        (val) => {
+          this.editor.updateHotspot(hotspot.id, { markerStyle: val as HotspotItem['markerStyle'] });
+        },
+      ),
+    );
+
     // Data fields
     const data = hotspot.data || {};
 
@@ -147,6 +159,14 @@ export class PropertyPanel {
       this.createTextField('Price', data.price || '', (val) => {
         this.editor.updateHotspot(hotspot.id, {
           data: { ...hotspot.data, price: val },
+        });
+      }),
+    );
+
+    this.panelEl.appendChild(
+      this.createTextField('Original Price', data.originalPrice || '', (val) => {
+        this.editor.updateHotspot(hotspot.id, {
+          data: { ...hotspot.data, originalPrice: val },
         });
       }),
     );
