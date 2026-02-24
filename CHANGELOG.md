@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.2] - 2026-02-24
+
+### Fixed
+
+- Fixed aspect-ratio collapse in flex/dialog layouts by replacing CSS `aspect-ratio` with padding-bottom percentage approach
+
 ## [1.0.0] - 2026-02-12
 
 ### Features
@@ -19,4 +25,5 @@ All notable changes to this project will be documented in this file.
 - **Zero runtime dependencies**
 - **Output formats** — ESM, CJS, and UMD bundles with full TypeScript declarations
 
+[1.1.2]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.2
 [1.0.0]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.0.0
