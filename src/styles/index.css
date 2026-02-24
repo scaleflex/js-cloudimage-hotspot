@@ -528,8 +528,11 @@
 }
 
 /* === Fixed aspect-ratio scene container === */
+/* padding-bottom % is relative to width — works reliably in all layout contexts
+   (flex, grid, dialogs) unlike CSS aspect-ratio which can collapse to 0. */
 .ci-hotspot-container--fixed-ratio .ci-hotspot-viewport {
   overflow: hidden;
+  height: 0;
 }
 
 .ci-hotspot-container--fixed-ratio .ci-hotspot-image {
@@ -760,6 +763,7 @@
 .ci-hotspot-container--fullscreen.ci-hotspot-container--fixed-ratio .ci-hotspot-viewport {
   width: 100%;
   height: 100%;
+  padding-bottom: 0;
 }
 
 .ci-hotspot-container--fullscreen.ci-hotspot-container--fixed-ratio .ci-hotspot-image {

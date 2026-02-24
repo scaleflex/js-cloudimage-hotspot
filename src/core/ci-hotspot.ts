@@ -107,8 +107,12 @@ export class CIHotspot implements CIHotspotInstance {
     // Fixed aspect-ratio for scenes mode
     if (this.config.sceneAspectRatio) {
       addClass(this.containerEl, 'ci-hotspot-container--fixed-ratio');
-      // CSS aspect-ratio uses "/" separator (e.g. "4 / 3"), config may use ":" (e.g. "4:3")
-      this.viewportEl.style.aspectRatio = this.config.sceneAspectRatio.replace(':', ' / ');
+      // Use padding-bottom % trick (relative to width) instead of CSS aspect-ratio,
+      // which can collapse to 0 height in certain flex/dialog layouts.
+      const parts = this.config.sceneAspectRatio.split(/[:/\s]+/).map(Number);
+      if (parts.length >= 2 && parts[0] > 0 && parts[1] > 0) {
+        this.viewportEl.style.paddingBottom = `${(parts[1] / parts[0]) * 100}%`;
+      }
     }
 
     // Replace root element content
