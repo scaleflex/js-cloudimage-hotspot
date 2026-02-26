@@ -51,6 +51,7 @@ export function initConfigurator(): void {
       ...h,
       markerStyle: style !== 'dot' ? style : undefined,
     }));
+    const isBrand = cfgTheme.value === 'brand';
     return {
       src: DEMO_IMAGE,
       alt: 'Luxury high-rise bedroom with channel-tufted bed and city skyline view',
@@ -59,7 +60,8 @@ export function initConfigurator(): void {
       fullscreenButton: cfgFullscreen.checked,
       invertMarkerTheme: cfgInvertMarker.checked,
       trigger: cfgTrigger.value as CIHotspotConfig['trigger'],
-      theme: cfgTheme.value as CIHotspotConfig['theme'],
+      theme: isBrand ? 'light' : cfgTheme.value as CIHotspotConfig['theme'],
+      markerTheme: isBrand ? 'brand' : 'default',
       placement: cfgPlacement.value as CIHotspotConfig['placement'],
       zoomControlsPosition: cfgZoomControlsPosition.value as CIHotspotConfig['zoomControlsPosition'],
       hotspots,
@@ -75,6 +77,7 @@ export function initConfigurator(): void {
     if (!config.fullscreenButton) opts.push(`  fullscreenButton: false,`);
     if (config.invertMarkerTheme) opts.push(`  invertMarkerTheme: true,`);
     if (config.theme !== 'light') opts.push(`  theme: '${config.theme}',`);
+    if (config.markerTheme && config.markerTheme !== 'default') opts.push(`  markerTheme: '${config.markerTheme}',`);
     if (config.placement !== 'top') opts.push(`  placement: '${config.placement}',`);
     if (config.zoom && config.zoomControlsPosition !== 'bottom-right') opts.push(`  zoomControlsPosition: '${config.zoomControlsPosition}',`);
     opts.push(`  hotspots: ${JSON.stringify(config.hotspots, null, 4).split('\n').map((l, i) => i === 0 ? l : '  ' + l).join('\n')},`);
