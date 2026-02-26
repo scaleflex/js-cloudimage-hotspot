@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5f7fa"/>
+      <stop offset="100%" stop-color="#e8edf3"/>
+    </linearGradient>
+    <linearGradient id="phase1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0058a3"/>
+      <stop offset="100%" stop-color="#0070cc"/>
+    </linearGradient>
+    <linearGradient id="phase2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0063b3"/>
+      <stop offset="100%" stop-color="#0080dd"/>
+    </linearGradient>
+    <filter id="phaseGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#0058a3" flood-opacity="0.15"/>
+    </filter>
+    <marker id="arrowDown" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+      <path d="M0 0 L8 4 L0 8 Z" fill="#b0c0d0"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="620" fill="url(#bg3)" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="38" text-anchor="middle" fill="#5a7aa0" font-size="13" font-weight="500" letter-spacing="3">DEPENDENCY-ORDERED BUILD</text>
+  <text x="450" y="65" text-anchor="middle" fill="#1a2744" font-size="20" font-weight="600">10 Phases, Each Building on the Last</text>
+
+  <!-- Timeline line -->
+  <line x1="120" y1="95" x2="120" y2="590" stroke="#c8d4e2" stroke-width="2" stroke-dasharray="4 4"/>
+
+  <!-- Phase cards -->
+  <!-- Phase 1 -->
+  <g transform="translate(0, 90)">
+    <circle cx="120" cy="14" r="16" fill="#0058a3" stroke="#0078d4" stroke-width="2"/>
+    <text x="120" y="19" text-anchor="middle" fill="white" font-size="11" font-weight="700">1</text>
+    <rect x="155" y="0" width="710" height="38" rx="8" fill="#ffffff" filter="url(#phaseGlow)"/>
+    <rect x="155" y="0" width="4" height="38" rx="2" fill="#0058a3"/>
+    <text x="174" y="16" fill="#1a2744" font-size="13" font-weight="600">Build Pipeline + Types</text>
+    <text x="174" y="31" fill="#6a7a8a" font-size="11">Vite config, TypeScript interfaces, all type definitions</text>
+    <rect x="720" y="9" width="60" height="20" rx="4" fill="#e8edf5"/>
+    <text x="750" y="23" text-anchor="middle" fill="#4a7aa0" font-size="9">Foundation</text>
+  </g>
+
+  <!-- Phase 2 -->
+  <g transform="translate(0, 140)">
+    <circle cx="120" cy="14" r="16" fill="#0060b0" stroke="#0080dd" stroke-width="2"/>
+    <text x="120" y="19" text-anchor="middle" fill="white" font-size="11" font-weight="700">2</text>
+    <rect x="155" y="0" width="710" height="38" rx="8" fill="#ffffff"/>
+    <rect x="155" y="0" width="4" height="38" rx="2" fill="#0060b0"/>
+    <text x="174" y="16" fill="#1a2744" font-size="13" font-weight="600">Utilities + CSS</text>
+    <text x="174" y="31" fill="#6a7a8a" font-size="11">DOM helpers, coordinate math, event system, 774-line stylesheet</text>
+    <rect x="690" y="9" width="90" height="20" rx="4" fill="#e8edf5"/>
+    <text x="735" y="23" text-anchor="middle" fill="#4a7aa0" font-size="9">774 lines CSS</text>
+  </g>
+
+  <!-- Phase 3 -->
+  <g transform="translate(0, 190)">
+    <circle cx="120" cy="14" r="16" fill="#0068bb" stroke="#0088ee" stroke-width="2"/>
+    <text x="120" y="19" text-anchor="middle" fill="white" font-size="11" font-weight="700">3</text>
+    <rect x="155" y="0" width="710" height="38" rx="8" fill="#ffffff"/>
+    <rect x="155" y="0" width="4" height="38" rx="2" fill="#0068bb"/>
+    <text x="174" y="16" fill="#1a2744" font-size="13" font-weight="600">Markers + Sanitizer</text>
+    <text x="174" y="31" fill="#6a7a8a" font-size="11">Button-based hotspot markers, XSS-safe HTML sanitizer (87 lines)</text>
+    <rect x="702" y="9" width="78" height="20" rx="4" fill="#e8edf5"/>
+    <text x="741" y="23" text-anchor="middle" fill="#4a7aa0" font-size="9">XSS-safe</text>
+  </g>
+
+  <!-- Phase 4 -->
+  <g transform="translate(0, 240)">
+    <circle cx="120" cy="14" r="16" fill="#0070cc" stroke="#0090ff" stroke-width="2"/>
+    <text x="120" y="19" text-anchor="middle" fill="white" font-size="11" font-weight="700">4</text>
+    <rect x="155" y="0" width="710" height="38" rx="8" fill="#ffffff"/>
+    <rect x="155" y="0" width="4" height="38" rx="2" fill="#0070cc"/>
+    <text x="174" y="16" fill="#1a2744" font-size="13" font-weight="600">Popover System</text>
+    <text x="174" y="31" fill="#6a7a8a" font-size="11">Positioning engine (151 lines), templates, show/hide lifecycle</text>
+    <rect x="690" y="9" width="90" height="20" rx="4" fill="#e8edf5"/>
+    <text x="735" y="23" text-anchor="middle" fill="#4a7aa0" font-size="9">151 lines</text>
+  </g>
+
+  <!-- Phase 5 -->
+  <g transform="translate(0, 290)">
+    <circle cx="120" cy="14" r="16" fill="#0078d4" stroke="#0098ff" stroke-width="2"/>
+    <text x="120" y="19" text-anchor="middle" fill="white" font-size="11" font-weight="700">5</text>
+    <rect x="155" y="0" width="710" height="38" rx="8" fill="#ffffff"/>
+    <rect x="155" y="0" width="4" height="38" rx="2" fill="#0078d4"/>
+    <text x="174" y="16" fill="#1a2744" font-size="13" font-weight="600">Zoom / Pan</text>
+    <text x="174" y="31" fill="#6a7a8a" font-size="11">CSS transforms, pinch-to-zoom, drag-to-pan, scroll gating</text>
+    <rect x="690" y="9" width="90" height="20" rx="4" fill="#e8edf5"/>
+    <text x="735" y="23" text-anchor="middle" fill="#4a7aa0" font-size="9">GPU-accel</text>
+  </g>
+
+  <!-- Phase 6 -->
+  <g transform="translate(0, 340)">
+    <circle cx="120" cy="14" r="16" fill="#0080dd" stroke="#00a0ff" stroke-width="2"/>
+    <text x="120" y="19" text-anchor="middle" fill="white" font-size="11" font-weight="700">6</text>
+    <rect x="155" y="0" width="710" height="38" rx="8" fill="#ffffff"/>
+    <rect x="155" y="0" width="4" height="38" rx="2" fill="#0080dd"/>
+    <text x="174" y="16" fill="#1a2744" font-size="13" font-weight="600">Core Orchestrator</text>
+    <text x="174" y="31" fill="#6a7a8a" font-size="11">Main CIHotspot class tying all modules together</text>
+    <rect x="702" y="9" width="78" height="20" rx="4" fill="#e0eaf5"/>
+    <text x="741" y="23" text-anchor="middle" fill="#3a7ab0" font-size="9">Core class</text>
+  </g>
+
+  <!-- Phase 7 -->
+  <g transform="translate(0, 390)">
+    <circle cx="120" cy="14" r="16" fill="#0088ee" stroke="#00aaff" stroke-width="2"/>
+    <text x="120" y="19" text-anchor="middle" fill="white" font-size="11" font-weight="700">7</text>
+    <rect x="155" y="0" width="710" height="38" rx="8" fill="#ffffff"/>
+    <rect x="155" y="0" width="4" height="38" rx="2" fill="#0088ee"/>
+    <text x="174" y="16" fill="#1a2744" font-size="13" font-weight="600">Accessibility</text>
+    <text x="174" y="31" fill="#6a7a8a" font-size="11">Keyboard navigation, focus traps, ARIA attributes, WCAG 2.1 AA</text>
+    <rect x="690" y="9" width="90" height="20" rx="4" fill="#e0f5ea"/>
+    <text x="735" y="23" text-anchor="middle" fill="#1a8a4a" font-size="9">WCAG 2.1</text>
+  </g>
+
+  <!-- Phase 8 -->
+  <g transform="translate(0, 440)">
+    <circle cx="120" cy="14" r="16" fill="#2090ee" stroke="#40b0ff" stroke-width="2"/>
+    <text x="120" y="19" text-anchor="middle" fill="white" font-size="11" font-weight="700">8</text>
+    <rect x="155" y="0" width="710" height="38" rx="8" fill="#ffffff"/>
+    <rect x="155" y="0" width="4" height="38" rx="2" fill="#2090ee"/>
+    <text x="174" y="16" fill="#1a2744" font-size="13" font-weight="600">React Wrapper</text>
+    <text x="174" y="31" fill="#6a7a8a" font-size="11">SSR-safe component, hook API, ref-based instance access, tree-shakeable</text>
+    <rect x="702" y="9" width="78" height="20" rx="4" fill="#e8edf5"/>
+    <text x="741" y="23" text-anchor="middle" fill="#4a7aa0" font-size="9">SSR-safe</text>
+  </g>
+
+  <!-- Phase 9 -->
+  <g transform="translate(0, 490)">
+    <circle cx="120" cy="14" r="16" fill="#3098f0" stroke="#50b8ff" stroke-width="2"/>
+    <text x="120" y="19" text-anchor="middle" fill="white" font-size="11" font-weight="700">9</text>
+    <rect x="155" y="0" width="710" height="38" rx="8" fill="#ffffff"/>
+    <rect x="155" y="0" width="4" height="38" rx="2" fill="#3098f0"/>
+    <text x="174" y="16" fill="#1a2744" font-size="13" font-weight="600">Demo Site</text>
+    <text x="174" y="31" fill="#6a7a8a" font-size="11">GitHub Pages, interactive configurator, multiple example sections</text>
+    <rect x="690" y="9" width="90" height="20" rx="4" fill="#e8edf5"/>
+    <text x="735" y="23" text-anchor="middle" fill="#4a7aa0" font-size="9">Interactive</text>
+  </g>
+
+  <!-- Phase 10 -->
+  <g transform="translate(0, 540)">
+    <circle cx="120" cy="14" r="16" fill="#40a0f5" stroke="#60c0ff" stroke-width="2"/>
+    <text x="120" y="19" text-anchor="middle" fill="white" font-size="11" font-weight="700">10</text>
+    <rect x="155" y="0" width="710" height="38" rx="8" fill="#ffffff"/>
+    <rect x="155" y="0" width="4" height="38" rx="2" fill="#40a0f5"/>
+    <text x="174" y="16" fill="#1a2744" font-size="13" font-weight="600">Tests + Documentation</text>
+    <text x="174" y="31" fill="#6a7a8a" font-size="11">243 tests across 20 files, 4,311 lines of test code</text>
+    <rect x="690" y="9" width="90" height="20" rx="4" fill="#e0f5ea"/>
+    <text x="735" y="23" text-anchor="middle" fill="#1a8a4a" font-size="9">243 tests</text>
+  </g>
+
+  <!-- Dependency arrows annotation -->
+  <g transform="translate(0, 595)">
+    <text x="155" y="12" fill="#6a8aaa" font-size="11" font-style="italic">Each phase builds on the last. Each is independently testable.</text>
+  </g>
+</svg>

@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg7" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5f7fa"/>
+      <stop offset="100%" stop-color="#e8edf3"/>
+    </linearGradient>
+    <linearGradient id="vsRed" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fdf2f2"/>
+      <stop offset="100%" stop-color="#fbe8e8"/>
+    </linearGradient>
+    <linearGradient id="vsGreen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f0faf4"/>
+      <stop offset="100%" stop-color="#e5f7ec"/>
+    </linearGradient>
+    <filter id="vsShadow" x="-3%" y="-5%" width="106%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="5" flood-color="#8a9ab0" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="540" fill="url(#bg7)" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="36" text-anchor="middle" fill="#5a7aa0" font-size="13" font-weight="500" letter-spacing="3">ARCHITECTURAL DECISIONS</text>
+  <text x="450" y="63" text-anchor="middle" fill="#1a2744" font-size="20" font-weight="600">What Most Devs Would Do vs. What Claude Built</text>
+
+  <!-- Decision 1: Popover Positioning -->
+  <g transform="translate(30, 85)">
+    <text x="0" y="16" fill="#0058a3" font-size="13" font-weight="700">1</text>
+    <text x="18" y="16" fill="#1a2744" font-size="13" font-weight="600">Popover Positioning</text>
+
+    <!-- "Typical" approach -->
+    <g filter="url(#vsShadow)">
+      <rect x="0" y="25" width="405" height="75" rx="10" fill="url(#vsRed)" stroke="#e8c8c8" stroke-width="1"/>
+      <text x="15" y="45" fill="#c0392b" font-size="10" font-weight="600" letter-spacing="1">TYPICAL APPROACH</text>
+      <text x="15" y="63" fill="#7a4040" font-size="12">npm install @floating-ui/dom</text>
+      <text x="15" y="80" fill="#9a7070" font-size="11">+10 KB bundle weight, external dependency</text>
+      <text x="355" y="63" fill="#aa5050" font-size="11" text-anchor="end">~10 KB</text>
+    </g>
+
+    <!-- Arrow -->
+    <text x="420" y="68" text-anchor="middle" fill="#8a9ab0" font-size="18">vs</text>
+
+    <!-- Claude approach -->
+    <g filter="url(#vsShadow)">
+      <rect x="435" y="25" width="405" height="75" rx="10" fill="url(#vsGreen)" stroke="#b8e0c8" stroke-width="1"/>
+      <text x="450" y="45" fill="#1a8a4a" font-size="10" font-weight="600" letter-spacing="1">CLAUDE'S APPROACH</text>
+      <text x="450" y="63" fill="#2a7a4a" font-size="12">Custom positioning engine</text>
+      <text x="450" y="80" fill="#5a9a6a" font-size="11">flip() + shift() + auto-placement, tailored exactly</text>
+      <text x="790" y="63" fill="#1a8a4a" font-size="11" text-anchor="end" font-weight="600">151 lines</text>
+    </g>
+  </g>
+
+  <!-- Decision 2: HTML Sanitization -->
+  <g transform="translate(30, 200)">
+    <text x="0" y="16" fill="#0058a3" font-size="13" font-weight="700">2</text>
+    <text x="18" y="16" fill="#1a2744" font-size="13" font-weight="600">HTML Sanitization (XSS Protection)</text>
+
+    <g filter="url(#vsShadow)">
+      <rect x="0" y="25" width="405" height="75" rx="10" fill="url(#vsRed)" stroke="#e8c8c8" stroke-width="1"/>
+      <text x="15" y="45" fill="#c0392b" font-size="10" font-weight="600" letter-spacing="1">TYPICAL APPROACH</text>
+      <text x="15" y="63" fill="#7a4040" font-size="12">npm install dompurify</text>
+      <text x="15" y="80" fill="#9a7070" font-size="11">+15 KB bundle, general-purpose (overkill for this)</text>
+      <text x="355" y="63" fill="#aa5050" font-size="11" text-anchor="end">~15 KB</text>
+    </g>
+
+    <text x="420" y="68" text-anchor="middle" fill="#8a9ab0" font-size="18">vs</text>
+
+    <g filter="url(#vsShadow)">
+      <rect x="435" y="25" width="405" height="75" rx="10" fill="url(#vsGreen)" stroke="#b8e0c8" stroke-width="1"/>
+      <text x="450" y="45" fill="#1a8a4a" font-size="10" font-weight="600" letter-spacing="1">CLAUDE'S APPROACH</text>
+      <text x="450" y="63" fill="#2a7a4a" font-size="12">DOMParser-based allowlist sanitizer</text>
+      <text x="450" y="80" fill="#5a9a6a" font-size="11">Blocks SVG+XML XSS vectors, URL-encoded bypass</text>
+      <text x="790" y="63" fill="#1a8a4a" font-size="11" text-anchor="end" font-weight="600">87 lines</text>
+    </g>
+  </g>
+
+  <!-- Decision 3: Zoom Counter-scaling -->
+  <g transform="translate(30, 315)">
+    <text x="0" y="16" fill="#0058a3" font-size="13" font-weight="700">3</text>
+    <text x="18" y="16" fill="#1a2744" font-size="13" font-weight="600">Marker Scaling During Zoom</text>
+
+    <g filter="url(#vsShadow)">
+      <rect x="0" y="25" width="405" height="75" rx="10" fill="url(#vsRed)" stroke="#e8c8c8" stroke-width="1"/>
+      <text x="15" y="45" fill="#c0392b" font-size="10" font-weight="600" letter-spacing="1">TYPICAL APPROACH</text>
+      <text x="15" y="63" fill="#7a4040" font-size="12">JavaScript layout recalculation on zoom</text>
+      <text x="15" y="80" fill="#9a7070" font-size="11">requestAnimationFrame loop, resize observers</text>
+      <text x="355" y="63" fill="#aa5050" font-size="11" text-anchor="end">JS-heavy</text>
+    </g>
+
+    <text x="420" y="68" text-anchor="middle" fill="#8a9ab0" font-size="18">vs</text>
+
+    <g filter="url(#vsShadow)">
+      <rect x="435" y="25" width="405" height="75" rx="10" fill="url(#vsGreen)" stroke="#b8e0c8" stroke-width="1"/>
+      <text x="450" y="45" fill="#1a8a4a" font-size="10" font-weight="600" letter-spacing="1">CLAUDE'S APPROACH</text>
+      <text x="450" y="63" fill="#2a7a4a" font-size="12">CSS calc(1 / var(--zoom, 1))</text>
+      <text x="450" y="80" fill="#5a9a6a" font-size="11">GPU-accelerated, zero JS recalculation needed</text>
+      <text x="790" y="63" fill="#1a8a4a" font-size="11" text-anchor="end" font-weight="600">1 CSS line</text>
+    </g>
+  </g>
+
+  <!-- Decision 4: Theming -->
+  <g transform="translate(30, 430)">
+    <text x="0" y="16" fill="#0058a3" font-size="13" font-weight="700">4</text>
+    <text x="18" y="16" fill="#1a2744" font-size="13" font-weight="600">Theming System</text>
+
+    <g filter="url(#vsShadow)">
+      <rect x="0" y="25" width="405" height="75" rx="10" fill="url(#vsRed)" stroke="#e8c8c8" stroke-width="1"/>
+      <text x="15" y="45" fill="#c0392b" font-size="10" font-weight="600" letter-spacing="1">TYPICAL APPROACH</text>
+      <text x="15" y="63" fill="#7a4040" font-size="12">JavaScript props / config object</text>
+      <text x="15" y="80" fill="#9a7070" font-size="11">Requires re-render, framework-specific, JS-coupled</text>
+      <text x="355" y="63" fill="#aa5050" font-size="11" text-anchor="end">Config obj</text>
+    </g>
+
+    <text x="420" y="68" text-anchor="middle" fill="#8a9ab0" font-size="18">vs</text>
+
+    <g filter="url(#vsShadow)">
+      <rect x="435" y="25" width="405" height="75" rx="10" fill="url(#vsGreen)" stroke="#b8e0c8" stroke-width="1"/>
+      <text x="450" y="45" fill="#1a8a4a" font-size="10" font-weight="600" letter-spacing="1">CLAUDE'S APPROACH</text>
+      <text x="450" y="63" fill="#2a7a4a" font-size="12">40+ CSS custom properties</text>
+      <text x="450" y="80" fill="#5a9a6a" font-size="11">One CSS rule to theme. Dark mode = single class toggle.</text>
+      <text x="790" y="63" fill="#1a8a4a" font-size="11" text-anchor="end" font-weight="600">CSS-native</text>
+    </g>
+  </g>
+</svg>

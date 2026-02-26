@@ -3,16 +3,16 @@
 .ci-hotspot-container {
   /* === Marker === */
   --ci-hotspot-marker-size: 24px;
-  --ci-hotspot-marker-color: #ffffff;
-  --ci-hotspot-marker-bg: rgba(0, 0, 0, 0.6);
+  --ci-hotspot-marker-color: #1a1a1a;
+  --ci-hotspot-marker-bg: rgba(255, 255, 255, 0.8);
   --ci-hotspot-marker-border-width: 2px;
-  --ci-hotspot-marker-border-color: rgba(255, 255, 255, 0.8);
+  --ci-hotspot-marker-border-color: rgba(255, 255, 255, 0.4);
   --ci-hotspot-marker-border: var(--ci-hotspot-marker-border-width) solid var(--ci-hotspot-marker-border-color);
   --ci-hotspot-marker-border-radius: 50%;
-  --ci-hotspot-marker-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --ci-hotspot-marker-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 
   /* === Marker Pulse Animation === */
-  --ci-hotspot-pulse-color: rgba(0, 0, 0, 0.2);
+  --ci-hotspot-pulse-color: rgba(0, 0, 0, 0.15);
   --ci-hotspot-pulse-size: 40px;
   --ci-hotspot-pulse-duration: 1.8s;
 
@@ -471,10 +471,10 @@
 
 /* === Dark Theme === */
 .ci-hotspot-theme-dark {
-  --ci-hotspot-marker-bg: rgba(255, 255, 255, 0.8);
-  --ci-hotspot-marker-color: #1a1a1a;
-  --ci-hotspot-marker-border-color: rgba(255, 255, 255, 0.4);
-  --ci-hotspot-pulse-color: rgba(255, 255, 255, 0.2);
+  --ci-hotspot-marker-bg: rgba(0, 0, 0, 0.6);
+  --ci-hotspot-marker-color: #ffffff;
+  --ci-hotspot-marker-border-color: rgba(255, 255, 255, 0.6);
+  --ci-hotspot-pulse-color: rgba(255, 255, 255, 0.15);
   --ci-hotspot-popover-bg: #1a1a1a;
   --ci-hotspot-popover-color: #f0f0f0;
   --ci-hotspot-popover-border: 1px solid rgba(255, 255, 255, 0.1);
@@ -488,18 +488,27 @@
 
 /* === Inverted Marker Theme (dots blend with background) === */
 .ci-hotspot-marker-inverted {
-  --ci-hotspot-marker-bg: rgba(255, 255, 255, 0.8);
-  --ci-hotspot-marker-color: #1a1a1a;
-  --ci-hotspot-marker-border-color: rgba(0, 0, 0, 0.3);
-  --ci-hotspot-marker-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  --ci-hotspot-pulse-color: rgba(0, 0, 0, 0.15);
+  --ci-hotspot-marker-bg: rgba(0, 0, 0, 0.6);
+  --ci-hotspot-marker-color: #ffffff;
+  --ci-hotspot-marker-border-color: rgba(255, 255, 255, 0.8);
+  --ci-hotspot-marker-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --ci-hotspot-pulse-color: rgba(0, 0, 0, 0.2);
 }
 
 .ci-hotspot-theme-dark.ci-hotspot-marker-inverted {
-  --ci-hotspot-marker-bg: rgba(0, 0, 0, 0.6);
+  --ci-hotspot-marker-bg: rgba(255, 255, 255, 0.8);
+  --ci-hotspot-marker-color: #1a1a1a;
+  --ci-hotspot-marker-border-color: rgba(255, 255, 255, 0.4);
+  --ci-hotspot-pulse-color: rgba(255, 255, 255, 0.2);
+}
+
+/* === Brand Marker Theme (uses brand accent color) === */
+.ci-hotspot-marker-brand {
+  --ci-hotspot-marker-bg: var(--ci-hotspot-brand-color, #00aaff);
   --ci-hotspot-marker-color: #ffffff;
-  --ci-hotspot-marker-border-color: rgba(255, 255, 255, 0.3);
-  --ci-hotspot-pulse-color: rgba(255, 255, 255, 0.15);
+  --ci-hotspot-marker-border-color: rgba(255, 255, 255, 0.9);
+  --ci-hotspot-marker-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  --ci-hotspot-pulse-color: var(--ci-hotspot-brand-color, #00aaff);
 }
 
 /* === Scroll Hint Toast === */
@@ -656,10 +665,8 @@
   to { transform: translateY(-100%); }
 }
 
-/* NavigateTo marker */
-.ci-hotspot-marker--navigate {
-  --ci-hotspot-marker-bg: rgba(0, 88, 163, 0.7);
-}
+/* NavigateTo marker — inherits marker bg/color from theme */
+.ci-hotspot-marker--navigate {}
 
 .ci-hotspot-navigate-icon {
   width: 75%;

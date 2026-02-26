@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 580" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg4" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5f7fa"/>
+      <stop offset="100%" stop-color="#e8edf3"/>
+    </linearGradient>
+    <linearGradient id="coreGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0058a3"/>
+      <stop offset="100%" stop-color="#003d75"/>
+    </linearGradient>
+    <linearGradient id="modGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f5f7fc"/>
+    </linearGradient>
+    <filter id="modShadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#8a9ab0" flood-opacity="0.18"/>
+    </filter>
+    <filter id="coreShadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#0058a3" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="580" fill="url(#bg4)" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="38" text-anchor="middle" fill="#5a7aa0" font-size="13" font-weight="500" letter-spacing="3">LIBRARY ARCHITECTURE</text>
+  <text x="450" y="65" text-anchor="middle" fill="#1a2744" font-size="20" font-weight="600">Zero Dependencies. Modular by Design.</text>
+
+  <!-- Top layer: Entry Points -->
+  <text x="450" y="100" text-anchor="middle" fill="#3a7ab0" font-size="12" font-weight="600" letter-spacing="1">ENTRY POINTS</text>
+
+  <!-- Vanilla entry -->
+  <g filter="url(#modShadow)">
+    <rect x="60" y="115" width="220" height="55" rx="10" fill="#ffffff" stroke="#c8d4e2" stroke-width="1"/>
+    <text x="170" y="140" text-anchor="middle" fill="#0058a3" font-size="11" font-weight="600">js-cloudimage-hotspot</text>
+    <text x="170" y="157" text-anchor="middle" fill="#6a7a8a" font-size="10">Vanilla JS / main entry</text>
+  </g>
+
+  <!-- React entry -->
+  <g filter="url(#modShadow)">
+    <rect x="340" y="115" width="220" height="55" rx="10" fill="#ffffff" stroke="#c8d4e2" stroke-width="1"/>
+    <text x="450" y="140" text-anchor="middle" fill="#0058a3" font-size="11" font-weight="600">js-cloudimage-hotspot/react</text>
+    <text x="450" y="157" text-anchor="middle" fill="#6a7a8a" font-size="10">React wrapper / SSR-safe</text>
+  </g>
+
+  <!-- Editor entry -->
+  <g filter="url(#modShadow)">
+    <rect x="620" y="115" width="220" height="55" rx="10" fill="#ffffff" stroke="#c8d4e2" stroke-width="1"/>
+    <text x="730" y="140" text-anchor="middle" fill="#0058a3" font-size="11" font-weight="600">js-cloudimage-hotspot/editor</text>
+    <text x="730" y="157" text-anchor="middle" fill="#6a7a8a" font-size="10">Visual editor / tree-shakeable</text>
+  </g>
+
+  <!-- Connection lines to core -->
+  <line x1="170" y1="170" x2="450" y2="220" stroke="#b0c0d4" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="450" y1="170" x2="450" y2="220" stroke="#b0c0d4" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <line x1="730" y1="170" x2="450" y2="220" stroke="#b0c0d4" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+  <!-- Core Orchestrator -->
+  <g filter="url(#coreShadow)">
+    <rect x="270" y="220" width="360" height="65" rx="12" fill="url(#coreGrad)" stroke="#0078d4" stroke-width="2"/>
+    <text x="450" y="248" text-anchor="middle" fill="white" font-size="15" font-weight="700">CIHotspot</text>
+    <text x="450" y="268" text-anchor="middle" fill="rgba(255,255,255,0.7)" font-size="11">Core Orchestrator Class</text>
+  </g>
+
+  <!-- Module layer label -->
+  <text x="450" y="315" text-anchor="middle" fill="#3a7ab0" font-size="12" font-weight="600" letter-spacing="1">MODULES</text>
+
+  <!-- Module boxes - Row 1 -->
+  <!-- Markers -->
+  <g filter="url(#modShadow)">
+    <rect x="40" y="330" width="155" height="90" rx="10" fill="url(#modGrad)" stroke="#c8d4e2" stroke-width="1"/>
+    <circle cx="65" cy="355" r="12" fill="#0058a3" opacity="0.6"/>
+    <text x="65" y="360" text-anchor="middle" fill="white" font-size="14">+</text>
+    <text x="100" y="358" fill="#1a2744" font-size="12" font-weight="600">Markers</text>
+    <text x="55" y="380" fill="#6a7a8a" font-size="10">Button-based, pulsing</text>
+    <text x="55" y="395" fill="#6a7a8a" font-size="10">ARIA attributes</text>
+    <text x="55" y="410" fill="#8a95a5" font-size="9">counter-scale on zoom</text>
+  </g>
+
+  <!-- Popovers -->
+  <g filter="url(#modShadow)">
+    <rect x="210" y="330" width="155" height="90" rx="10" fill="url(#modGrad)" stroke="#c8d4e2" stroke-width="1"/>
+    <rect x="228" y="347" width="20" height="14" rx="3" fill="#0058a3" opacity="0.6"/>
+    <path d="M238 361 L235 366 L241 366 Z" fill="#0058a3" opacity="0.6"/>
+    <text x="260" y="358" fill="#1a2744" font-size="12" font-weight="600">Popovers</text>
+    <text x="225" y="380" fill="#6a7a8a" font-size="10">Auto-positioning (151 LOC)</text>
+    <text x="225" y="395" fill="#6a7a8a" font-size="10">Flip + shift algorithm</text>
+    <text x="225" y="410" fill="#8a95a5" font-size="9">replaces Floating UI</text>
+  </g>
+
+  <!-- Zoom/Pan -->
+  <g filter="url(#modShadow)">
+    <rect x="380" y="330" width="155" height="90" rx="10" fill="url(#modGrad)" stroke="#c8d4e2" stroke-width="1"/>
+    <g transform="translate(398, 346)">
+      <rect width="18" height="14" rx="2" fill="none" stroke="#0078d4" stroke-width="1.5" opacity="0.6"/>
+      <text x="9" y="12" text-anchor="middle" fill="#0078d4" font-size="9" opacity="0.6">+</text>
+    </g>
+    <text x="430" y="358" fill="#1a2744" font-size="12" font-weight="600">Zoom / Pan</text>
+    <text x="395" y="380" fill="#6a7a8a" font-size="10">CSS transforms (GPU)</text>
+    <text x="395" y="395" fill="#6a7a8a" font-size="10">Pinch, drag, scroll</text>
+    <text x="395" y="410" fill="#8a95a5" font-size="9">Ctrl+scroll gating</text>
+  </g>
+
+  <!-- Accessibility -->
+  <g filter="url(#modShadow)">
+    <rect x="550" y="330" width="155" height="90" rx="10" fill="url(#modGrad)" stroke="#c8d4e2" stroke-width="1"/>
+    <text x="575" y="358" fill="#1a2744" font-size="12" font-weight="600">Accessibility</text>
+    <text x="565" y="380" fill="#6a7a8a" font-size="10">WCAG 2.1 AA</text>
+    <text x="565" y="395" fill="#6a7a8a" font-size="10">Focus traps, keyboard nav</text>
+    <text x="565" y="410" fill="#8a95a5" font-size="9">aria-expanded sync</text>
+  </g>
+
+  <!-- Scenes -->
+  <g filter="url(#modShadow)">
+    <rect x="720" y="330" width="155" height="90" rx="10" fill="url(#modGrad)" stroke="#c8d4e2" stroke-width="1"/>
+    <text x="745" y="358" fill="#1a2744" font-size="12" font-weight="600">Scenes</text>
+    <text x="735" y="380" fill="#6a7a8a" font-size="10">Multi-image navigation</text>
+    <text x="735" y="395" fill="#6a7a8a" font-size="10">Slide transitions</text>
+    <text x="735" y="410" fill="#8a95a5" font-size="9">per-scene hotspots</text>
+  </g>
+
+  <!-- Utility layer -->
+  <text x="450" y="455" text-anchor="middle" fill="#3a7ab0" font-size="12" font-weight="600" letter-spacing="1">UTILITIES</text>
+
+  <!-- Utility boxes -->
+  <g>
+    <rect x="60" y="470" width="140" height="40" rx="8" fill="#edf1f7" stroke="#d0d8e4" stroke-width="1"/>
+    <text x="130" y="495" text-anchor="middle" fill="#5a6a7a" font-size="11">Coordinate Math</text>
+  </g>
+  <g>
+    <rect x="215" y="470" width="140" height="40" rx="8" fill="#edf1f7" stroke="#d0d8e4" stroke-width="1"/>
+    <text x="285" y="495" text-anchor="middle" fill="#5a6a7a" font-size="11">DOM Helpers</text>
+  </g>
+  <g>
+    <rect x="370" y="470" width="140" height="40" rx="8" fill="#edf1f7" stroke="#d0d8e4" stroke-width="1"/>
+    <text x="440" y="495" text-anchor="middle" fill="#5a6a7a" font-size="11">Event System</text>
+  </g>
+  <g>
+    <rect x="525" y="470" width="140" height="40" rx="8" fill="#edf1f7" stroke="#d0d8e4" stroke-width="1"/>
+    <text x="595" y="495" text-anchor="middle" fill="#5a6a7a" font-size="11">HTML Sanitizer</text>
+  </g>
+  <g>
+    <rect x="680" y="470" width="160" height="40" rx="8" fill="#edf1f7" stroke="#d0d8e4" stroke-width="1"/>
+    <text x="760" y="495" text-anchor="middle" fill="#5a6a7a" font-size="11">CSS Variables (40+)</text>
+  </g>
+
+  <!-- Bottom stats -->
+  <g transform="translate(0, 535)">
+    <rect x="120" y="0" width="660" height="32" rx="8" fill="#ffffff" stroke="#d0d8e4" stroke-width="1"/>
+    <text x="200" y="21" text-anchor="middle" fill="#0058a3" font-size="11" font-weight="600">6,222 LOC</text>
+    <line x1="280" y1="6" x2="280" y2="26" stroke="#d0d8e4" stroke-width="1"/>
+    <text x="355" y="21" text-anchor="middle" fill="#0058a3" font-size="11" font-weight="600">0 dependencies</text>
+    <line x1="440" y1="6" x2="440" y2="26" stroke="#d0d8e4" stroke-width="1"/>
+    <text x="520" y="21" text-anchor="middle" fill="#0058a3" font-size="11" font-weight="600">9.48 KB gzipped</text>
+    <line x1="610" y1="6" x2="610" y2="26" stroke="#d0d8e4" stroke-width="1"/>
+    <text x="700" y="21" text-anchor="middle" fill="#0058a3" font-size="11" font-weight="600">3 entry points</text>
+  </g>
+</svg>

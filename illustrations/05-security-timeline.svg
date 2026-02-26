@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg5" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5f7fa"/>
+      <stop offset="100%" stop-color="#e8edf3"/>
+    </linearGradient>
+    <linearGradient id="highSev" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e74c3c"/>
+      <stop offset="100%" stop-color="#c0392b"/>
+    </linearGradient>
+    <linearGradient id="medSev" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#e67e22"/>
+      <stop offset="100%" stop-color="#d35400"/>
+    </linearGradient>
+    <linearGradient id="lowSev" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3498db"/>
+      <stop offset="100%" stop-color="#2980b9"/>
+    </linearGradient>
+    <linearGradient id="testSev" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2ecc71"/>
+      <stop offset="100%" stop-color="#27ae60"/>
+    </linearGradient>
+    <filter id="commitGlow" x="-5%" y="-10%" width="110%" height="120%">
+      <feDropShadow dx="0" dy="1" stdDeviation="3" flood-color="#8a9ab0" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="640" fill="url(#bg5)" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="36" text-anchor="middle" fill="#5a7aa0" font-size="13" font-weight="500" letter-spacing="3">THE SECURITY MARATHON</text>
+  <text x="450" y="62" text-anchor="middle" fill="#1a2744" font-size="20" font-weight="600">15 Commits in 2 Hours: 19:10 - 21:21</text>
+
+  <!-- Clock visualization -->
+  <g transform="translate(450, 120)">
+    <circle cx="0" cy="0" r="42" fill="none" stroke="#c8d4e2" stroke-width="2"/>
+    <circle cx="0" cy="0" r="38" fill="#ffffff"/>
+    <!-- Hour markers -->
+    <g stroke="#b0c0d0" stroke-width="1.5">
+      <line x1="0" y1="-35" x2="0" y2="-30"/>
+      <line x1="17.5" y1="-30.3" x2="15" y2="-26"/>
+      <line x1="30.3" y1="-17.5" x2="26" y2="-15"/>
+      <line x1="35" y1="0" x2="30" y2="0"/>
+      <line x1="30.3" y1="17.5" x2="26" y2="15"/>
+    </g>
+    <!-- Clock hands showing ~9:15 PM -->
+    <line x1="0" y1="0" x2="-12" y2="-20" stroke="#1a2744" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="0" y1="0" x2="22" y2="-10" stroke="#0078d4" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="0" cy="0" r="3" fill="#0078d4"/>
+    <!-- Labels -->
+    <text x="-70" y="5" text-anchor="end" fill="#6a7a8a" font-size="11">19:10</text>
+    <text x="70" y="5" text-anchor="start" fill="#6a7a8a" font-size="11">21:21</text>
+  </g>
+
+  <!-- Severity legend -->
+  <g transform="translate(140, 175)">
+    <rect x="0" y="0" width="12" height="12" rx="3" fill="url(#highSev)"/>
+    <text x="18" y="11" fill="#1a2744" font-size="11">High Severity</text>
+
+    <rect x="150" y="0" width="12" height="12" rx="3" fill="url(#medSev)"/>
+    <text x="168" y="11" fill="#1a2744" font-size="11">Medium Severity</text>
+
+    <rect x="330" y="0" width="12" height="12" rx="3" fill="url(#lowSev)"/>
+    <text x="348" y="11" fill="#1a2744" font-size="11">Low Severity</text>
+
+    <rect x="480" y="0" width="12" height="12" rx="3" fill="url(#testSev)"/>
+    <text x="498" y="11" fill="#1a2744" font-size="11">Tests + Quality</text>
+  </g>
+
+  <!-- Timeline -->
+  <line x1="70" y1="210" x2="70" y2="615" stroke="#c8d4e2" stroke-width="2"/>
+
+  <!-- Commit entries -->
+  <!-- 19:10 -->
+  <g transform="translate(0, 210)" filter="url(#commitGlow)">
+    <circle cx="70" cy="12" r="6" fill="#e74c3c"/>
+    <text x="40" y="17" text-anchor="end" fill="#6a7a8a" font-size="11" font-weight="600">19:10</text>
+    <rect x="90" y="0" width="780" height="26" rx="5" fill="#ffffff"/>
+    <rect x="90" y="0" width="4" height="26" rx="2" fill="url(#highSev)"/>
+    <text x="104" y="17" fill="#3a2020" font-size="11">Fix security vulnerabilities, accessibility gaps, and memory leaks</text>
+    <rect x="735" y="4" width="55" height="18" rx="4" fill="#fde8e8"/>
+    <text x="762" y="17" text-anchor="middle" fill="#e74c3c" font-size="9" font-weight="600">HIGH</text>
+  </g>
+
+  <!-- 19:19 -->
+  <g transform="translate(0, 242)" filter="url(#commitGlow)">
+    <circle cx="70" cy="12" r="5" fill="#3498db"/>
+    <text x="40" y="17" text-anchor="end" fill="#6a7a8a" font-size="11" font-weight="600">19:19</text>
+    <rect x="90" y="0" width="780" height="26" rx="5" fill="#ffffff"/>
+    <rect x="90" y="0" width="4" height="26" rx="2" fill="url(#lowSev)"/>
+    <text x="104" y="17" fill="#1a2744" font-size="11">Fix remaining low-severity bugs: open() flicker, React hook gaps</text>
+  </g>
+
+  <!-- 19:25 -->
+  <g transform="translate(0, 274)" filter="url(#commitGlow)">
+    <circle cx="70" cy="12" r="5" fill="#2ecc71"/>
+    <text x="40" y="17" text-anchor="end" fill="#6a7a8a" font-size="11" font-weight="600">19:25</text>
+    <rect x="90" y="0" width="780" height="26" rx="5" fill="#ffffff"/>
+    <rect x="90" y="0" width="4" height="26" rx="2" fill="url(#testSev)"/>
+    <text x="104" y="17" fill="#1a3a20" font-size="11">Improve code quality: cleanup pattern, Map lookups, stable keys</text>
+  </g>
+
+  <!-- 19:30 -->
+  <g transform="translate(0, 306)" filter="url(#commitGlow)">
+    <circle cx="70" cy="12" r="5" fill="#e67e22"/>
+    <text x="40" y="17" text-anchor="end" fill="#6a7a8a" font-size="11" font-weight="600">19:30</text>
+    <rect x="90" y="0" width="780" height="26" rx="5" fill="#ffffff"/>
+    <rect x="90" y="0" width="4" height="26" rx="2" fill="url(#medSev)"/>
+    <text x="104" y="17" fill="#3a2a10" font-size="11">Improve accessibility: navigation hotspot hints and editor labels</text>
+  </g>
+
+  <!-- 19:40 -->
+  <g transform="translate(0, 338)" filter="url(#commitGlow)">
+    <circle cx="70" cy="12" r="5" fill="#3498db"/>
+    <text x="40" y="17" text-anchor="end" fill="#6a7a8a" font-size="11" font-weight="600">19:40</text>
+    <rect x="90" y="0" width="780" height="26" rx="5" fill="#ffffff"/>
+    <rect x="90" y="0" width="4" height="26" rx="2" fill="url(#lowSev)"/>
+    <text x="104" y="17" fill="#1a2744" font-size="11">Fix UX/CSS issues: editor guards, drag throttle, popover overflow</text>
+  </g>
+
+  <!-- 19:43 -->
+  <g transform="translate(0, 370)" filter="url(#commitGlow)">
+    <circle cx="70" cy="12" r="5" fill="#2ecc71"/>
+    <text x="40" y="17" text-anchor="end" fill="#6a7a8a" font-size="11" font-weight="600">19:43</text>
+    <rect x="90" y="0" width="780" height="26" rx="5" fill="#ffffff"/>
+    <rect x="90" y="0" width="4" height="26" rx="2" fill="url(#testSev)"/>
+    <text x="104" y="17" fill="#1a3a20" font-size="11">Fix test gaps: load trigger test and React test suite</text>
+  </g>
+
+  <!-- 19:53 -->
+  <g transform="translate(0, 402)" filter="url(#commitGlow)">
+    <circle cx="70" cy="12" r="6" fill="#e74c3c"/>
+    <text x="40" y="17" text-anchor="end" fill="#6a7a8a" font-size="11" font-weight="600">19:53</text>
+    <rect x="90" y="0" width="780" height="26" rx="5" fill="#ffffff"/>
+    <rect x="90" y="0" width="4" height="26" rx="2" fill="url(#highSev)"/>
+    <text x="104" y="17" fill="#3a2020" font-size="11">Fix high-severity bugs: scope outside-click listener</text>
+    <rect x="735" y="4" width="55" height="18" rx="4" fill="#fde8e8"/>
+    <text x="762" y="17" text-anchor="middle" fill="#e74c3c" font-size="9" font-weight="600">HIGH</text>
+  </g>
+
+  <!-- 20:03 -->
+  <g transform="translate(0, 434)" filter="url(#commitGlow)">
+    <circle cx="70" cy="12" r="5" fill="#e67e22"/>
+    <text x="40" y="17" text-anchor="end" fill="#6a7a8a" font-size="11" font-weight="600">20:03</text>
+    <rect x="90" y="0" width="780" height="26" rx="5" fill="#ffffff"/>
+    <rect x="90" y="0" width="4" height="26" rx="2" fill="url(#medSev)"/>
+    <text x="104" y="17" fill="#3a2a10" font-size="11">Fix medium-severity issues: portal map diffing, focus trap, SVG sanitizer</text>
+  </g>
+
+  <!-- 20:08 -->
+  <g transform="translate(0, 466)" filter="url(#commitGlow)">
+    <circle cx="70" cy="12" r="5" fill="#3498db"/>
+    <text x="40" y="17" text-anchor="end" fill="#6a7a8a" font-size="11" font-weight="600">20:08</text>
+    <rect x="90" y="0" width="780" height="26" rx="5" fill="#ffffff"/>
+    <rect x="90" y="0" width="4" height="26" rx="2" fill="url(#lowSev)"/>
+    <text x="104" y="17" fill="#1a2744" font-size="11">Fix low-severity issues: rel validation, onClick type, editor dark theme</text>
+  </g>
+
+  <!-- 20:12 -->
+  <g transform="translate(0, 498)" filter="url(#commitGlow)">
+    <circle cx="70" cy="12" r="5" fill="#2ecc71"/>
+    <text x="40" y="17" text-anchor="end" fill="#6a7a8a" font-size="11" font-weight="600">20:12</text>
+    <rect x="90" y="0" width="780" height="26" rx="5" fill="#ffffff"/>
+    <rect x="90" y="0" width="4" height="26" rx="2" fill="url(#testSev)"/>
+    <text x="104" y="17" fill="#1a3a20" font-size="11">Close all test gaps: gestures, position, pulse, editor components</text>
+  </g>
+
+  <!-- 20:46 -->
+  <g transform="translate(0, 530)" filter="url(#commitGlow)">
+    <circle cx="70" cy="12" r="6" fill="#e74c3c"/>
+    <text x="40" y="17" text-anchor="end" fill="#6a7a8a" font-size="11" font-weight="600">20:46</text>
+    <rect x="90" y="0" width="780" height="26" rx="5" fill="#ffffff"/>
+    <rect x="90" y="0" width="4" height="26" rx="2" fill="url(#highSev)"/>
+    <text x="104" y="17" fill="#3a2020" font-size="11">Fix high-severity: tracked timers, SVG/URL security, touch gestures</text>
+    <rect x="735" y="4" width="55" height="18" rx="4" fill="#fde8e8"/>
+    <text x="762" y="17" text-anchor="middle" fill="#e74c3c" font-size="9" font-weight="600">HIGH</text>
+  </g>
+
+  <!-- 20:58 -->
+  <g transform="translate(0, 562)" filter="url(#commitGlow)">
+    <circle cx="70" cy="12" r="5" fill="#e67e22"/>
+    <text x="40" y="17" text-anchor="end" fill="#6a7a8a" font-size="11" font-weight="600">20:58</text>
+    <rect x="90" y="0" width="780" height="26" rx="5" fill="#ffffff"/>
+    <rect x="90" y="0" width="4" height="26" rx="2" fill="url(#medSev)"/>
+    <text x="104" y="17" fill="#3a2a10" font-size="11">Fix medium-severity: duplicate IDs, throttling, a11y, scoping</text>
+  </g>
+
+  <!-- 21:12 + 21:21 -->
+  <g transform="translate(0, 594)" filter="url(#commitGlow)">
+    <circle cx="70" cy="12" r="5" fill="#3498db"/>
+    <text x="40" y="17" text-anchor="end" fill="#6a7a8a" font-size="11" font-weight="600">21:12</text>
+    <rect x="90" y="0" width="370" height="26" rx="5" fill="#ffffff"/>
+    <rect x="90" y="0" width="4" height="26" rx="2" fill="url(#lowSev)"/>
+    <text x="104" y="17" fill="#1a2744" font-size="11">Fix low: float equality, deprecated APIs, type safety</text>
+
+    <circle cx="500" cy="12" r="5" fill="#2ecc71"/>
+    <text x="517" y="17" fill="#6a7a8a" font-size="11" font-weight="600">21:21</text>
+    <rect x="550" y="0" width="320" height="26" rx="5" fill="#ffffff"/>
+    <rect x="550" y="0" width="4" height="26" rx="2" fill="url(#testSev)"/>
+    <text x="564" y="17" fill="#1a3a20" font-size="11">Fix test issues: false positives, vacuous assertions</text>
+  </g>
+</svg>

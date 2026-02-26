@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg6" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5f7fa"/>
+      <stop offset="100%" stop-color="#e8edf3"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8fafd"/>
+    </linearGradient>
+    <linearGradient id="barBlue" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0058a3"/>
+      <stop offset="100%" stop-color="#0090ff"/>
+    </linearGradient>
+    <linearGradient id="barGreen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1a8a4a"/>
+      <stop offset="100%" stop-color="#2ecc71"/>
+    </linearGradient>
+    <linearGradient id="barOrange" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#d35400"/>
+      <stop offset="100%" stop-color="#f39c12"/>
+    </linearGradient>
+    <filter id="cardShadow6" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#8a9ab0" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="520" fill="url(#bg6)" rx="12"/>
+
+  <!-- Title -->
+  <text x="450" y="38" text-anchor="middle" fill="#5a7aa0" font-size="13" font-weight="500" letter-spacing="3">PROJECT METRICS</text>
+  <text x="450" y="65" text-anchor="middle" fill="#1a2744" font-size="20" font-weight="600">The Numbers Behind the Build</text>
+
+  <!-- Top metric cards row -->
+  <!-- Card 1: Lines of Code -->
+  <g filter="url(#cardShadow6)">
+    <rect x="35" y="85" width="195" height="110" rx="12" fill="url(#cardGrad)" stroke="#d0d8e4" stroke-width="1"/>
+    <text x="132" y="115" text-anchor="middle" fill="#6a7a8a" font-size="11" font-weight="500" letter-spacing="1">SOURCE CODE</text>
+    <text x="132" y="152" text-anchor="middle" fill="#0058a3" font-size="34" font-weight="700">6,222</text>
+    <text x="132" y="174" text-anchor="middle" fill="#8a95a5" font-size="11">lines of TypeScript + CSS</text>
+  </g>
+
+  <!-- Card 2: Tests -->
+  <g filter="url(#cardShadow6)">
+    <rect x="245" y="85" width="195" height="110" rx="12" fill="url(#cardGrad)" stroke="#d0d8e4" stroke-width="1"/>
+    <text x="342" y="115" text-anchor="middle" fill="#6a7a8a" font-size="11" font-weight="500" letter-spacing="1">TESTS</text>
+    <text x="342" y="152" text-anchor="middle" fill="#1a8a4a" font-size="34" font-weight="700">243</text>
+    <text x="342" y="174" text-anchor="middle" fill="#8a95a5" font-size="11">across 20 test files</text>
+  </g>
+
+  <!-- Card 3: Bundle Size -->
+  <g filter="url(#cardShadow6)">
+    <rect x="455" y="85" width="195" height="110" rx="12" fill="url(#cardGrad)" stroke="#d0d8e4" stroke-width="1"/>
+    <text x="552" y="115" text-anchor="middle" fill="#6a7a8a" font-size="11" font-weight="500" letter-spacing="1">BUNDLE (GZIPPED)</text>
+    <text x="552" y="152" text-anchor="middle" fill="#d35400" font-size="34" font-weight="700">9.48</text>
+    <text x="552" y="174" text-anchor="middle" fill="#8a95a5" font-size="11">KB — zero dependencies</text>
+  </g>
+
+  <!-- Card 4: Speed -->
+  <g filter="url(#cardShadow6)">
+    <rect x="665" y="85" width="200" height="110" rx="12" fill="url(#cardGrad)" stroke="#d0d8e4" stroke-width="1"/>
+    <text x="765" y="115" text-anchor="middle" fill="#6a7a8a" font-size="11" font-weight="500" letter-spacing="1">SPEED MULTIPLIER</text>
+    <text x="765" y="152" text-anchor="middle" fill="#c0392b" font-size="34" font-weight="700">~60x</text>
+    <text x="765" y="174" text-anchor="middle" fill="#8a95a5" font-size="11">vs. manual development</text>
+  </g>
+
+  <!-- Time comparison bar chart -->
+  <g transform="translate(35, 225)">
+    <text x="0" y="0" fill="#3a5a80" font-size="13" font-weight="600">Time Comparison</text>
+
+    <!-- Manual estimate -->
+    <text x="0" y="30" fill="#5a6a7a" font-size="11">Manual estimate (senior dev)</text>
+    <rect x="0" y="38" width="620" height="28" rx="6" fill="url(#barOrange)" opacity="0.85"/>
+    <text x="630" y="57" fill="#d35400" font-size="12" font-weight="700">320-360 hrs</text>
+    <text x="720" y="57" fill="#6a7a8a" font-size="10">(8-9 weeks)</text>
+
+    <!-- AI-assisted -->
+    <text x="0" y="86" fill="#5a6a7a" font-size="11">With Claude Code</text>
+    <rect x="0" y="94" width="10" height="28" rx="6" fill="url(#barBlue)"/>
+    <text x="20" y="113" fill="#0058a3" font-size="12" font-weight="700">~5 hrs</text>
+    <text x="78" y="113" fill="#6a7a8a" font-size="10">(spare moments at a workshop)</text>
+  </g>
+
+  <!-- Code composition breakdown -->
+  <g transform="translate(35, 375)">
+    <text x="0" y="0" fill="#3a5a80" font-size="13" font-weight="600">Codebase Composition</text>
+
+    <!-- Source code bar -->
+    <text x="0" y="30" fill="#5a6a7a" font-size="11">Source code</text>
+    <rect x="130" y="18" width="310" height="20" rx="5" fill="url(#barBlue)" opacity="0.8"/>
+    <text x="450" y="33" fill="#6a7a8a" font-size="10">6,222 lines</text>
+
+    <!-- Test code bar -->
+    <text x="0" y="55" fill="#5a6a7a" font-size="11">Test code</text>
+    <rect x="130" y="43" width="215" height="20" rx="5" fill="url(#barGreen)" opacity="0.8"/>
+    <text x="355" y="58" fill="#6a7a8a" font-size="10">4,311 lines (69% of source)</text>
+
+    <!-- Demo code bar -->
+    <text x="0" y="80" fill="#5a6a7a" font-size="11">Demo / examples</text>
+    <rect x="130" y="68" width="93" height="20" rx="5" fill="#6c5ce7" opacity="0.7"/>
+    <text x="233" y="83" fill="#6a7a8a" font-size="10">1,859 lines</text>
+  </g>
+
+  <!-- Bottom feature badges -->
+  <g transform="translate(35, 480)">
+    <rect x="0" y="0" width="830" height="30" rx="8" fill="#ffffff" stroke="#d0d8e4" stroke-width="1"/>
+    <g font-size="10" fill="#0058a3" text-anchor="middle">
+      <text x="60" y="20" font-weight="600">73 commits</text>
+      <line x1="120" y1="6" x2="120" y2="24" stroke="#d0d8e4" stroke-width="1"/>
+      <text x="185" y="20" font-weight="600">WCAG 2.1 AA</text>
+      <line x1="255" y1="6" x2="255" y2="24" stroke="#d0d8e4" stroke-width="1"/>
+      <text x="325" y="20" font-weight="600">React + Vanilla</text>
+      <line x1="400" y1="6" x2="400" y2="24" stroke="#d0d8e4" stroke-width="1"/>
+      <text x="470" y="20" font-weight="600">Visual Editor</text>
+      <line x1="535" y1="6" x2="535" y2="24" stroke="#d0d8e4" stroke-width="1"/>
+      <text x="610" y="20" font-weight="600">Multi-scene Nav</text>
+      <line x1="690" y1="6" x2="690" y2="24" stroke="#d0d8e4" stroke-width="1"/>
+      <text x="765" y="20" font-weight="600">SSR Support</text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5f7fa"/>
+      <stop offset="100%" stop-color="#e8edf3"/>
+    </linearGradient>
+    <linearGradient id="imgGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#3a7bd5"/>
+      <stop offset="100%" stop-color="#1a4a8a"/>
+    </linearGradient>
+    <linearGradient id="popoverGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f8f9fa"/>
+    </linearGradient>
+    <filter id="shadow1" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#8a9ab0" flood-opacity="0.2"/>
+    </filter>
+    <filter id="popShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#8a9ab0" flood-opacity="0.18"/>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Pulse animation -->
+    <style>
+      @keyframes pulse {
+        0% { r: 14; opacity: 0.6; }
+        50% { r: 22; opacity: 0; }
+        100% { r: 14; opacity: 0.6; }
+      }
+      @keyframes pulse2 {
+        0% { r: 14; opacity: 0.5; }
+        50% { r: 26; opacity: 0; }
+        100% { r: 14; opacity: 0.5; }
+      }
+      .pulse-ring { animation: pulse 1.8s ease-out infinite; }
+      .pulse-ring2 { animation: pulse2 1.8s ease-out 0.4s infinite; }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="520" fill="url(#bg1)" rx="12"/>
+
+  <!-- Decorative grid dots -->
+  <g opacity="0.08">
+    <pattern id="dots" width="30" height="30" patternUnits="userSpaceOnUse">
+      <circle cx="15" cy="15" r="1" fill="#5a7a9a"/>
+    </pattern>
+    <rect width="900" height="520" fill="url(#dots)"/>
+  </g>
+
+  <!-- Title area -->
+  <text x="450" y="42" text-anchor="middle" fill="#5a7aa0" font-size="13" font-weight="500" letter-spacing="3" text-transform="uppercase">INTERACTIVE IMAGE HOTSPOTS</text>
+
+  <!-- Main image container -->
+  <g filter="url(#shadow1)">
+    <rect x="80" y="62" width="740" height="400" rx="10" fill="#d0daea"/>
+    <!-- Image area simulation -->
+    <rect x="82" y="64" width="736" height="396" rx="9" fill="url(#imgGrad)" opacity="0.3"/>
+
+    <!-- Simulated room scene elements -->
+    <!-- Wall -->
+    <rect x="82" y="64" width="736" height="250" fill="#2a4a7a" opacity="0.4" rx="9"/>
+    <!-- Floor -->
+    <path d="M82 314 L818 314 L818 460 Q818 464 814 464 L86 464 Q82 464 82 460 Z" fill="#1a3a6a" opacity="0.3"/>
+
+    <!-- Furniture silhouettes -->
+    <!-- Sofa -->
+    <rect x="200" y="280" width="240" height="90" rx="12" fill="#1a3560" opacity="0.5"/>
+    <rect x="195" y="310" width="250" height="65" rx="8" fill="#1e3d6d" opacity="0.5"/>
+    <!-- Table -->
+    <rect x="500" y="320" width="120" height="70" rx="6" fill="#1a3560" opacity="0.4"/>
+    <!-- Lamp -->
+    <rect x="155" y="180" width="6" height="140" rx="3" fill="#2a5090" opacity="0.3"/>
+    <ellipse cx="158" cy="180" rx="30" ry="20" fill="#2a5090" opacity="0.3"/>
+    <!-- Picture frame -->
+    <rect x="380" y="110" width="140" height="100" rx="3" fill="#2a5090" opacity="0.3"/>
+    <rect x="385" y="115" width="130" height="90" rx="2" fill="#1e4070" opacity="0.4"/>
+  </g>
+
+  <!-- Hotspot marker 1 - Sofa (with open popover) -->
+  <g>
+    <!-- Pulse rings -->
+    <circle cx="320" cy="330" r="14" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" class="pulse-ring"/>
+    <circle cx="320" cy="330" r="14" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" class="pulse-ring2"/>
+    <!-- Marker -->
+    <circle cx="320" cy="330" r="14" fill="rgba(0,0,0,0.65)" stroke="rgba(255,255,255,0.9)" stroke-width="2"/>
+    <text x="320" y="335" text-anchor="middle" fill="white" font-size="14" font-weight="600">+</text>
+
+    <!-- Popover -->
+    <g filter="url(#popShadow)">
+      <!-- Arrow -->
+      <path d="M320 305 L312 295 L328 295 Z" fill="white"/>
+      <!-- Card -->
+      <rect x="230" y="175" width="180" height="120" rx="10" fill="url(#popoverGrad)"/>
+      <!-- Product image placeholder -->
+      <rect x="240" y="185" width="160" height="55" rx="6" fill="#e8f0fe"/>
+      <text x="320" y="216" text-anchor="middle" fill="#6a9fd8" font-size="11">Sofa Image</text>
+      <!-- Product info -->
+      <text x="240" y="257" fill="#1a1a2e" font-size="13" font-weight="600">Modern Sofa</text>
+      <text x="240" y="274" fill="#0058a3" font-size="14" font-weight="700">$1,299</text>
+      <!-- CTA button -->
+      <rect x="338" y="258" width="62" height="24" rx="6" fill="#0058a3"/>
+      <text x="369" y="274" text-anchor="middle" fill="white" font-size="10" font-weight="600">Buy</text>
+    </g>
+  </g>
+
+  <!-- Hotspot marker 2 - Lamp -->
+  <g>
+    <circle cx="158" cy="210" r="14" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" class="pulse-ring"/>
+    <circle cx="158" cy="210" r="14" fill="rgba(0,0,0,0.65)" stroke="rgba(255,255,255,0.9)" stroke-width="2"/>
+    <text x="158" y="215" text-anchor="middle" fill="white" font-size="14" font-weight="600">+</text>
+  </g>
+
+  <!-- Hotspot marker 3 - Table -->
+  <g>
+    <circle cx="560" cy="355" r="14" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" class="pulse-ring"/>
+    <circle cx="560" cy="355" r="14" fill="rgba(0,0,0,0.65)" stroke="rgba(255,255,255,0.9)" stroke-width="2"/>
+    <text x="560" y="360" text-anchor="middle" fill="white" font-size="14" font-weight="600">+</text>
+  </g>
+
+  <!-- Hotspot marker 4 - Picture -->
+  <g>
+    <circle cx="450" cy="160" r="14" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2" class="pulse-ring"/>
+    <circle cx="450" cy="160" r="14" fill="rgba(0,0,0,0.65)" stroke="rgba(255,255,255,0.9)" stroke-width="2"/>
+    <text x="450" y="165" text-anchor="middle" fill="white" font-size="14" font-weight="600">+</text>
+  </g>
+
+  <!-- Zoom controls -->
+  <g>
+    <rect x="750" y="400" width="56" height="28" rx="6" fill="rgba(0,0,0,0.5)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    <text x="767" y="418" text-anchor="middle" fill="white" font-size="16" font-weight="300">-</text>
+    <line x1="778" y1="404" x2="778" y2="424" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    <text x="793" y="419" text-anchor="middle" fill="white" font-size="16" font-weight="300">+</text>
+  </g>
+
+  <!-- Fullscreen icon -->
+  <g transform="translate(750, 72)">
+    <rect width="28" height="28" rx="6" fill="rgba(0,0,0,0.5)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    <path d="M8 10 L8 8 L12 8 M20 8 L16 8 L16 8 M20 18 L20 20 L16 20 M8 20 L12 20 L12 20" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Bottom label -->
+  <text x="450" y="498" text-anchor="middle" fill="#6a8aaa" font-size="12" font-weight="400">Hover or click markers to reveal product popovers with auto-positioning</text>
+</svg>
