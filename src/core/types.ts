@@ -13,6 +13,9 @@ export type SceneTransition = 'fade' | 'slide' | 'none';
 /** Marker visual style */
 export type MarkerStyle = 'dot' | 'dot-label';
 
+/** Marker theme for hotspot dots */
+export type MarkerTheme = 'default' | 'inverted' | 'brand';
+
 /** Zoom controls position */
 export type ZoomControlsPosition = 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
 
@@ -122,6 +125,10 @@ export interface CIHotspotConfig {
   theme?: Theme;
   /** Invert marker colors so they blend with the theme instead of contrasting (default: false) */
   invertMarkerTheme?: boolean;
+  /** Marker theme: 'default' | 'inverted' | 'brand'. Supersedes invertMarkerTheme when set. */
+  markerTheme?: MarkerTheme;
+  /** Brand accent color for 'brand' marker theme (default: '#00aaff') */
+  brandColor?: string;
   /** Custom popover render function */
   renderPopover?: (hotspot: HotspotItem) => string | HTMLElement;
   /** Called when a hotspot is activated (popover opens) */

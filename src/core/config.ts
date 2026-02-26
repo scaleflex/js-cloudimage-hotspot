@@ -14,6 +14,8 @@ export const DEFAULT_CONFIG: Omit<Required<CIHotspotConfig>, 'src' | 'hotspots' 
   sceneTransition: 'fade',
   scrollHint: true,
   invertMarkerTheme: false,
+  markerTheme: 'default',
+  brandColor: '#00aaff',
   fullscreenButton: true,
   zoomControlsPosition: 'bottom-right',
 };
@@ -43,6 +45,8 @@ export const DATA_ATTR_MAP: Record<string, { key: string; type: 'string' | 'bool
   'data-ci-hotspot-scene-transition': { key: 'sceneTransition', type: 'string' },
   'data-ci-hotspot-scene-aspect-ratio': { key: 'sceneAspectRatio', type: 'string' },
   'data-ci-hotspot-invert-marker-theme': { key: 'invertMarkerTheme', type: 'boolean' },
+  'data-ci-hotspot-marker-theme': { key: 'markerTheme', type: 'string' },
+  'data-ci-hotspot-brand-color': { key: 'brandColor', type: 'string' },
   'data-ci-hotspot-fullscreen-button': { key: 'fullscreenButton', type: 'boolean' },
   'data-ci-hotspot-zoom-controls-position': { key: 'zoomControlsPosition', type: 'string' },
 };

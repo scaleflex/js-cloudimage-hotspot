@@ -128,9 +128,26 @@ export class CIHotspot implements CIHotspotInstance {
   private applyTheme(): void {
     if (this.config.theme === 'dark') {
       addClass(this.containerEl, 'ci-hotspot-theme-dark');
+    } else {
+      removeClass(this.containerEl, 'ci-hotspot-theme-dark');
     }
-    if (this.config.invertMarkerTheme) {
+
+    // Resolve markerTheme with backwards-compat invertMarkerTheme alias
+    const markerTheme = this.config.markerTheme && this.config.markerTheme !== 'default'
+      ? this.config.markerTheme
+      : this.config.invertMarkerTheme ? 'inverted' : 'default';
+
+    removeClass(this.containerEl, 'ci-hotspot-marker-inverted');
+    removeClass(this.containerEl, 'ci-hotspot-marker-brand');
+    this.containerEl.style.removeProperty('--ci-hotspot-brand-color');
+
+    if (markerTheme === 'inverted') {
       addClass(this.containerEl, 'ci-hotspot-marker-inverted');
+    } else if (markerTheme === 'brand') {
+      addClass(this.containerEl, 'ci-hotspot-marker-brand');
+      if (this.config.brandColor) {
+        this.containerEl.style.setProperty('--ci-hotspot-brand-color', this.config.brandColor);
+      }
     }
   }
 
