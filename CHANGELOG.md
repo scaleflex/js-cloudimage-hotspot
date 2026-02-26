@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.3] - 2026-02-26
+
+### Added
+
+- Brand marker theme (`markerTheme: 'brand'`) with configurable `brandColor`
+- Brand option in Interactive Configurator theme selector
+
+### Fixed
+
+- Navigate (arrow) dots now follow the active theme instead of using hardcoded blue
+
 ## [1.1.2] - 2026-02-24
 
 ### Fixed
@@ -25,5 +36,6 @@ All notable changes to this project will be documented in this file.
 - **Zero runtime dependencies**
 - **Output formats** — ESM, CJS, and UMD bundles with full TypeScript declarations
 
+[1.1.3]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.3
 [1.1.2]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.2
 [1.0.0]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.0.0
