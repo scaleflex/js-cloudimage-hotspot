@@ -773,17 +773,19 @@ button.ci-hotspot-popover-cta {
   object-fit: contain;
 }
 
-/* Fixed-ratio (scenes) in fullscreen: viewport fills the screen, image stays absolute */
+/* Fixed-ratio (scenes) in fullscreen: viewport fills the screen, image stays absolute.
+   !important on padding-bottom overrides the inline padding-bottom % set by JS. */
 .ci-hotspot-container--fullscreen.ci-hotspot-container--fixed-ratio .ci-hotspot-viewport {
   width: 100%;
   height: 100%;
-  padding-bottom: 0;
+  padding-bottom: 0 !important;
 }
 
 .ci-hotspot-container--fullscreen.ci-hotspot-container--fixed-ratio .ci-hotspot-image {
   width: 100%;
   height: 100%;
   max-height: none;
+  object-fit: contain;
 }
 
 /* Fullscreen button on dark backgrounds (dark theme or fullscreen mode) */
