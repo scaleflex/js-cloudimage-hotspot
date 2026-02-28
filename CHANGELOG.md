@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.4] - 2026-02-28
+
+### Fixed
+
+- Fixed fullscreen layout for fixed-ratio scenes: override inline `padding-bottom` so viewport fills the screen correctly
+- Added explicit `object-fit: contain` on fullscreen fixed-ratio image
+
 ## [1.1.3] - 2026-02-26
 
 ### Added
@@ -36,6 +43,7 @@ All notable changes to this project will be documented in this file.
 - **Zero runtime dependencies**
 - **Output formats** — ESM, CJS, and UMD bundles with full TypeScript declarations
 
+[1.1.4]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.4
 [1.1.3]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.3
 [1.1.2]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.2
 [1.0.0]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.0.0
