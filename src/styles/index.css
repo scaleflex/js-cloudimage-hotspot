@@ -369,6 +369,13 @@
   opacity: 0.9;
 }
 
+button.ci-hotspot-popover-cta {
+  cursor: pointer;
+  border: none;
+  font: inherit;
+  width: 100%;
+}
+
 .ci-hotspot-popover-cta:focus-visible {
   outline: 3px solid var(--ci-hotspot-focus-ring, #4A90D9);
   outline-offset: 2px;

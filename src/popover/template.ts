@@ -32,8 +32,14 @@ export function renderBuiltInTemplate(data: PopoverData): string {
 
   if (data.url && isSafeUrl(data.url)) {
     const ctaText = data.ctaText || 'View details';
+    const productAttr = data.id ? ` data-product-id="${escapeAttr(data.id)}"` : '';
     bodyParts.push(
-      `<a class="ci-hotspot-popover-cta" href="${escapeAttr(data.url)}">${escapeHtml(String(ctaText))}</a>`,
+      `<a class="ci-hotspot-popover-cta" href="${escapeAttr(data.url)}"${productAttr}>${escapeHtml(String(ctaText))}</a>`,
+    );
+  } else if (data.id) {
+    const ctaText = data.ctaText || 'View details';
+    bodyParts.push(
+      `<button class="ci-hotspot-popover-cta" data-product-id="${escapeAttr(data.id)}">${escapeHtml(String(ctaText))}</button>`,
     );
   }
 

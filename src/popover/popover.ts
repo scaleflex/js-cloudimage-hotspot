@@ -9,6 +9,7 @@ export interface PopoverOptions {
   renderFn?: (hotspot: HotspotItem) => string | HTMLElement;
   onOpen?: (hotspot: HotspotItem) => void;
   onClose?: (hotspot: HotspotItem) => void;
+  onProductClick?: (productId: string, hotspot: HotspotItem) => void;
 }
 
 export class Popover {
@@ -48,6 +49,18 @@ export class Popover {
       this.contentEl.innerHTML = content;
     } else if (content instanceof HTMLElement) {
       this.contentEl.appendChild(content);
+    }
+
+    // Delegated click handler for CTA buttons/links with product ID
+    if (options.onProductClick) {
+      const onCtaClick = (e: MouseEvent) => {
+        const cta = (e.target as HTMLElement).closest<HTMLElement>('.ci-hotspot-popover-cta[data-product-id]');
+        if (!cta) return;
+        const productId = cta.dataset.productId!;
+        options.onProductClick!(productId, hotspot);
+      };
+      this.contentEl.addEventListener('click', onCtaClick);
+      this.hoverCleanups.push(() => this.contentEl.removeEventListener('click', onCtaClick));
     }
 
     // Hover delay: clear hide timer when mouse enters popover

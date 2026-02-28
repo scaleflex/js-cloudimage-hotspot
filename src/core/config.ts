@@ -1,6 +1,6 @@
 import type { CIHotspotConfig, CloudimageConfig, ResolvedCIHotspotConfig } from './types';
 
-export const DEFAULT_CONFIG: Omit<Required<CIHotspotConfig>, 'src' | 'hotspots' | 'cloudimage' | 'renderPopover' | 'onOpen' | 'onClose' | 'onZoom' | 'onClick' | 'scenes' | 'initialScene' | 'onSceneChange' | 'sceneAspectRatio' | 'onFullscreenChange'> = {
+export const DEFAULT_CONFIG: Omit<Required<CIHotspotConfig>, 'src' | 'hotspots' | 'cloudimage' | 'renderPopover' | 'onOpen' | 'onClose' | 'onZoom' | 'onClick' | 'onProductClick' | 'scenes' | 'initialScene' | 'onSceneChange' | 'sceneAspectRatio' | 'onFullscreenChange'> = {
   alt: '',
   trigger: 'hover',
   zoom: false,

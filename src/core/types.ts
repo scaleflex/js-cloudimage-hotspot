@@ -33,6 +33,7 @@ export interface Scene {
 
 /** Data fields for the built-in popover template */
 export interface PopoverData {
+  id?: string;
   title?: string;
   originalPrice?: string;
   price?: string;
@@ -139,6 +140,8 @@ export interface CIHotspotConfig {
   onZoom?: (level: number) => void;
   /** Called when a hotspot marker is clicked */
   onClick?: (event: MouseEvent | KeyboardEvent, hotspot: HotspotItem) => void;
+  /** Called when a CTA with a product ID is clicked */
+  onProductClick?: (productId: string, hotspot: HotspotItem) => void;
   /** Enable/disable marker pulse animation (default: true) */
   pulse?: boolean;
   /** Show zoom controls UI (default: true when zoom is enabled) */

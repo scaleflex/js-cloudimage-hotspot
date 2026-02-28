@@ -261,6 +261,7 @@ export class CIHotspot implements CIHotspotInstance {
           renderFn: this.config.renderPopover,
           onOpen: this.config.onOpen,
           onClose: this.config.onClose,
+          onProductClick: this.config.onProductClick,
         });
         this.popovers.set(hotspot.id, popover);
         popover.mount(this.containerEl, marker);
@@ -280,6 +281,7 @@ export class CIHotspot implements CIHotspotInstance {
       renderFn: this.config.renderPopover,
       onOpen: this.config.onOpen,
       onClose: this.config.onClose,
+      onProductClick: this.config.onProductClick,
     });
     this.popovers.set(hotspot.id, popover);
     popover.mount(this.containerEl, marker);
