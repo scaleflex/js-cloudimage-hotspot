@@ -50,6 +50,7 @@ All notable changes to this project will be documented in this file.
 - **Zero runtime dependencies**
 - **Output formats** — ESM, CJS, and UMD bundles with full TypeScript declarations
 
+[1.1.5]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.5
 [1.1.4]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.4
 [1.1.3]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.3
 [1.1.2]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.2
