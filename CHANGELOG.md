@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.5] - 2026-03-01
+
+### Fixed
+
+- Fire `onProductClick` for all CTA clicks, not only those with a product ID (falls back to empty string)
+- CTA links now open in the top-level frame (`target="_top"`) instead of inside iframes
+
 ## [1.1.4] - 2026-02-28
 
 ### Fixed
