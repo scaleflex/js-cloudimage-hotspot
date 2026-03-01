@@ -51,12 +51,12 @@ export class Popover {
       this.contentEl.appendChild(content);
     }
 
-    // Delegated click handler for CTA buttons/links with product ID
+    // Delegated click handler for CTA buttons/links (with or without product ID)
     if (options.onProductClick) {
       const onCtaClick = (e: MouseEvent) => {
-        const cta = (e.target as HTMLElement).closest<HTMLElement>('.ci-hotspot-popover-cta[data-product-id]');
+        const cta = (e.target as HTMLElement).closest<HTMLElement>('.ci-hotspot-popover-cta');
         if (!cta) return;
-        const productId = cta.dataset.productId!;
+        const productId = cta.dataset.productId ?? '';
         options.onProductClick!(productId, hotspot);
       };
       this.contentEl.addEventListener('click', onCtaClick);
