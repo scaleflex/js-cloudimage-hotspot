@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.7] - 2026-03-18
+
+### Fixed
+
+- Fixed popover content stacking by adding `position: relative` and `z-index: 1` to `.ci-hotspot-popover-content`
+
 ## [1.1.6] - 2026-03-13
 
 ### Added
@@ -56,6 +62,7 @@ All notable changes to this project will be documented in this file.
 - **Zero runtime dependencies**
 - **Output formats** — ESM, CJS, and UMD bundles with full TypeScript declarations
 
+[1.1.7]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.7
 [1.1.6]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.6
 [1.1.5]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.5
 [1.1.4]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.4
