@@ -145,9 +145,12 @@ export class CIHotspot implements CIHotspotInstance {
       addClass(this.containerEl, 'ci-hotspot-marker-inverted');
     } else if (markerTheme === 'brand') {
       addClass(this.containerEl, 'ci-hotspot-marker-brand');
-      if (this.config.brandColor) {
-        this.containerEl.style.setProperty('--ci-hotspot-brand-color', this.config.brandColor);
-      }
+    }
+
+    // Always set brand color variable when provided, even if global markerTheme != 'brand'
+    // (per-hotspot markerTheme: 'brand' markers need it)
+    if (this.config.brandColor) {
+      this.containerEl.style.setProperty('--ci-hotspot-brand-color', this.config.brandColor);
     }
   }
 

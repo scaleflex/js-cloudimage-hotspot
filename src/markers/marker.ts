@@ -30,6 +30,15 @@ export function createMarker(hotspot: NormalizedHotspot, pulse: boolean): HTMLBu
     setMarkerIcon(marker, hotspot.icon);
   }
 
+  // Per-marker theme override
+  if (hotspot.markerTheme === 'default') {
+    addClass(marker, 'ci-hotspot-marker--theme-default');
+  } else if (hotspot.markerTheme === 'inverted') {
+    addClass(marker, 'ci-hotspot-marker--theme-inverted');
+  } else if (hotspot.markerTheme === 'brand') {
+    addClass(marker, 'ci-hotspot-marker--theme-brand');
+  }
+
   if (hotspot.markerStyle === 'dot-label' && hotspot.label) {
     addClass(marker, 'ci-hotspot-marker--dot-label');
     const labelSpan = createElement('span', 'ci-hotspot-marker-label');

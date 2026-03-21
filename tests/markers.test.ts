@@ -83,6 +83,34 @@ describe('createMarker', () => {
     expect(marker.classList.contains('ci-hotspot-marker--dot-label')).toBe(false);
     expect(marker.querySelector('.ci-hotspot-marker-label')).toBeNull();
   });
+
+  it('adds per-marker theme class for markerTheme default', () => {
+    const marker = createMarker(makeHotspot({ markerTheme: 'default' }), true);
+    expect(marker.classList.contains('ci-hotspot-marker--theme-default')).toBe(true);
+    expect(marker.classList.contains('ci-hotspot-marker--theme-inverted')).toBe(false);
+    expect(marker.classList.contains('ci-hotspot-marker--theme-brand')).toBe(false);
+  });
+
+  it('adds per-marker theme class for markerTheme inverted', () => {
+    const marker = createMarker(makeHotspot({ markerTheme: 'inverted' }), true);
+    expect(marker.classList.contains('ci-hotspot-marker--theme-inverted')).toBe(true);
+    expect(marker.classList.contains('ci-hotspot-marker--theme-default')).toBe(false);
+    expect(marker.classList.contains('ci-hotspot-marker--theme-brand')).toBe(false);
+  });
+
+  it('adds per-marker theme class for markerTheme brand', () => {
+    const marker = createMarker(makeHotspot({ markerTheme: 'brand' }), true);
+    expect(marker.classList.contains('ci-hotspot-marker--theme-brand')).toBe(true);
+    expect(marker.classList.contains('ci-hotspot-marker--theme-default')).toBe(false);
+    expect(marker.classList.contains('ci-hotspot-marker--theme-inverted')).toBe(false);
+  });
+
+  it('does not add per-marker theme class when markerTheme is undefined', () => {
+    const marker = createMarker(makeHotspot(), true);
+    expect(marker.classList.contains('ci-hotspot-marker--theme-default')).toBe(false);
+    expect(marker.classList.contains('ci-hotspot-marker--theme-inverted')).toBe(false);
+    expect(marker.classList.contains('ci-hotspot-marker--theme-brand')).toBe(false);
+  });
 });
 
 describe('setMarkerActive', () => {

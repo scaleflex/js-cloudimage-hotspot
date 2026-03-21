@@ -104,6 +104,8 @@ export interface HotspotItem {
   arrowDirection?: number;
   /** Responsive breakpoint configuration */
   responsive?: ResponsiveConfig;
+  /** Per-marker theme override (takes precedence over container-level markerTheme) */
+  markerTheme?: MarkerTheme;
 }
 
 /** Main library configuration */
