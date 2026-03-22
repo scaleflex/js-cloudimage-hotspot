@@ -18,6 +18,7 @@ export const DEFAULT_CONFIG: Omit<Required<CIHotspotConfig>, 'src' | 'hotspots' 
   brandColor: '#00aaff',
   fullscreenButton: true,
   zoomControlsPosition: 'bottom-right',
+  popoverTextAlign: 'left',
 };
 
 /** Data attribute to config property mapping */
@@ -49,6 +50,7 @@ export const DATA_ATTR_MAP: Record<string, { key: string; type: 'string' | 'bool
   'data-ci-hotspot-brand-color': { key: 'brandColor', type: 'string' },
   'data-ci-hotspot-fullscreen-button': { key: 'fullscreenButton', type: 'boolean' },
   'data-ci-hotspot-zoom-controls-position': { key: 'zoomControlsPosition', type: 'string' },
+  'data-ci-hotspot-popover-text-align': { key: 'popoverTextAlign', type: 'string' },
 };
 
 /** Parse data attributes from an element into a config object */

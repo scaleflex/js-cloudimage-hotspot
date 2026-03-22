@@ -152,6 +152,13 @@ export class CIHotspot implements CIHotspotInstance {
     if (this.config.brandColor) {
       this.containerEl.style.setProperty('--ci-hotspot-brand-color', this.config.brandColor);
     }
+
+    // Popover text alignment
+    if (this.config.popoverTextAlign) {
+      this.containerEl.style.setProperty('--ci-hotspot-popover-text-align', this.config.popoverTextAlign);
+    } else {
+      this.containerEl.style.removeProperty('--ci-hotspot-popover-text-align');
+    }
   }
 
   private setupImage(): void {

@@ -168,6 +168,8 @@ export interface CIHotspotConfig {
   onSceneChange?: (sceneId: string, scene: Scene) => void;
   /** Show fullscreen toggle button (default: true) */
   fullscreenButton?: boolean;
+  /** Text alignment inside popovers (default: 'left') */
+  popoverTextAlign?: 'left' | 'center' | 'right';
   /** Position of zoom controls (default: 'bottom-right') */
   zoomControlsPosition?: ZoomControlsPosition;
   /** Called when fullscreen state changes */
