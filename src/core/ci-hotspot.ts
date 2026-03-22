@@ -302,14 +302,15 @@ export class CIHotspot implements CIHotspotInstance {
     }
   }
 
-  /** For navigateTo hotspots without explicit data/content, generate popover content from the destination scene */
+  /** For navigateTo hotspots without explicit data/content, generate popover content from the destination scene or label */
   private enrichNavigateHotspot(hotspot: HotspotItem): HotspotItem {
     if (hotspot.data || hotspot.content) return hotspot;
     const destScene = this.scenesMap.get(hotspot.navigateTo!);
-    if (!destScene) return hotspot;
+    const title = hotspot.label || destScene?.alt || destScene?.id;
+    if (!title) return hotspot;
     return {
       ...hotspot,
-      data: { title: hotspot.label || destScene.alt || destScene.id },
+      data: { title },
     };
   }
 
