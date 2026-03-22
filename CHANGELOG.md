@@ -97,14 +97,14 @@ All notable changes to this project will be documented in this file.
 - **Zero runtime dependencies**
 - **Output formats** — ESM, CJS, and UMD bundles with full TypeScript declarations
 
-[1.1.11]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.11
-[1.1.10]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.10
-[1.1.9]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.9
-[1.1.8]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.8
-[1.1.7]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.7
-[1.1.6]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.6
-[1.1.5]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.5
-[1.1.4]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.4
-[1.1.3]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.3
-[1.1.2]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.2
-[1.0.0]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.0.0
+[1.1.11]: https://github.com/scaleflex/cloudimage-hotspot/releases/tag/v1.1.11
+[1.1.10]: https://github.com/scaleflex/cloudimage-hotspot/releases/tag/v1.1.10
+[1.1.9]: https://github.com/scaleflex/cloudimage-hotspot/releases/tag/v1.1.9
+[1.1.8]: https://github.com/scaleflex/cloudimage-hotspot/releases/tag/v1.1.8
+[1.1.7]: https://github.com/scaleflex/cloudimage-hotspot/releases/tag/v1.1.7
+[1.1.6]: https://github.com/scaleflex/cloudimage-hotspot/releases/tag/v1.1.6
+[1.1.5]: https://github.com/scaleflex/cloudimage-hotspot/releases/tag/v1.1.5
+[1.1.4]: https://github.com/scaleflex/cloudimage-hotspot/releases/tag/v1.1.4
+[1.1.3]: https://github.com/scaleflex/cloudimage-hotspot/releases/tag/v1.1.3
+[1.1.2]: https://github.com/scaleflex/cloudimage-hotspot/releases/tag/v1.1.2
+[1.0.0]: https://github.com/scaleflex/cloudimage-hotspot/releases/tag/v1.0.0

@@ -332,7 +332,7 @@ All configuration is expressed via `data-ci-hotspot-*` attributes on the contain
 **Auto-initialization (CDN usage):**
 
 ```html
-<script src="https://cdn.scaleflex.it/plugins/@cloudimage/hotspot/1.0.1/@cloudimage/hotspot.min.js"></script>
+<script src="https://cdn.scaleflex.it/plugins/cloudimage/hotspot/1.0.1/hotspot.min.js"></script>
 <script>CIHotspot.autoInit();</script>
 ```
 
@@ -1086,16 +1086,16 @@ All animations and transitions respect the `prefers-reduced-motion: reduce` medi
 
 | Format | File | Use Case |
 |---|---|---|
-| **ESM** | `dist/@cloudimage/hotspot.esm.js` | Modern bundlers (Webpack, Vite, Rollup) |
-| **CJS** | `dist/@cloudimage/hotspot.cjs.js` | Node.js, legacy bundlers |
-| **UMD** | `dist/@cloudimage/hotspot.min.js` | CDN `<script>` tag, exposes `window.CIHotspot` |
+| **ESM** | `dist/hotspot.esm.js` | Modern bundlers (Webpack, Vite, Rollup) |
+| **CJS** | `dist/hotspot.cjs.js` | Node.js, legacy bundlers |
+| **UMD** | `dist/hotspot.min.js` | CDN `<script>` tag, exposes `window.CIHotspot` |
 | **TypeScript** | `dist/index.d.ts` | Type definitions |
 | **React ESM** | `dist/react/index.js` | React wrapper (ESM) |
 | **React CJS** | `dist/react/index.cjs` | React wrapper (CJS) |
 | **React Types** | `dist/react/index.d.ts` | React wrapper type definitions |
-| **Editor ESM** | `dist/editor/@cloudimage/hotspot-editor.esm.js` | Visual editor (ESM) |
-| **Editor CJS** | `dist/editor/@cloudimage/hotspot-editor.cjs.js` | Visual editor (CJS) |
-| **Editor UMD** | `dist/editor/@cloudimage/hotspot-editor.min.js` | Visual editor for CDN `<script>` tag, exposes `window.CIHotspotEditor` |
+| **Editor ESM** | `dist/editor/hotspot-editor.esm.js` | Visual editor (ESM) |
+| **Editor CJS** | `dist/editor/hotspot-editor.cjs.js` | Visual editor (CJS) |
+| **Editor UMD** | `dist/editor/hotspot-editor.min.js` | Visual editor for CDN `<script>` tag, exposes `window.CIHotspotEditor` |
 | **Editor Types** | `dist/editor/index.d.ts` | Visual editor type definitions |
 
 ### 10.3 `package.json` Configuration
@@ -1107,15 +1107,15 @@ All animations and transitions respect the `prefers-reduced-motion: reduce` medi
   "description": "Interactive image hotspots with zoom, popovers, and accessibility",
   "license": "MIT",
   "author": "Scaleflex",
-  "main": "dist/@cloudimage/hotspot.cjs.js",
-  "module": "dist/@cloudimage/hotspot.esm.js",
-  "unpkg": "dist/@cloudimage/hotspot.min.js",
+  "main": "dist/hotspot.cjs.js",
+  "module": "dist/hotspot.esm.js",
+  "unpkg": "dist/hotspot.min.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/@cloudimage/hotspot.esm.js",
-      "require": "./dist/@cloudimage/hotspot.cjs.js"
+      "import": "./dist/hotspot.esm.js",
+      "require": "./dist/hotspot.cjs.js"
     },
     "./react": {
       "types": "./dist/react/index.d.ts",
@@ -1124,8 +1124,8 @@ All animations and transitions respect the `prefers-reduced-motion: reduce` medi
     },
     "./editor": {
       "types": "./dist/editor/index.d.ts",
-      "import": "./dist/editor/@cloudimage/hotspot-editor.esm.js",
-      "require": "./dist/editor/@cloudimage/hotspot-editor.cjs.js"
+      "import": "./dist/editor/hotspot-editor.esm.js",
+      "require": "./dist/editor/hotspot-editor.cjs.js"
     }
   },
   "files": [
@@ -1174,13 +1174,13 @@ All animations and transitions respect the `prefers-reduced-motion: reduce` medi
 The UMD bundle is available via Scaleflex CDN:
 
 ```
-https://scaleflex.cloudimg.io/v7/plugins/@cloudimage/hotspot/1.0.1/@cloudimage/hotspot.min.js
+https://scaleflex.cloudimg.io/v7/plugins/cloudimage/hotspot/1.0.1/hotspot.min.js
 ```
 
 Version-specific URLs:
 
 ```
-https://scaleflex.cloudimg.io/v7/plugins/@cloudimage/hotspot/1.0.1/@cloudimage/hotspot.min.js
+https://scaleflex.cloudimg.io/v7/plugins/cloudimage/hotspot/1.0.1/hotspot.min.js
 ```
 
 ### 10.7 Zero Runtime Dependencies
@@ -1192,7 +1192,7 @@ The library has **zero runtime dependencies**. All functionality — popover pos
 ## 11. Project Structure
 
 ```
-@cloudimage/hotspot/
+cloudimage-hotspot/
 ├── src/
 │   ├── index.ts                    # Main entry — CIHotspot class + autoInit
 │   ├── core/
@@ -1290,11 +1290,11 @@ The library has **zero runtime dependencies**. All functionality — popover pos
 │   ├── vite.editor.config.ts       # Visual editor build config
 │   └── vite.demo.config.ts         # Demo build config
 ├── dist/                           # Built output (CDN bundles committed)
-│   ├── @cloudimage/hotspot.min.js
-│   ├── @cloudimage/hotspot.min.js.map
+│   ├── hotspot.min.js
+│   ├── hotspot.min.js.map
 │   └── editor/
-│       ├── @cloudimage/hotspot-editor.min.js
-│       └── @cloudimage/hotspot-editor.min.js.map
+│       ├── hotspot-editor.min.js
+│       └── hotspot-editor.min.js.map
 ├── .github/
 │   └── workflows/
 │       ├── deploy-demo.yml         # GitHub Pages deployment workflow
@@ -1315,7 +1315,7 @@ The library has **zero runtime dependencies**. All functionality — popover pos
 
 ## 12. GitHub Pages Demo
 
-The demo site is hosted at `https://scaleflex.github.io/@cloudimage/hotspot/` and deployed via GitHub Actions.
+The demo site is hosted at `https://scaleflex.github.io/cloudimage-hotspot/` and deployed via GitHub Actions.
 
 ### 12.1 Demo Sections
 
@@ -1351,7 +1351,7 @@ Demo images are high-quality, royalty-free photographs served via Scaleflex CDN:
 - **Real estate interiors** (`andrea-davis-0.jpg` through `andrea-davis-4.jpg`) — 5-scene multi-image navigation
 - **Living room variants** — trigger mode and theme demos
 
-All demo images are served via `https://scaleflex.cloudimg.io/v7/plugins/@cloudimage/hotspot/`.
+All demo images are served via `https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/`.
 
 ---
 

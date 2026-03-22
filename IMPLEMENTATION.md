@@ -452,7 +452,7 @@ After the initial 10-phase implementation, several refinements and fixes were ap
 | `demo/react-demo/app.tsx` | Modified | Updated React demo to use real estate photography |
 
 #### Results
-- All demos use `https://scaleflex.cloudimg.io/v7/plugins/@cloudimage/hotspot/spacejoy-unsplash.jpg`
+- All demos use `https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/spacejoy-unsplash.jpg`
 - Hotspot labels are descriptive and match the image content
 
 ---
@@ -655,8 +655,8 @@ Made `src` and `hotspots` optional in `CIHotspotConfig` so scenes-only configs d
 | `CHANGELOG.md` | Created | v1.0.0 changelog |
 | `.github/workflows/deploy-demo.yml` | Created | GitHub Actions: build demo and deploy to gh-pages |
 | `.github/workflows/deploy-pages.yml` | Created | GitHub Pages build workflow |
-| `dist/@cloudimage/hotspot.min.js` | Added | Committed UMD bundle for CDN distribution |
-| `dist/editor/@cloudimage/hotspot-editor.min.js` | Added | Committed editor UMD bundle for CDN |
+| `dist/hotspot.min.js` | Added | Committed UMD bundle for CDN distribution |
+| `dist/editor/hotspot-editor.min.js` | Added | Committed editor UMD bundle for CDN |
 | `.gitignore` | Modified | Excluded most dist/ files but kept committed UMD bundles |
 | `config/vite.demo.config.ts` | Modified | Added editor.html as multi-page entry |
 | `package.json` | Modified | Added repository, bugs, homepage, author, keywords fields |
@@ -888,7 +888,7 @@ Made `src` and `hotspots` optional in `CIHotspotConfig` so scenes-only configs d
 | `demo/index.html` | Modified | CDN URL updated to `1.0.1` |
 
 #### Results
-- All CDN references point to `https://scaleflex.cloudimg.io/v7/plugins/@cloudimage/hotspot/1.0.1/@cloudimage/hotspot.min.js`
+- All CDN references point to `https://scaleflex.cloudimg.io/v7/plugins/js-cloudimage-hotspot/1.0.1/hotspot.min.js`
 - Package version is `1.0.1`
 
 ---
