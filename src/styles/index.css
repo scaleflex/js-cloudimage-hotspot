@@ -133,6 +133,16 @@
   outline: none;
 }
 
+/* Inner dot for product (non-navigation) markers */
+.ci-hotspot-marker:not(.ci-hotspot-marker--navigate)::after {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.45;
+}
+
 .ci-hotspot-marker:hover {
   transform: translate(-50%, -50%) scale(calc(1.2 / var(--zoom, 1)));
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
@@ -527,7 +537,7 @@ button.ci-hotspot-popover-cta {
   --ci-hotspot-marker-color: #ffffff;
   --ci-hotspot-marker-border-color: rgba(255, 255, 255, 0.9);
   --ci-hotspot-marker-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-  --ci-hotspot-pulse-color: var(--ci-hotspot-brand-color, #00aaff);
+  --ci-hotspot-pulse-color: rgba(255, 255, 255, 0.5);
 }
 
 /* === Scroll Hint Toast === */
