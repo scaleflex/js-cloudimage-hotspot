@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.9] - 2026-03-22
+
+### Added
+
+- Inner dot indicator for product (non-navigation) markers — adds a subtle `::after` pseudo-element dot to distinguish product markers from navigation markers
+
+### Fixed
+
+- Light (inverted) theme pulse color now uses a white-based `rgba(255, 255, 255, 0.5)` instead of inheriting the brand color, for better contrast on light markers
+
 ## [1.1.8] - 2026-03-21
 
 ### Added
@@ -74,6 +84,7 @@ All notable changes to this project will be documented in this file.
 - **Zero runtime dependencies**
 - **Output formats** — ESM, CJS, and UMD bundles with full TypeScript declarations
 
+[1.1.9]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.9
 [1.1.8]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.8
 [1.1.7]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.7
 [1.1.6]: https://github.com/scaleflex/js-cloudimage-hotspot/releases/tag/v1.1.6
